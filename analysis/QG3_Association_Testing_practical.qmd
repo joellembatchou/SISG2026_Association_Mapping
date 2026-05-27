@@ -1,0 +1,169 @@
+---
+title: "Practical 1 - Association Testing"
+author: ""
+date: ""
+---
+
+Before you begin:
+
+* Make sure that R is installed on your computer
+* For this lab, we will use a few R libraries:
+```{r load-libs}
+library(data.table)
+```
+
+
+## Case-Control Association Testing
+
+### Introduction
+We will be using the [LHON dataset](https://raw.githubusercontent.com/joellembatchou/SISG2025_Association_Mapping/master/data/LHON.txt) covered in the lecture notes for this portion of the exercises.
+The LHON dataset is from a case-control study and includes both phenotype and genotype data for a candidate gene.
+
+Let's first load the LHON data file into the R session. We need to define the path to the file (if you have it downloaded on your machine, change the path to the file location).
+```{r set-lhon-file}
+LHON_FILE <- "https://raw.githubusercontent.com/joellembatchou/SISG2025_Association_Mapping/master/data/LHON.txt" 
+```
+
+We can now read the file
+```{r load-lhon-data-direct, results = 'hide'}
+LHON <- fread(LHON_FILE, header=TRUE)
+```
+
+### Helpful suggestions for R
+
+There are many ways to obtain summary information for a dataset. Here are some short examples:
+
+* Get information on number of rows/columns as well as the variables present in the data set
+```{r}
+str(LHON)
+```
+* Get counts for a specific variable in the table (use `$` to access a variable)
+```{r}
+table(LHON$GENO)
+# cross tabulation for two variables
+table(LHON$GENO, LHON$PHENO)
+```
+* Functions like `as.numeric()` and `factor()` will be useful to convert between numeric and categorical variables.
+```{r}
+LHON$GENO[1:5] # see the first 5 entries
+as.numeric(factor(LHON$GENO, levels = c("CC", "CT", "TT")))[1:5] # convert to numeric specifying the order of the labels
+```
+
+* Note: For any R function you don't know the input syntax, you can get that information using `?<function_name>`, e.g. `?table` 
+
+
+### Exercises
+Here are some things to look at:
+
+1. Examine the variables in the dataset
+    * How many observations?  (use `str` function)
+    * How many cases/controls?  (use `table` function)
+    * What are the genotypes present in the variable `GENO`? (use `table` function)
+        * To visualize the counts, you can use `barplot(table(LHON$GENO))`
+    * What is the distribution of the genotypes across cases/controls? (use `table` function)
+
+2. Perform a logistic regression analysis for this data with `CC` as the reference genotype using the `glm()` function. 
+
+* First convert the `GENO` variable to a factor
+```{r, eval = FALSE}
+GENO_factor <- factor(LHON$GENO, levels = c("CC", "CT", "TT")) # convert to numeric specifying the order of the labels
+```
+
+* Convert the phenotype to a 0/1 variable
+    
+```{r, eval = FALSE}
+pheno_binary <- 1 * (LHON$PHENO == "CASE")
+```
+* Check that the entries in `pheno_binary` with 1 correspond to `PHENO='CASE'`
+* Run logistic regression using the `glm` function
+```{r, eval = FALSE}
+logistic_model_LHON <- glm(pheno_binary ~ GENO_factor, family = binomial(link = "logit"))
+```  
+You can get information about the model fit and parameter estimates (i.e. coefficients):
+```{r, eval = FALSE}
+summary(logistic_model_LHON)
+```  
+
+3. Obtain odds ratios and confidence intervals (CI) for the `CT` and `TT` genotypes relative to the `CC` reference genotype. Interpret.
+    * use the lecture notes to obtain odds ratios & CI from estimates and standard errors.
+
+4. Is there evidence of differences in odds of being a case for the `CT` and `TT` genotypes (compared to `CC`)?
+
+#### *Extra*
+5. Perform the logistic regression analysis with an additive genotype coding (e.g. counting the number of 'T' alleles). 
+    * Hint: To convert to numerical, create a new variable with values 0/1/2 based on the genotypes (you can then use `table()` function to make sure the new variable was defined correctly).
+```{r, eval = FALSE}
+GENO_additive_T <- 0 + 1 * (LHON$GENO == "CT") + 2 * (LHON$GENO == "TT")
+``` 
+
+6. Obtain odds ratios and confidence intervals. Is there evidence of an association? How does it compare with the 2-parameter model?
+
+  
+## Association Testing with Quantitative Traits
+
+### Introduction
+We will be using the [Blood Pressure dataset](https://raw.githubusercontent.com/joellembatchou/SISG2025_Association_Mapping/master/data/bpdata.csv) for this portion of the exercises.
+This dataset contains diastolic and systolic blood pressure measurements for 1000 individuals, and genotype data at 11 SNPs in a candidate gene for blood pressure. Covariates such as gender (sex) and body mass index (bmi) are included as well.
+
+Let's first load the file into R. We need to define the path to the file (if you have it downloaded on your machine, change the path to the file location).
+```{r set-bp-data, results = 'hide'}
+BP_FILE <- "https://raw.githubusercontent.com/joellembatchou/SISG2025_Association_Mapping/master/data/bpdata.csv" 
+```
+
+Use the following command to read it into R:
+```{r load-bp-data, results = 'hide'}
+BP <- fread(BP_FILE, header=TRUE)
+```
+
+* Get a snippet of the data:
+```{r}
+head(BP, 2)
+```
+
+### Exercises
+Here are some things to try:
+
+1. Perform a linear regression of systolic blood pressure (`sbp`) on `SNP3` using the `lm()` function.
+```{r, eval = FALSE}
+linear_model_BP <- lm(sbp ~ snp3, data = BP)
+```  
+You can get information about the model fit and parameter estimates (i.e. coefficients):
+```{r, eval = FALSE}
+summary(linear_model_BP)
+```  
+2. Is there any evidence of an effect of the SNP on systolic blood pressure?
+
+3. Provide a plot illustrating the relationship between sbp and the three genotypes at SNP3.
+```{r, eval = FALSE}
+with(BP, boxplot(sbp ~ snp3))
+```
+
+* How does it compare with the linear model fitted in question (1)?
+
+4. By default, the 2-parameter model is used since the SNP is stored in the data as categorical. Contrast the parameter estimates, p-values and confidence intervals obtained between this model and using:
+
+    * additive (linear) model (counting the T allele)
+    * dominant model 
+    * recessive model
+
+*Hint*: for each case, generate the appropriate allele coding variable and pass it to the `lm()` function. For example with additive coding:
+```{r, eval = FALSE}
+SNP3_additive <- 0 + 1 * (BP$snp3 == "TC") + 2 * (BP$snp3 == "TT")
+linear_model_BP_additive <- lm(sbp ~ SNP3_additive, data = BP)
+```  
+
+
+For question 5 and 6 below, R also has a 'formula' syntax, frequently used when specifying regression models with many predictors. To regress an outcome `y` on several covariates, the syntax is:
+
+```{r lm-ex, eval=FALSE}
+lm(y ~ covariate1 + covariate2 + covariate3)
+```
+
+5. Now redo the linear regression analysis of `sbp` from question 4 for the **additive model**, but this time adjust for `sex` and `bmi`. Do the results change?
+
+#### *Extra*
+6. What proportion of the variance of `sbp` is explained by all 11 SNPs combined using categorical coding?
+    * Use the `summary()` function to see the model results (the proportion of variance is the "Multiple R-squared" quantity)
+    * How would it differ if an additive coding is used for the 11 SNPs? 
+       * use `unique()` to check the genotypes for each SNP, e.g. `unique(BP$snp1)`
+       * count the T allele (or A allele if applicable)

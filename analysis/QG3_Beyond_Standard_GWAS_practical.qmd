@@ -1,0 +1,230 @@
+---
+title: 'Interaction testing and vQTL mapping'
+author: "Summer Institute of Statical Genetics (Module  QG3)"
+date: '2025-06-10'
+format:
+  html: default
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Before you begin:
+
+Make sure that R is installed on your computer
+For this lab, we will use the following R libraries:
+```{R, eval=FALSE}
+library(qqman)
+```
+
+This practical aims at illustrating the relationship between tests for vQTLs and tests for interaction effects. We provide a set of `R` commands below to simulate the phenotypes, genotypes and covariates (at $M=1000$ SNPs) of $N=10,000$ samples and 2 covariates. We will chose the first of the 10 SNPs to be causal (either QTL, vQTL or both). We generate two phenotypes which differ based on whether the causal variant influences the phenotypic variance of the trait directly or influences the phenotypic mean through GxE effects.
+
+$$
+E(Y_{vQTL}) = G\beta,\; Var(Y_{vQTL}) = 1 + G\alpha
+$$
+
+$$
+E(Y_{gxe}) = G\beta + E\gamma +  (G\times E)\alpha
+$$
+
+## Simulated dataset
+
+**Copy/Run the following command to enable the `simulate_vqtl_data` function in your current `R` environment.**
+
+```{R, eval=FALSE}
+set.seed(646909) # For reproducibility
+n_individuals <- 10000
+n_snps <- 1000
+
+# Function to simulate genotype, phenotype, and covariate data
+# Mean effect != 0 corresponds to QTL
+# Variance effect != 0 corresponds to vQTL
+simulate_vqtl_data <- function(n_individuals = 10000, n_snps = 1000, mean_effect = 1, variance_effect = 2) {
+
+  # Simulate genotype data with no LD (0, 1, 2 for SNPs)
+  genotype_data <- as.data.frame(matrix(sample(0:2, n_individuals * n_snps, replace = TRUE), 
+                                        nrow = n_individuals, ncol = n_snps))
+  colnames(genotype_data) <- paste0("SNP", 1:n_snps)
+
+  # Simulate environmental covariate (e.g., smoking status)
+  covariate_data <- data.frame(
+    environment = factor(sample(c("non-smoker", "smoker"), n_individuals, replace = TRUE), levels = c("non-smoker", "smoker")),
+    age = runif(n_individuals, 40,60)
+  )
+
+  # Approach 1: Modeling SNP effect in the phenotypic variance
+  phenotype_variance <- rnorm(n_individuals, 
+                              mean = mean_effect * genotype_data$SNP1, 
+                              sd = 1 + variance_effect * genotype_data$SNP1)
+
+  # Approach 2: Modeling GxE effect in the phenotypic mean
+  phenotype_gxe <- rnorm(n_individuals, 
+                         mean = mean_effect * genotype_data$SNP1 + 
+                                variance_effect * as.numeric(covariate_data$environment) *genotype_data$SNP1, 
+                         sd = 1)
+
+  # Combine phenotypes into a data frame
+  phenotype_data <- data.frame(Y_vQTL = phenotype_variance, Y_gxe = phenotype_gxe)
+
+  # Return a list of data frames
+  return(list(genotype = genotype_data, phenotype = phenotype_data, covariate = covariate_data))
+
+}
+```
+
+The `simulate_vqtl_data` function has 4 input parameters: `n_individuals` (sample size), `n_snps` (number of SNPs tested), `mean_effect` (the effect size of the causal variant on the phenotypic mean), `variance_effect` (the effect size of the causal variant on the phenotypic variance `for phenotype Y1` OR the size of the GxE interaction effect `for phenotype Y2`).
+
+Let's run a first data set where the causal variant has no effect on the trait, i.e., `mean_effect = 0` and `variance_effect = 0`.
+
+```{R, eval=FALSE}
+simulated_data <- simulate_vqtl_data(mean_effect = 0, variance_effect = 0)
+```  
+
+Note: you can use `str(simulated_data)` to see a snipper of what's returned by the `simulate_vqtl_data` function.
+
+We can visualize the phenotype distribution across genotype groups for SNP1.
+```{R, eval=FALSE}
+trait_name <- "Y_vQTL"
+boxplot(phenotype[,trait_name] ~ genotype[,"SNP1"], data = simulated_data,
+        xlab = "Genotype",
+        ylab = trait_name,
+        col = c("#1f77b4", "#ff7f0e", "#2ca02c"))
+```
+
+## Testing for (mean) QTL
+
+We use of `lm()` in R to assess phenotypic mean differences across genotypes for each variant. 
+
+**Copy/Run the following command to enable the `lm_test` function in your current `R` environment.**
+
+```{R, eval=FALSE}
+# This function applies linear regression test to each of the simulated variant for a given trait
+# trait_name = {"Y_vQTL", "Y_gxe"}
+lm_test <- function(data, trait_name) {
+  
+  p_values <- rep(NA, n_snps)
+  names(p_values) <- colnames(data$genotype)
+
+  for(i in 1:n_snps){
+    p_values[i] <- summary(lm(phenotype[, trait_name] ~ genotype[,i], data = data))$coef[2,4]
+  }
+  
+  # Return the p-values
+  return(p_values)
+}
+```  
+
+Based on the parameters used in the simulation, would we expect significant result when testing the causal SNP1?
+
+First we do it for trait "Y_vQTL" (do it again on your own for the other trait "Y_gxe")
+```{R, eval=FALSE}
+trait_name <- "Y_vQTL"
+qtl_pvals <- lm_test(data = simulated_data, trait_name =  trait_name)
+
+qtl_pvals[1] # P-value of the causal SNP1
+```
+
+You can make a qq plot to visualize the p-values highlighting the causal SNP1.
+
+**Copy/Run the following command to enable the `plot_qq` function in your current `R` environment.**
+
+```{R, eval=FALSE}
+plot_qq <- function(pvals){
+  qq(pvals)
+  points(-log10(ppoints(n_snps)[rank(pvals)[1]]), -log10(pvals[1]),
+       col = "blue", pch = 19, cex = 1.5)
+}
+```
+
+```{R, eval=FALSE}
+plot_qq(qtl_pvals)
+```
+
+
+## Testing for vQTL
+
+We make use of Levene's test to assess phenotypic variance differences across genotypes for each variant.
+
+**Copy/Run the following command to enable the `levene_test` function in your current `R` environment.**
+
+```{R, eval=FALSE}
+# This function applies levene test to each of the simulated variant for a given trait
+# trait_name = {"Y_vQTL", "Y_gxe"}
+levene_test <- function(data, trait_name) {
+  
+  p_values <- rep(NA, n_snps)
+  names(p_values) <- colnames(data$genotype)
+  
+  for(i in 1:n_snps){
+    # Ensure the genotype is a factor
+    factor_geno <- as.factor(data$genotype[,i])
+  
+    # Calculate the absolute deviations from the group means
+    abs_dev <- abs(data$phenotype[, trait_name] - ave(data$phenotype[, trait_name], factor_geno, FUN = mean))
+
+    # Perform an ANOVA on the absolute deviations
+    p_values[i] <- summary(aov(abs_dev ~ factor_geno))[[1]]$`Pr(>F)`[1]
+  }
+  
+  # Return the p-values
+  return(p_values)
+}
+```  
+
+Based on the parameters used in the simulation, would we expect significant result when testing the causal SNP1?
+
+```{R, eval=FALSE}
+trait_name <- "Y_vQTL"
+levene_pvals <- levene_test(data = simulated_data, trait_name =  trait_name)  # Levene's test for variance differences
+
+levene_pvals[1] # P-value of the causal SNP1
+```
+
+You can make a qq plot to visualize the p-values highlighting the causal SNP1.
+```{R, eval=FALSE}
+plot_qq(levene_pvals)
+```
+
+## Testing for GxE
+
+We again use of `lm()` in R  but this time also include an interaction term with the environment.
+
+**Copy/Run the following command to enable the `gxe_test` function in your current `R` environment.**
+
+```{R, eval=FALSE}
+gxe_test <- function(data, trait_name){
+  pvals <- rep(NA, n_snps)
+  names(pvals) <- colnames(data$genotype)
+
+  for(i in 1:n_snps){
+    pvals[i] <- summary(lm(phenotype[, trait_name] ~ genotype[,i]*covariate$environment, data = data))$coef[4,4]
+  }
+  
+  return(pvals)
+}
+```
+
+```{R, eval=FALSE}
+trait_name <- "Y_vQTL"
+gxe_pvals <- gxe_test(data = simulated_data, trait_name =  trait_name)
+
+gxe_pvals[1] # P-value of the causal SNP1
+```
+
+You can make a qq plot to visualize the p-values highlighting the causal SNP1.
+```{R, eval=FALSE}
+plot_qq(gxe_pvals)
+```
+
+Check these tests for both phenotypes `Y_vQTL` and `Y_gxe`.
+
+## Exploration across scenarios
+Modify `mean_effect` and `variance_effect` to simulate different scenarios:
+
+* SNP1 affects only the mean (`variance_effect = 0`).
+* SNP1 affects only the variance (`mean_effect = 0`).
+* SNP1 affects both the mean and variance.
+
+*Note: You can choose values like 0.01 or 0.1 in those scenarios (choosing too large values may lead to 0 p-values for some tests)*

@@ -1,0 +1,187 @@
+---
+title: "Module QG3 - Association mapping: GWAS & sequencing data"
+---
+
+
+```{r echo = FALSE, message=FALSE, warning=FALSE}
+require(dplyr)
+print.link <- function(name, link) {
+  if(link != "") { 
+    paste0("[", name, "](", link, ")")
+  } else paste0("[", name, "]")
+}
+```
+
+Instructors: Joelle Mbatchou & Moeen Riaz
+
+You will find on this website link to lecture slides and exercises.
+
+The official SISG web page can be found [here](https://sisg.biosciences.gatech.edu/sisg-module-qg3/) – course evaluations and certificates of completion are available via this page.
+
+
+## Session Format
+The module has 10 sessions, each of 90 minutes. The standard format for a session is approximately:
+
+* 45 minutes of lecture material
+* 30 minutes of exercises for you to try 
+* 15 minute discussion of exercises, where the instructors will present possible solutions and Q&A
+
+Each session builds on previous sessions so you will get maximum benefit by attending every session and in sequence.
+
+The course schedule is below.
+
+
+## Pre-requisites
+
+We will be running exercises during the course using various tools, follow the instructions below to get setup on your machine.
+
+**Prior to the module**, please install working and latest versions of:
+
+* R (Version 4.1+): 
+  <a href="https://www.r-project.org/" target="_blank">https://www.r-project.org/</a>
+* RStudio (Version 1.4+) : 
+  <a href="https://rstudio.com/products/rstudio/download/" target="_blank">https://rstudio.com/products/rstudio/download/</a>
+* PLINK 1.9 : 
+  <a href="https://www.cog-genomics.org/plink2/" target="_blank">https://www.cog-genomics.org/plink2/</a>
+* PLINK 2.0 : 
+  <a href="https://www.cog-genomics.org/plink/2.0/" target="_blank">https://www.cog-genomics.org/plink/2.0/</a>
+* REGENIE : 
+  <a href="https://github.com/rgcgithub/regenie/releases/" target="_blank">https://github.com/rgcgithub/regenie/releases/</a>
+* GCTA : 
+  <a href="https://yanglab.westlake.edu.cn/software/gcta/#Download" target="_blank">https://yanglab.westlake.edu.cn/software/gcta/#Download</a>
+* GCTB : 
+  <a href="https://cnsgenomics.com/software/gctb/#Download" target="_blank">https://cnsgenomics.com/software/gctb/#Download</a>
+
+All are free software. For those on Windows, we recommend WSL ([Windows Subsystem for Linux](https://learn.microsoft.com/en-us/windows/wsl/install)) to run the tools above if no Windows binary is available. Alternatively, you can also use [docker](https://docs.docker.com/desktop/setup/install/windows-install/) if docker images are available.
+
+Please be sure to install some necessary R packages by running the following commands in a R terminal:
+```{r install-pkgs, eval = FALSE}
+install.packages("qqman")
+install.packages("bigsnpr")
+install.packages("hexbin")
+install.packages("devtools")
+install.packages("tidyverse")
+install.packages("cowplot")
+install.packages("BEDMatrix")
+install.packages("SKAT")
+devtools::install_github("yaowuliu/ACAT")
+```
+
+## Schedule
+
+All times listed below for the schedule are Eastern Daylight Time (EDT, Atlanta time).
+
+```{r mon-sched, echo = FALSE, results = "asis"}
+data.frame(
+  Time = c("8:30am-10am", "10:30am-12pm", "1:30pm-3pm", "3:30pm-5pm"),
+  Session = 1:4,
+  Topic = c(
+    "Case Control Association Testing & Association Testing with Quantitative Traits",
+    "Introduction to the PLINK Software for GWAS & Population Structure Inference",
+    "GWAS in Samples with Structure & Introduction to the REGENIE Software",
+    "Rare Variant Analysis: Collapsing Tests, Kernel (Variance Component) Tests and Omnibus Tests"
+    ),
+  Lecture = c(
+    paste0(print.link("Lecture", "https://gatech.box.com/s/yjb8q69k4e63ogufooccrfkd097di3m2")),
+    paste0(print.link("Lecture", "https://gatech.box.com/s/e3mbpg5i590dzcz8fhedhwjszq8fjsve")),
+    paste0(print.link("Lecture", "https://gatech.box.com/s/tuhlzrrfosl4i7zgd2gqp0yir2b428zh")),
+    paste0(print.link("Lecture", "https://gatech.box.com/s/tqgn2agytnu1gltndcvqjfirag4j87jt"))
+      ),
+  "Exercises" = c(
+    paste0(print.link("Exercises", "QG3_Association_Testing_practical.html")),
+    paste0(print.link("Exercises", "QG3_Plink_Population_Structure_practical.html")),
+    paste0(print.link("Exercises", "QG3_Relatedness_REGENIE_practical.html")),
+    paste0(print.link("Exercises", "QG3_RV_tests_practical.html"))
+  ),
+  "Key" = c(
+    "",
+    "",
+    "",
+    ""
+  )
+ , check.names = FALSE ) %>%
+knitr::kable("html", escape = FALSE,
+  caption = "Monday, June 8th",
+  align = c('l', 'c', 'l', 'l', 'l')
+) %>%
+kableExtra::kable_styling(bootstrap_options = c("hover", "condensed","striped"))
+```
+
+```{r tue-sched, echo = FALSE, results = "asis"}
+data.frame(
+  Time = c("8:30am-10am", "10:30am-12pm", "1:30pm-3pm", "3:30pm-5pm"),
+  Session = 4 + 1:4,
+  Topic = c(
+    "Beyond traditional GWAS: Variance QTL, Interaction Testing, GWAX, Time-to-event, Multi-trait analysis",
+    "Downstream analyses: Conditional Analyses, Colocalization, Fine-mapping, Gene-based & Pathways Analysis",
+    "Downstream analyses: Polygenic Risk Scores",
+    "Emerging issues showcasing ongoing research"
+    ),
+  Lecture = c(
+    paste0(print.link("Lecture", "https://gatech.box.com/s/04qa51r6tw7prfhdflc1taroim6jaudv")),
+    paste0(print.link("Lecture", "https://gatech.box.com/s/k4q4mtscwa9txdcc6qdxiviyrzob3djf")),
+    paste0(print.link("Lecture", "https://gatech.box.com/s/gr7jq894brykdq4s64nqd09b5guateel")),
+    paste0(print.link("Lecture", "https://gatech.box.com/s/f9hhb4cjnumy4i7yp7hgxcyv3fgwo9xf"))
+      ),
+  "Exercises" = c(
+    paste0(print.link("Exercises", "QG3_Beyond_Standard_GWAS_practical.html")),
+    paste0(print.link("Exercises", "QG3_Downstream-Analyses_practical.html")),
+    paste0(print.link("Exercises", "QG3_Polygenic_Scores_practical.html")),
+    ""
+  ),
+  "Key" = c(
+    "",
+    "",
+    "",
+    ""
+  )
+  , check.names = FALSE) %>%
+knitr::kable("html", escape = FALSE,
+  caption = "Tuesday, June 9th",
+  align = c('l', 'c', 'l', 'l', 'l')
+) %>%
+kableExtra::kable_styling(bootstrap_options = c("hover", "condensed","striped"))
+```
+
+```{r wed-sched, echo = FALSE, results = "asis"}
+data.frame(
+  Time = c("8:30am-10am", "10:30am-12pm"),
+  Session = 8 + 1:2,
+  Topic = c(
+    "Power, Sample Size & Design Considerations",
+    "Emerging issues showcasing ongoing research"
+    ),
+  Lecture = c(
+    paste0(print.link("Lecture", "https://gatech.box.com/s/bmpoetpkm2bk3p2km5q7d8wth07vuuum")),
+    paste0(print.link("Lecture", "https://gatech.box.com/s/jyw7gswr67n01zr1rt8b16xr8ptjdgaj"))
+      ),
+  "Exercises" = c(
+    paste0(print.link("Exercises", "QG3_Power-Design_practical.html")),
+    paste0(print.link("Exercises", "QG3_CC_Imbalance_practical.html"))
+  ),
+  "Key" = c(
+    "",
+    ""
+  )
+  , check.names = FALSE) %>%
+knitr::kable("html", escape = FALSE,
+  caption = "Wednesday, June 10th",
+  align = c('l', 'c', 'l', 'l', 'l')
+) %>%
+kableExtra::kable_styling(bootstrap_options = c("hover", "condensed","striped"))
+```
+
+
+## Datasets
+
+All the data sets used can be downloaded from the [Box folder](https://gatech.box.com/s/s6m0970432k5pcrgx2xigng6acjpuo54) for the class.
+
+## Additional resources
+
+* [2016 TPB Paper](https://faculty.washington.edu/tathornt/sisg/Zheng_Weir_Eigenanalysis_TPB_2016.pdf) on PCA for Population Structure Inference and Admixture Estimation
+* [HapMap MXL Individual Ancestry Figure](https://faculty.washington.edu/tathornt/sisg/HapMapMXL_Ancestry_Supervised.pdf) (Supervised Learning)
+* If you are new to R, you may find the following material helpful:
+  * [Introduction to R materials](https://faculty.washington.edu/kenrice/rintro/) from a past SISG Module
+  * [Graphics with ggplot2](https://ggplot2.tidyverse.org/)
+  * [Data manipulation with dplyr](http://dplyr.tidyverse.org/)
+

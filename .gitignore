@@ -1,0 +1,23 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+.DS_Store
+.qodo/
+
+# Exclude solution keys
+analysis/*_Key.Rmd
+analysis/*_Key.qmd
+docs/analysis/*_Key.html
+
+# Exclude additional files
+data/run_regenie.r
+data/sim_rels_geno.bed
+exe/
+lectures/
+mk_website.R
+notes.txt
+tmp/
+
+/.quarto/
+**/*.quarto_ipynb
