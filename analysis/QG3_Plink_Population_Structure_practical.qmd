@@ -198,17 +198,19 @@ obj.svd2 <- bed_autoSVD(
 
 ## Key Takeaways from This Practical
 
-**Concepts you should understand**:
+**Concepts you should understand:**
+
 1. **PCA captures ancestry**: PC1/PC2 represent continental-level ancestry differences, not individual SNPs
 2. **Population stratification = confounding**: If cases/controls differ in ancestry, you see spurious associations
 3. **LD pruning improves signal**: Correlated SNPs don't add information; pruning reduces noise in PCA
 4. **PCA is exploratory**: Use it to identify population structure, then adjust for PCs in downstream analysis
 5. **Admixture detection**: Some samples show mixed ancestry from multiple populations
 
-**Important caveats**:
+**Important caveats:**
+
 - PCs are population-specific: PCs calculated in one population may not transfer to another
 - LD pruning parameters matter: Different thresholds can change results
 - Sample size affects PC estimates: Projected samples may be less reliable
 
-**Next session**: We'll use PCs as covariates to adjust for population structure in genome-wide association tests.
+**Next session:** We'll use PCs as covariates to adjust for population structure in genome-wide association tests.
 

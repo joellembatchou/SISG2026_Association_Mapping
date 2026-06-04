@@ -186,16 +186,18 @@ lm(y ~ covariate1 + covariate2 + covariate3)
 
 ## Key Takeaways from This Practical
 
-**Concepts you should understand**:
+**Concepts you should understand:**
+
 1. **Regression framework**: Both logistic and linear regression test for association while accounting for covariates
 2. **Odds ratios vs effect sizes**: OR < 1 means protective; OR > 1 means risk-increasing; effect size is change in trait mean per allele
 3. **Genotype encoding**: Additive (0/1/2) assumes linear relationship; 2-parameter model allows any pattern
 4. **Multiple testing**: Must correct for number of tests to avoid false positives
 5. **Interpretation matters**: Statistical significance depends on sample size, but biological relevance depends on effect size
 
-**You are NOT expected to**:
+**You are NOT expected to:**
+
 - Memorize R syntax (you can look it up!)
 - Become an R expert
 - Finish every question
 
-**Next session**: We'll see why population structure (ancestry) can cause spurious associations and how to detect it.
+**Next session:** We'll see why population structure (ancestry) can cause spurious associations and how to detect it.
