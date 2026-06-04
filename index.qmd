@@ -105,10 +105,10 @@ data.frame(
   Time = c("8:30am-10am", "10:30am-12pm", "1:30pm-3pm", "3:30pm-5pm"),
   Session = 4 + 1:4,
   Topic = c(
-    "Beyond traditional GWAS: Variance QTL, Interaction Testing, GWAX, Time-to-event, Multi-trait analysis",
-    "Downstream analyses: Conditional Analyses, Colocalization, Fine-mapping, Gene-based & Pathways Analysis",
-    "Downstream analyses: Polygenic Risk Scores",
-    "Emerging issues showcasing ongoing research"
+    "Meta-analysis: GWAS meta-analysis with METAL, QC and best practices, Gene-based ExWAS with REMETA",
+    "Meta-analysis with REMETA continue & Downstream analysis: Conditional analysis, fine mapping",
+    "Downstream analysis continues: Coloc, Gene-based & Pathways Analysis",
+    "Beyond traditional GWAS: Variance QTL, Interaction Testing, GWAX, Time-to-event, Multi-trait analysis"
     ),
   Lecture = c(
     '<a href="https://gatech.box.com/s/04qa51r6tw7prfhdflc1taroim6jaudv" target="_blank">Slides</a>',
@@ -138,15 +138,15 @@ data.frame(
   Time = c("8:30am-10am", "10:30am-12pm"),
   Session = 8 + 1:2,
   Topic = c(
-    "Power, Sample Size & Design Considerations",
+    "Polygenic Risk Scores",
     "Emerging issues showcasing ongoing research"
     ),
   Lecture = c(
-    '<a href="https://gatech.box.com/s/bmpoetpkm2bk3p2km5q7d8wth07vuuum" target="_blank">Slides</a>',
+    '<a href="https://gatech.box.com/s/gr7jq894brykdq4s64nqd09b5guateel" target="_blank">Slides</a>',
     '<a href="https://gatech.box.com/s/jyw7gswr67n01zr1rt8b16xr8ptjdgaj" target="_blank">Slides</a>'
   ),
   Exercises = c(
-    '<a href="analysis/QG3_Power-Design_practical.html">Practical</a>',
+    '<a href="analysis/QG3_Polygenic_Scores_practical.html">Practical</a>',
     '<a href="analysis/QG3_CC_Imbalance_practical.html">Practical</a>'
   ),
   Key = c("", "")
