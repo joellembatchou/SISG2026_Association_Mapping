@@ -52,14 +52,17 @@ All are free software. For those on Windows, we recommend WSL ([Windows Subsyste
 
 Please be sure to install some necessary R packages by running the following commands in a R terminal:
 ```{r install-pkgs, eval = FALSE}
+install.packages("data.table")
+install.packages("ggplot2")
+install.packages("dplyr")
 install.packages("qqman")
+install.packages("SKAT")
 install.packages("bigsnpr")
 install.packages("hexbin")
 install.packages("devtools")
 install.packages("tidyverse")
 install.packages("cowplot")
 install.packages("BEDMatrix")
-install.packages("SKAT")
 install.packages("glue")
 devtools::install_github("yaowuliu/ACAT")
 ```
