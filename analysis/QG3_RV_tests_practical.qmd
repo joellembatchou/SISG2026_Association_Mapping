@@ -19,14 +19,17 @@ library(glue)
 ```
 
 ## Introduction
+
+**What we're testing**: Why don't single-SNP tests work for rare variants? We'll compare different rare variant testing strategies (burden tests, variance-component tests, omnibus tests) to understand when each approach has power.
+
 We will look into a dataset collected on a quantitative phenotype which was first analyzed through GWAS and a signal was detected in a region on chromosome 1. Let's determine whether the signal is present when we focus on rare variation at the locus. In our analyses, ***we will define rare variants as those with $MAF \leq 5\%$***.
 
-The file ["rv_pheno.txt"](https://github.com/joellembatchou/SISG2025_Association_Mapping/tree/master/data)” contains the phenotype measurements for a set of individuals and the file ["rv_geno_chr1.bed"](https://github.com/joellembatchou/SISG2025_Association_Mapping/tree/master/data) is a binary file in PLINK BED format with accompanying BIM and FAM files which contains the genotype data.
+The file [“rv_pheno.txt”](https://github.com/joellembatchou/SISG2026_Association_Mapping/tree/master/data)” contains the phenotype measurements for a set of individuals and the file [“rv_geno_chr1.bed”](https://github.com/joellembatchou/SISG2026_Association_Mapping/tree/master/data) is a binary file in PLINK BED format with accompanying BIM and FAM files which contains the genotype data.
 
 ### Data preparation
 Let’s first load the files into the R session. We first need to define the path to the directory containing the phenotype and genotype files **(change the path to the files location on your machine)**.
 ```{r echo=FALSE}
-files_dir <- "/Users/joelle.mbatchou/SISG/2025/SISG2025_Association_Mapping/data/" 
+files_dir <- "/Users/joelle.mbatchou/SISG/2026/SISG2026_Association_Mapping/data/" 
 plink2_binary <- "/Users/joelle.mbatchou/software/bins/plink2" 
 ```
 
@@ -92,18 +95,18 @@ str(sv_pvals) # what variables are used to store p-values and effect sizes?
 ```
 
   * What would be your significance threshold after applying Bonferroni correction for the multiple tests (assume the nominal significance level is 0.05)? Is anything significant after this correction?
+    * **Think about**: With rare variants, power for single-SNP tests is very low. Why? Does this motivate the need for aggregation tests?
 ```{r, eval = FALSE}
-
 # determine the appropriate significance threshold
-bonf_threshold <- 
+bonf_threshold <- 0.05 / length(sv_pvals$P)
 sv_pvals[ sv_pvals$P < bonf_threshold, ]
 ```
   
-  * Make a volcano plot (i.e. plot log10 p-values against the effect sizes). Which of the Burden/SKAT/ACAT tests do you expect will give us most power? 
+  * Make a volcano plot (i.e. plot log10 p-values against the effect sizes). Which of the Burden/SKAT/ACAT tests do you expect will give us most power?
+    * **Predict**: If effects are all in the same direction, which test wins? If mixed directions?
 
 ```{r, eval = FALSE}
-# volcano plot hint: to make a scatterplot of variable var2 against var1 stored in the data frame, you can use:
-with(sv_pvals, plot(x=var1, y=var2)) # change 'var1' and 'var2' to the right names in sv_pvals
+with(sv_pvals, plot(x=BETA, y=-log10(P), xlab = "Effect size", ylab = "-log10(P)"))
 ```
 
 
@@ -130,8 +133,13 @@ Run a test for association between the phenotype and each burden score using the
 ```{r eval=FALSE}
 # e.g. for CAST
 summary(lm(pheno_file$Pheno ~ burden.cast))
+# for MZ
+summary(lm(pheno_file$Pheno ~ burden.mz))
+# for Weighted
+summary(lm(pheno_file$Pheno ~ burden.weighted))
 ```
-Are there notable differences across the test results?
+
+**Interpret**: Are there notable differences across the test results? Which burden approach gives smallest p-value?
 
 6. Now use SKAT to test for an association. 
 ```{r, eval = FALSE}
@@ -143,13 +151,19 @@ str(skat_sumstats)
 skat_sumstats$p.value
 ```
 
-7. Run the omnibus SKAT, but consider setting $\rho$ (i.e.`r.corr`) to 0 and then 1. 
+7. Run the omnibus SKAT, but consider setting $\rho$ (i.e.`r.corr`) to 0 and then 1.
   * Compare the results to using the CAST,MZ/GRANVIL and Weighted burden collapsing approaches in Question 5 as well as SKAT in Question 6. What tests do these $\rho$ values correspond to?
+    * **Concept**: $\rho=0$ → pure variance-component test; $\rho=1$ → burden test. What does this tell you about the trade-offs?
 ```{r, eval = FALSE}
-# Example for rho = 0
+# Example for rho = 0 (variance-component, like SKAT)
 rho <- 0
-skat_sumstats_rho <- SKAT(G, skat.null, r.corr = rho )
-skat_sumstats_rho$p.value
+skat_sumstats_rho0 <- SKAT(G, skat.null, r.corr = rho )
+skat_sumstats_rho0$p.value
+
+# Example for rho = 1 (burden test)
+rho <- 1
+skat_sumstats_rho1 <- SKAT(G, skat.null, r.corr = rho )
+skat_sumstats_rho1$p.value
 ```
 
 8. Now consider the omnibus version of SKAT, but use the “optimal.adj” approach which searches across a range of rho values.
@@ -168,14 +182,41 @@ ACAT(sv_pvals$P, weights = acat.weights)
 ```
 
 10. Run ACATO combining the SKAT and BURDEN p-values (from Question 7) with the ACATV p-value (from Question 9).
+    * **Compare**: Does combining tests give you the best p-value? Why combine instead of just using the minimum?
 ```{r, eval = FALSE}
-# Fill in the p-values
-SKAT_pvalue <- 
-Burden_pvalue <- 
-ACATV_pvalue <-
-# compute ACATO
+# Fill in the p-values from your analyses
+SKAT_pvalue <- # from Question 6
+Burden_pvalue <- # from Question 7 with rho=1
+ACATV_pvalue <- # from Question 9
+# compute ACATO - combines information across all three tests
 ACAT( c(SKAT_pvalue, Burden_pvalue, ACATV_pvalue) )
 ```
+
+---
+
+## Key Takeaways from This Practical
+
+**Concepts you should understand:**
+
+1. **Single-SNP power problem**: Rare variants → few carriers → low power for individual tests
+2. **Burden tests assume direction**: All variants contribute same direction (often positive effect)
+3. **SKAT assumes variance**: Tests if variants deviate from null; allows mixed directions
+4. **Omnibus tests combine**: SKAT-O searches across architectures; ACAT combines different tests
+5. **Weighting matters**: Downweighting common variants focuses signal on rare variants
+
+**Method selection guide:**
+
+- **All positive effects?** → Burden test works best
+- **Mixed directions?** → SKAT/variance-component test
+- **Unknown?** → Omnibus test (SKAT-O or ACAT)
+
+**Important limitations:**
+
+- All methods assume variants in same gene/region
+- Collapsing can lose power if only subset of variants causal
+- LD structure can affect weights and power
+
+**Next session:** We'll combine results across multiple studies to increase power through meta-analysis.
 
 ### Extra
 
