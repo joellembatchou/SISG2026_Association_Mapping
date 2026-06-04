@@ -13,6 +13,7 @@ library(data.table)
 library(dplyr)
 library(qqman)
 library(ggplot2)
+library(glue)
 ```
 
 
@@ -45,11 +46,11 @@ regenie_binary <- "/SISGM19/bin/regenie"
 
 We can now read the files (recall the PLINK BED file is a binary file):
 ```{r}
-pheno_file <- fread(sprintf("%s/sim_rels_pheno.txt", files_dir), header = TRUE) 
+pheno_file <- fread(glue("{files_dir}/sim_rels_pheno.txt"), header = TRUE) 
 head(pheno_file, 3)
-sim_bim <- fread(sprintf("%s/sim_rels_geno.bim", files_dir), header = FALSE)
+sim_bim <- fread(glue("{files_dir}/sim_rels_geno.bim"), header = FALSE)
 head(sim_bim, 3)
-sim_fam <- fread(sprintf("%s/sim_rels_geno.fam", files_dir), header = FALSE)
+sim_fam <- fread(glue("{files_dir}/sim_rels_geno.fam"), header = FALSE)
 head(sim_fam, 3)
 ```
 
@@ -79,7 +80,7 @@ filter_maf =
 filter_missing_rate = 
 filter_hwe = 
 
-cmd <- sprintf('%s --bfile "%s/sim_rels_geno" --pheno "%s/sim_rels_pheno.txt" --pheno-name Pheno --maf %g --geno %g --hwe %g --glm allow-no-covars --out gwas_plink', plink2_binary, files_dir, files_dir, filter_maf, filter_missing_rate, filter_hwe)
+cmd <- glue('{plink2_binary} --bfile "{files_dir}/sim_rels_geno" --pheno "{files_dir}/sim_rels_pheno.txt" --pheno-name Pheno --maf {filter_maf} --geno {filter_missing_rate} --hwe {filter_hwe} --glm allow-no-covars --out gwas_plink')
 system(cmd, intern = T)
 ```
 The results of the GWAS are stored in `gwas_plink.Pheno.glm.linear`.
@@ -115,7 +116,7 @@ filter_missing_rate =
 filter_hwe = 
 filter_mac = 
 
-cmd <- sprintf('%s --bfile "%s/sim_rels_geno" --pheno "%s/sim_rels_pheno.txt" --pheno-name Pheno --maf %g --geno %g --hwe %g --mac %g --write-snplist --out qc_pass', plink2_binary, files_dir, files_dir, filter_maf, filter_missing_rate, filter_hwe, filter_mac)
+cmd <- glue('{plink2_binary} --bfile "{files_dir}/sim_rels_geno" --pheno "{files_dir}/sim_rels_pheno.txt" --pheno-name Pheno --maf {filter_maf} --geno {filter_missing_rate} --hwe {filter_hwe} --mac {filter_mac} --write-snplist --out qc_pass')
 system(cmd, intern = T)
 ```
 This produces a file `qc_pass.snplist` containing a list of variant IDs that pass the QC filters.
@@ -123,14 +124,14 @@ This produces a file `qc_pass.snplist` containing a list of variant IDs that pas
 ### If REGENIE software is installed on your machine
 8. Run REGENIE Step 1 to fit the null model and obtain polygenic predictions using a leave-one-chromosome-out (LOCO) scheme. 
 ```{r, eval = FALSE}
-cmd <- sprintf('%s --bed "%s/sim_rels_geno" --phenoFile "%s/sim_rels_pheno.txt"  --phenoCol Pheno --qt --step 1 --loocv --bsize 1000 --extract qc_pass.snplist --out gwas_regenie', regenie_binary, files_dir, files_dir)
+cmd <- glue('{regenie_binary} --bed "{files_dir}/sim_rels_geno" --phenoFile "{files_dir}/sim_rels_pheno.txt" --phenoCol Pheno --qt --step 1 --loocv --bsize 1000 --extract qc_pass.snplist --out gwas_regenie')
 system(cmd, intern = T)
 ```
 The LOCO polygenic predictions for the phenotype are stored in `gwas_regenie_1.loco`.
 
 9. Run REGENIE Step 2 to perform association testing.
 ```{r, eval = FALSE}
-cmd <- sprintf('%s --bed "%s/sim_rels_geno" --phenoFile "%s/sim_rels_pheno.txt" --phenoCol Pheno --qt --step 2 --bsize 400 --pred gwas_regenie_pred.list --out step2_gwas_regenie', regenie_binary, files_dir, files_dir)
+cmd <- glue('{regenie_binary} --bed "{files_dir}/sim_rels_geno" --phenoFile "{files_dir}/sim_rels_pheno.txt" --phenoCol Pheno --qt --step 2 --bsize 400 --pred gwas_regenie_pred.list --out step2_gwas_regenie')
 system(cmd, intern = T)
 ```  
 The REGENIE summary statistics will be in `step2_gwas_regenie_Pheno.regenie`.

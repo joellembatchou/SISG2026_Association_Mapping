@@ -1,5 +1,5 @@
 ---
-title: "Practical 7 - Rare Variant Analysis"
+title: "Practical 4 - Rare Variant Analysis"
 author: ""
 date: ""
 ---
@@ -15,6 +15,7 @@ library(BEDMatrix)
 library(SKAT)
 library(ACAT)
 library(ggplot2)
+library(glue)
 ```
 
 ## Introduction
@@ -40,7 +41,7 @@ plink2_binary <- "/SISGM19/bin/plink2"
 
 We can now read the phenotype file:
 ```{r}
-pheno_file <- fread(sprintf("%s/rv_pheno.txt", files_dir), header = TRUE) 
+pheno_file <- fread(glue("{files_dir}/rv_pheno.txt"), header = TRUE) 
 head(pheno_file, 3)
 ```
 
@@ -51,7 +52,7 @@ We use options `--max-maf` to select rare variants and `--maj-ref force` so that
 # first fill in the thresholds to use for each filter
 filter_maf = 
 
-cmd <- sprintf('%s --bfile "%s/rv_geno_chr1" --max-maf %g --maj-ref force --make-bed --out chr1_region_rv', plink2_binary, files_dir, filter_maf)
+cmd <- glue('{plink2_binary} --bfile "{files_dir}/rv_geno_chr1" --max-maf {filter_maf} --maj-ref force --make-bed --out chr1_region_rv')
 system(cmd)
 ```
 This generates a new set of PLINK BED genotype files containing only the variants that passed the MAF filter `chr1_region_rv.{bed,bim,fam}`.
@@ -84,7 +85,7 @@ hist(maf)
 
 4. Run the single variant association tests in PLINK (only for the extracted variants).
 ```{r, eval = FALSE}
-cmd <- sprintf("%s --bfile chr1_region_rv --pheno %s/rv_pheno.txt --pheno-name Pheno --glm allow-no-covars  --out test_plink", plink2_binary, files_dir)
+cmd <- glue("{plink2_binary} --bfile chr1_region_rv --pheno {files_dir}/rv_pheno.txt --pheno-name Pheno --glm allow-no-covars  --out test_plink")
 system(cmd)
 sv_pvals <- fread("test_plink.Pheno.glm.linear")
 str(sv_pvals) # what variables are used to store p-values and effect sizes?

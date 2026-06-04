@@ -13,6 +13,7 @@ library(data.table)
 library(dplyr)
 library(qqman)
 library(ggplot2)
+library(glue)
 ```
 
 ## Introduction
@@ -52,7 +53,7 @@ N <- 10e3
 write(paste0("5000 common 0.05 0.5 1 1"), "sim.config")
 write(paste0("5000 rare 0.001 0.01 1 1"), "sim.config", append = TRUE)
 # Run PLINK1.9
-cmd <- sprintf("%s --make-bed --simulate sim.config --simulate-ncases %d --simulate-ncontrols 0 --simulate-prevalence 0.1  --out cc_imb_geno", plink_binary, N)
+cmd <- glue("{plink_binary} --make-bed --simulate sim.config --simulate-ncases {N} --simulate-ncontrols 0 --simulate-prevalence 0.1  --out cc_imb_geno")
 system(cmd, intern = T)
 ```
 You should now have files `cc_imb_geno.{bed,bim,fam}`.
@@ -84,7 +85,7 @@ We will now assess the null distribution of our test statistics when performing 
 
 1.  Run the GWAS in REGENIE for the 3 traits.
 ```{r, eval = FALSE}
-cmd <- sprintf('%s --bed cc_imb_geno --phenoFile cc_imb_pheno.txt --bt --step 2 --bsize 2000 --ignore-pred --out test_regenie', regenie_binary)
+cmd <- glue('{regenie_binary} --bed cc_imb_geno --phenoFile cc_imb_pheno.txt --bt --step 2 --bsize 2000 --ignore-pred --out test_regenie')
 system(cmd, intern = T)
 ```
 This will produce three sumstats files (one for each phenotype) which you can read in R:
@@ -168,7 +169,7 @@ plot.sumstats.hist.by.group(sumstats.y1, "Y1")
 
 5. Re-run GWAS in Questions 1 but now applying Firth correction. Make a QQ plot of the -log10 p-values for all 3 traits and eexamine at the histograms of the test statistic as in questions (3-4). 
 ```{r, eval = FALSE}
-cmd <- sprintf('%s --bed cc_imb_geno --phenoFile cc_imb_pheno.txt --bt --step 2 --bsize 2000 --firth --approx --ignore-pred --out test_regenie_wFirth', regenie_binary)
+cmd <- glue('{regenie_binary} --bed cc_imb_geno --phenoFile cc_imb_pheno.txt --bt --step 2 --bsize 2000 --firth --approx --ignore-pred --out test_regenie_wFirth')
 system(cmd, intern = T)
 ```
 

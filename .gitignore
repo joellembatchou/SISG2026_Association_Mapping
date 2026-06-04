@@ -5,6 +5,10 @@
 .DS_Store
 .qodo/
 
+# Claude Code documentation
+CLAUDE.md
+.claude/
+
 # Exclude solution keys
 analysis/*_Key.Rmd
 analysis/*_Key.qmd

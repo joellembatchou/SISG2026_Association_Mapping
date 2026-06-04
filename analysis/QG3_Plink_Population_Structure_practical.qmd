@@ -13,6 +13,7 @@ library(data.table)
 library(dplyr)
 library(bigsnpr)
 library(ggplot2)
+library(glue)
 ```
 
 ## Introduction
@@ -50,15 +51,15 @@ plink2_binary <- "/SISGM19/bin/plink2"
 
 We can now read the PLINK BED and FAM files (recall the BED file is a binary file):
 ```{r}
-HGDP_bim <- fread(sprintf("%s/YRI_CEU_ASW_MEX_NAM.bim", HGDP_dir), header = FALSE)
+HGDP_bim <- fread(glue("{HGDP_dir}/YRI_CEU_ASW_MEX_NAM.bim"), header = FALSE)
 head(HGDP_bim, 3)
-HGDP_fam <- fread(sprintf("%s/YRI_CEU_ASW_MEX_NAM.fam", HGDP_dir), header = FALSE)
+HGDP_fam <- fread(glue("{HGDP_dir}/YRI_CEU_ASW_MEX_NAM.fam"), header = FALSE)
 head(HGDP_fam, 3)
 ```
 
 When reading the ancestry label file, we need to make sure the order of samples matches that in the PLINK data:
 ```{r}
-HGDP_ancestry_df <- fread(sprintf("%s/Population_Sample_Info.txt", HGDP_dir))
+HGDP_ancestry_df <- fread(glue("{HGDP_dir}/Population_Sample_Info.txt"))
 HGDP_ancestry_df <- left_join(HGDP_fam[,c("V1","V2")], HGDP_ancestry_df, by = c("V1" = "FID", "V2" = "IID"))
 head(HGDP_ancestry_df, 3)
 ```
@@ -73,7 +74,7 @@ Here are some things to look at:
 
 2. Get the first 10 principal components (PCs) in PLINK using all SNPs. 
 ```{r eval=FALSE}
-cmd <- sprintf("%s --bfile %s/YRI_CEU_ASW_MEX_NAM --pca 10 --out pca_plink", plink2_binary, HGDP_dir)
+cmd <- glue("{plink2_binary} --bfile {HGDP_dir}/YRI_CEU_ASW_MEX_NAM --pca 10 --out pca_plink")
 system(cmd)
 ```
 
@@ -101,7 +102,7 @@ ggplot(eigenvalues_df, aes(x = 1:10, y = V1)) +
 
 6. Now redo Question 2 above using the [`bigsnpr` R package](https://privefl.github.io/bigsnpr/reference/index.html) specifying a $r^2$ threshold of 0.2 (i.e. LD pruning) as well as a minimum minor allele count (MAC) of 20. The basic command is
 ```{r eval = FALSE}
-obj.bed <- bed(bedfile = sprintf("%s/YRI_CEU_ASW_MEX_NAM.bed", HGDP_dir))
+obj.bed <- bed(bedfile = glue("{HGDP_dir}/YRI_CEU_ASW_MEX_NAM.bed"))
 pca.bigsnpr <- bed_autoSVD(
   obj.bed, 
   thr.r2 = 0.1, # R^2 threshold
@@ -161,7 +162,7 @@ ggplot(df_mxl_props, aes(x = x, y = anc.props, fill = population.labels)) +
 # check for 2nd degree relateds or closer
 relatedness_info <- snp_plinkKINGQC(
   plink2.path = plink2_binary, 
-  bedfile.in = sprintf("%s/YRI_CEU_ASW_MEX_NAM.bed", HGDP_dir), 
+  bedfile.in = glue("{HGDP_dir}/YRI_CEU_ASW_MEX_NAM.bed"), 
   thr.king = 2^-3.5, # threshold to identify 2nd degree relateds
   make.bed = FALSE
 )
