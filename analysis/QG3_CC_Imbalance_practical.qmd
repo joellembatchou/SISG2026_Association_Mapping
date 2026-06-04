@@ -33,7 +33,7 @@ regenie_binary <- "/SISGM19/bin/regenie"
 
 If you don't have REGENIE installed on your machine, download the R implementation
 [here](https://gatech.box.com/s/k7yk3tpqlekuc7zh6xquyjh9vbvumcx7) and change the path of the variable `regenie_script` to the path of the script on your machine.
-```{r echo = FALSE}
+```{r echo = FALSE, eval = FALSE}
 regenie_script <- "data/run_regenie.r"
 source(regenie_script)
 ```
