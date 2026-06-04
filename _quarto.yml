@@ -1,6 +1,5 @@
 project:
   type: website
-  output-dir: docs
   render:
     - "*.qmd"
     - "analysis/QG3_*_practical.qmd"

@@ -9,6 +9,10 @@
 CLAUDE.md
 .claude/
 
+# Generated website (now using gh-pages branch)
+docs/
+_site/
+
 # Exclude solution keys
 analysis/*_Key.Rmd
 analysis/*_Key.qmd
