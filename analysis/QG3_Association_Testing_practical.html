@@ -211,6 +211,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#introduction-1" id="toc-introduction-1" class="nav-link" data-scroll-target="#introduction-1">Introduction</a></li>
   <li><a href="#exercises-1" id="toc-exercises-1" class="nav-link" data-scroll-target="#exercises-1">Exercises</a></li>
   </ul></li>
+  <li><a href="#key-takeaways-from-this-practical" id="toc-key-takeaways-from-this-practical" class="nav-link" data-scroll-target="#key-takeaways-from-this-practical">Key Takeaways from This Practical</a></li>
   </ul>
 </nav>
     </div>
@@ -248,10 +249,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="case-control-association-testing">Case-Control Association Testing</h2>
 <section id="introduction" class="level3">
 <h3 class="anchored" data-anchor-id="introduction">Introduction</h3>
-<p>We will be using the <a href="https://raw.githubusercontent.com/joellembatchou/SISG2025_Association_Mapping/master/data/LHON.txt">LHON dataset</a> covered in the lecture notes for this portion of the exercises. The LHON dataset is from a case-control study and includes both phenotype and genotype data for a candidate gene.</p>
+<p>We will be using the <a href="https://raw.githubusercontent.com/joellembatchou/SISG2026_Association_Mapping/master/data/LHON.txt">LHON dataset</a> covered in the lecture notes for this portion of the exercises. The LHON dataset is from a case-control study and includes both phenotype and genotype data for a candidate gene.</p>
+<p><strong>What we’re testing</strong>: Do individuals with different genotypes have different odds of being a case (having the disease)? We use logistic regression because our outcome is binary (case/control).</p>
 <p>Let’s first load the LHON data file into the R session. We need to define the path to the file (if you have it downloaded on your machine, change the path to the file location).</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>LHON_FILE <span class="ot">&lt;-</span> <span class="st">"https://raw.githubusercontent.com/joellembatchou/SISG2025_Association_Mapping/master/data/LHON.txt"</span> </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>LHON_FILE <span class="ot">&lt;-</span> <span class="st">"https://raw.githubusercontent.com/joellembatchou/SISG2026_Association_Mapping/master/data/LHON.txt"</span> </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>We can now read the file</p>
 <div class="cell">
@@ -266,21 +268,46 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ul>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(LHON)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Classes 'data.table' and 'data.frame':  328 obs. of  3 variables:
+ $ IID  : chr  "ID1" "ID2" "ID3" "ID4" ...
+ $ GENO : chr  "TT" "CT" "TT" "CT" ...
+ $ PHENO: chr  "CONTROL" "CONTROL" "CASE" "CONTROL" ...
+ - attr(*, ".internal.selfref")=&lt;externalptr&gt; </code></pre>
+</div>
 </div>
 <ul>
 <li>Get counts for a specific variable in the table (use <code>$</code> to access a variable)</li>
 </ul>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(LHON<span class="sc">$</span>GENO)</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co"># cross tabulation for two variables</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(LHON<span class="sc">$</span>GENO, LHON<span class="sc">$</span>PHENO)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(LHON<span class="sc">$</span>GENO)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+ CC  CT  TT 
+ 16  74 238 </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># cross tabulation for two variables</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(LHON<span class="sc">$</span>GENO, LHON<span class="sc">$</span>PHENO)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>    
+     CASE CONTROL
+  CC    6      10
+  CT    8      66
+  TT   75     163</code></pre>
+</div>
 </div>
 <ul>
 <li>Functions like <code>as.numeric()</code> and <code>factor()</code> will be useful to convert between numeric and categorical variables.</li>
 </ul>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>LHON<span class="sc">$</span>GENO[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>] <span class="co"># see the first 5 entries</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">as.numeric</span>(<span class="fu">factor</span>(LHON<span class="sc">$</span>GENO, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"CC"</span>, <span class="st">"CT"</span>, <span class="st">"TT"</span>)))[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>] <span class="co"># convert to numeric specifying the order of the labels</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>LHON<span class="sc">$</span>GENO[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>] <span class="co"># see the first 5 entries</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "TT" "CT" "TT" "CT" "TT"</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">as.numeric</span>(<span class="fu">factor</span>(LHON<span class="sc">$</span>GENO, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"CC"</span>, <span class="st">"CT"</span>, <span class="st">"TT"</span>)))[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>] <span class="co"># convert to numeric specifying the order of the labels</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 3 2 3 2 3</code></pre>
+</div>
 </div>
 <ul>
 <li>Note: For any R function you don’t know the input syntax, you can get that information using <code>?&lt;function_name&gt;</code>, e.g.&nbsp;<code>?table</code></li>
@@ -306,31 +333,36 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>First convert the <code>GENO</code> variable to a factor</li>
 </ul>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>GENO_factor <span class="ot">&lt;-</span> <span class="fu">factor</span>(LHON<span class="sc">$</span>GENO, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"CC"</span>, <span class="st">"CT"</span>, <span class="st">"TT"</span>)) <span class="co"># convert to numeric specifying the order of the labels</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>GENO_factor <span class="ot">&lt;-</span> <span class="fu">factor</span>(LHON<span class="sc">$</span>GENO, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"CC"</span>, <span class="st">"CT"</span>, <span class="st">"TT"</span>)) <span class="co"># convert to numeric specifying the order of the labels</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <ul>
 <li>Convert the phenotype to a 0/1 variable</li>
 </ul>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>pheno_binary <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">*</span> (LHON<span class="sc">$</span>PHENO <span class="sc">==</span> <span class="st">"CASE"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>pheno_binary <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">*</span> (LHON<span class="sc">$</span>PHENO <span class="sc">==</span> <span class="st">"CASE"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <ul>
 <li>Check that the entries in <code>pheno_binary</code> with 1 correspond to <code>PHENO='CASE'</code></li>
 <li>Run logistic regression using the <code>glm</code> function</li>
 </ul>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>logistic_model_LHON <span class="ot">&lt;-</span> <span class="fu">glm</span>(pheno_binary <span class="sc">~</span> GENO_factor, <span class="at">family =</span> <span class="fu">binomial</span>(<span class="at">link =</span> <span class="st">"logit"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>logistic_model_LHON <span class="ot">&lt;-</span> <span class="fu">glm</span>(pheno_binary <span class="sc">~</span> GENO_factor, <span class="at">family =</span> <span class="fu">binomial</span>(<span class="at">link =</span> <span class="st">"logit"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>You can get information about the model fit and parameter estimates (i.e.&nbsp;coefficients):</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(logistic_model_LHON)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(logistic_model_LHON)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <ol start="3" type="1">
-<li>Obtain odds ratios and confidence intervals (CI) for the <code>CT</code> and <code>TT</code> genotypes relative to the <code>CC</code> reference genotype. Interpret.
+<li>Obtain odds ratios and confidence intervals (CI) for the <code>CT</code> and <code>TT</code> genotypes relative to the <code>CC</code> reference genotype.
 <ul>
-<li>use the lecture notes to obtain odds ratios &amp; CI from estimates and standard errors.</li>
+<li>Use the lecture notes to obtain odds ratios &amp; CI from estimates and standard errors.</li>
+<li><strong>Interpret the results</strong>: An odds ratio of 0.5 means what biologically? What about an OR of 2.0?</li>
 </ul></li>
-<li>Is there evidence of differences in odds of being a case for the <code>CT</code> and <code>TT</code> genotypes (compared to <code>CC</code>)?</li>
+<li>Is there evidence of differences in odds of being a case for the <code>CT</code> and <code>TT</code> genotypes (compared to <code>CC</code>)?
+<ul>
+<li>Look at the p-values. What threshold would you use for significance?</li>
+<li><strong>Important</strong>: This is a candidate gene study (1 variant tested). How would your significance threshold differ in a GWAS testing 1 million variants?</li>
+</ul></li>
 </ol>
 <section id="extra" class="level4">
 <h4 class="anchored" data-anchor-id="extra"><em>Extra</em></h4>
@@ -341,10 +373,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ul></li>
 </ol>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>GENO_additive_T <span class="ot">&lt;-</span> <span class="dv">0</span> <span class="sc">+</span> <span class="dv">1</span> <span class="sc">*</span> (LHON<span class="sc">$</span>GENO <span class="sc">==</span> <span class="st">"CT"</span>) <span class="sc">+</span> <span class="dv">2</span> <span class="sc">*</span> (LHON<span class="sc">$</span>GENO <span class="sc">==</span> <span class="st">"TT"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>GENO_additive_T <span class="ot">&lt;-</span> <span class="dv">0</span> <span class="sc">+</span> <span class="dv">1</span> <span class="sc">*</span> (LHON<span class="sc">$</span>GENO <span class="sc">==</span> <span class="st">"CT"</span>) <span class="sc">+</span> <span class="dv">2</span> <span class="sc">*</span> (LHON<span class="sc">$</span>GENO <span class="sc">==</span> <span class="st">"TT"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <ol start="6" type="1">
-<li>Obtain odds ratios and confidence intervals. Is there evidence of an association? How does it compare with the 2-parameter model?</li>
+<li>Obtain odds ratios and confidence intervals. Is there evidence of an association? How does it compare with the 2-parameter model?
+<ul>
+<li><strong>Think about</strong>: What assumption does the additive model make? When would this be appropriate vs the 2-parameter model?</li>
+</ul></li>
 </ol>
 </section>
 </section>
@@ -353,20 +388,28 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="association-testing-with-quantitative-traits">Association Testing with Quantitative Traits</h2>
 <section id="introduction-1" class="level3">
 <h3 class="anchored" data-anchor-id="introduction-1">Introduction</h3>
-<p>We will be using the <a href="https://raw.githubusercontent.com/joellembatchou/SISG2025_Association_Mapping/master/data/bpdata.csv">Blood Pressure dataset</a> for this portion of the exercises. This dataset contains diastolic and systolic blood pressure measurements for 1000 individuals, and genotype data at 11 SNPs in a candidate gene for blood pressure. Covariates such as gender (sex) and body mass index (bmi) are included as well.</p>
+<p>We will be using the <a href="https://raw.githubusercontent.com/joellembatchou/SISG2026_Association_Mapping/master/data/bpdata.csv">Blood Pressure dataset</a> for this portion of the exercises. This dataset contains diastolic and systolic blood pressure measurements for 1000 individuals, and genotype data at 11 SNPs in a candidate gene for blood pressure. Covariates such as gender (sex) and body mass index (bmi) are included as well.</p>
+<p><strong>What we’re testing</strong>: Do individuals with different genotypes have different mean blood pressure values? We use linear regression because our outcome is continuous (quantitative trait).</p>
 <p>Let’s first load the file into R. We need to define the path to the file (if you have it downloaded on your machine, change the path to the file location).</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>BP_FILE <span class="ot">&lt;-</span> <span class="st">"https://raw.githubusercontent.com/joellembatchou/SISG2025_Association_Mapping/master/data/bpdata.csv"</span> </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>BP_FILE <span class="ot">&lt;-</span> <span class="st">"https://raw.githubusercontent.com/joellembatchou/SISG2026_Association_Mapping/master/data/bpdata.csv"</span> </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Use the following command to read it into R:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>BP <span class="ot">&lt;-</span> <span class="fu">fread</span>(BP_FILE, <span class="at">header=</span><span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>BP <span class="ot">&lt;-</span> <span class="fu">fread</span>(BP_FILE, <span class="at">header=</span><span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <ul>
 <li>Get a snippet of the data:</li>
 </ul>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(BP, <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(BP, <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["V1"],"name":[1],"type":["int"],"align":["right"]},{"label":["sex"],"name":[2],"type":["chr"],"align":["left"]},{"label":["sbp"],"name":[3],"type":["int"],"align":["right"]},{"label":["dbp"],"name":[4],"type":["int"],"align":["right"]},{"label":["snp1"],"name":[5],"type":["chr"],"align":["left"]},{"label":["snp2"],"name":[6],"type":["chr"],"align":["left"]},{"label":["snp3"],"name":[7],"type":["chr"],"align":["left"]},{"label":["snp4"],"name":[8],"type":["chr"],"align":["left"]},{"label":["snp5"],"name":[9],"type":["chr"],"align":["left"]},{"label":["snp6"],"name":[10],"type":["chr"],"align":["left"]},{"label":["snp7"],"name":[11],"type":["chr"],"align":["left"]},{"label":["snp8"],"name":[12],"type":["chr"],"align":["left"]},{"label":["snp9"],"name":[13],"type":["chr"],"align":["left"]},{"label":["snp10"],"name":[14],"type":["chr"],"align":["left"]},{"label":["snp11"],"name":[15],"type":["chr"],"align":["left"]},{"label":["bmi"],"name":[16],"type":["int"],"align":["right"]}],"data":[{"1":"1","2":"FEMALE","3":"171","4":"89","5":"CC","6":"TT","7":"TT","8":"TT","9":"CC","10":"GG","11":"AA","12":"TT","13":"TT","14":"CC","15":"TT","16":"25"},{"1":"2","2":"MALE","3":"160","4":"99","5":"TT","6":"TT","7":"CC","8":"NA","9":"CC","10":"AG","11":"AT","12":"CC","13":"CT","14":"CC","15":"CT","16":"35"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
 </div>
 </section>
 <section id="exercises-1" class="level3">
@@ -376,21 +419,26 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>Perform a linear regression of systolic blood pressure (<code>sbp</code>) on <code>SNP3</code> using the <code>lm()</code> function.</li>
 </ol>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>linear_model_BP <span class="ot">&lt;-</span> <span class="fu">lm</span>(sbp <span class="sc">~</span> snp3, <span class="at">data =</span> BP)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>linear_model_BP <span class="ot">&lt;-</span> <span class="fu">lm</span>(sbp <span class="sc">~</span> snp3, <span class="at">data =</span> BP)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>You can get information about the model fit and parameter estimates (i.e.&nbsp;coefficients):</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(linear_model_BP)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(linear_model_BP)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <ol start="2" type="1">
-<li><p>Is there any evidence of an effect of the SNP on systolic blood pressure?</p></li>
-<li><p>Provide a plot illustrating the relationship between sbp and the three genotypes at SNP3.</p></li>
+<li>Is there any evidence of an effect of the SNP on systolic blood pressure?
+<ul>
+<li>Check the p-values in the summary output.</li>
+<li><strong>Interpret the results</strong>: What do the SNP coefficients mean? How much higher/lower is blood pressure for individuals with different genotypes?</li>
+</ul></li>
+<li>Provide a plot illustrating the relationship between sbp and the three genotypes at SNP3.</li>
 </ol>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">with</span>(BP, <span class="fu">boxplot</span>(sbp <span class="sc">~</span> snp3))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">with</span>(BP, <span class="fu">boxplot</span>(sbp <span class="sc">~</span> snp3))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <ul>
 <li>How does it compare with the linear model fitted in question (1)?</li>
+<li><strong>Think about</strong>: Does the boxplot suggest an additive effect (evenly spaced means) or something else?</li>
 </ul>
 <ol start="4" type="1">
 <li><p>By default, the 2-parameter model is used since the SNP is stored in the data as categorical. Contrast the parameter estimates, p-values and confidence intervals obtained between this model and using:</p>
@@ -402,15 +450,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ol>
 <p><em>Hint</em>: for each case, generate the appropriate allele coding variable and pass it to the <code>lm()</code> function. For example with additive coding:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>SNP3_additive <span class="ot">&lt;-</span> <span class="dv">0</span> <span class="sc">+</span> <span class="dv">1</span> <span class="sc">*</span> (BP<span class="sc">$</span>snp3 <span class="sc">==</span> <span class="st">"TC"</span>) <span class="sc">+</span> <span class="dv">2</span> <span class="sc">*</span> (BP<span class="sc">$</span>snp3 <span class="sc">==</span> <span class="st">"TT"</span>)</span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>linear_model_BP_additive <span class="ot">&lt;-</span> <span class="fu">lm</span>(sbp <span class="sc">~</span> SNP3_additive, <span class="at">data =</span> BP)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>SNP3_additive <span class="ot">&lt;-</span> <span class="dv">0</span> <span class="sc">+</span> <span class="dv">1</span> <span class="sc">*</span> (BP<span class="sc">$</span>snp3 <span class="sc">==</span> <span class="st">"TC"</span>) <span class="sc">+</span> <span class="dv">2</span> <span class="sc">*</span> (BP<span class="sc">$</span>snp3 <span class="sc">==</span> <span class="st">"TT"</span>)</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>linear_model_BP_additive <span class="ot">&lt;-</span> <span class="fu">lm</span>(sbp <span class="sc">~</span> SNP3_additive, <span class="at">data =</span> BP)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>For question 5 and 6 below, R also has a ‘formula’ syntax, frequently used when specifying regression models with many predictors. To regress an outcome <code>y</code> on several covariates, the syntax is:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lm</span>(y <span class="sc">~</span> covariate1 <span class="sc">+</span> covariate2 <span class="sc">+</span> covariate3)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lm</span>(y <span class="sc">~</span> covariate1 <span class="sc">+</span> covariate2 <span class="sc">+</span> covariate3)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <ol start="5" type="1">
-<li>Now redo the linear regression analysis of <code>sbp</code> from question 4 for the <strong>additive model</strong>, but this time adjust for <code>sex</code> and <code>bmi</code>. Do the results change?</li>
+<li>Now redo the linear regression analysis of <code>sbp</code> from question 4 for the <strong>additive model</strong>, but this time adjust for <code>sex</code> and <code>bmi</code>. Do the results change?
+<ul>
+<li><strong>Important concept</strong>: Why do we adjust for covariates? What confounding could <code>bmi</code> or <code>sex</code> introduce?</li>
+<li>Compare the SNP effect estimate and p-value before and after covariate adjustment.</li>
+</ul></li>
 </ol>
 <section id="extra-1" class="level4">
 <h4 class="anchored" data-anchor-id="extra-1"><em>Extra</em></h4>
@@ -423,14 +475,22 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>use <code>unique()</code> to check the genotypes for each SNP, e.g.&nbsp;<code>unique(BP$snp1)</code></li>
 <li>count the T allele (or A allele if applicable)</li>
 </ul></li>
+<li><strong>Think about</strong>: If R² = 0.10, what does that mean? Is genetic variation a major or minor contributor to blood pressure?</li>
 </ul></li>
 </ol>
+<hr>
+</section>
+</section>
+</section>
+<section id="key-takeaways-from-this-practical" class="level2">
+<h2 class="anchored" data-anchor-id="key-takeaways-from-this-practical">Key Takeaways from This Practical</h2>
+<p><strong>Concepts you should understand</strong>: 1. <strong>Regression framework</strong>: Both logistic and linear regression test for association while accounting for covariates 2. <strong>Odds ratios vs effect sizes</strong>: OR &lt; 1 means protective; OR &gt; 1 means risk-increasing; effect size is change in trait mean per allele 3. <strong>Genotype encoding</strong>: Additive (0/1/2) assumes linear relationship; 2-parameter model allows any pattern 4. <strong>Multiple testing</strong>: Must correct for number of tests to avoid false positives 5. <strong>Interpretation matters</strong>: Statistical significance depends on sample size, but biological relevance depends on effect size</p>
+<p><strong>You are NOT expected to</strong>: - Memorize R syntax (you can look it up!) - Become an R expert - Finish every question</p>
+<p><strong>Next session</strong>: We’ll see why population structure (ancestry) can cause spurious associations and how to detect it.</p>
 
 
 <!-- -->
 
-</section>
-</section>
 </section>
 
 </main> <!-- /main -->
@@ -558,7 +618,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp('/' + window.location.host + '/');
+        var filterRegex = new RegExp("https:\/\/joellembatchou\.github\.io\/SISG2026_Association_Mapping\/");
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }
@@ -885,175 +945,207 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     }
   });
   </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Practical 1 - Association Testing"</span></span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="an">author:</span><span class="co"> ""</span></span>
-<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> ""</span></span>
-<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>Before you begin:</span>
-<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>Make sure that R is installed on your computer</span>
-<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>For this lab, we will use a few R libraries:</span>
-<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a><span class="in">```{r load-libs}</span></span>
-<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(data.table)</span>
-<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a><span class="fu">## Case-Control Association Testing</span></span>
-<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-18"><a href="#cb20-18" aria-hidden="true" tabindex="-1"></a><span class="fu">### Introduction</span></span>
-<span id="cb20-19"><a href="#cb20-19" aria-hidden="true" tabindex="-1"></a>We will be using the <span class="co">[</span><span class="ot">LHON dataset</span><span class="co">](https://raw.githubusercontent.com/joellembatchou/SISG2025_Association_Mapping/master/data/LHON.txt)</span> covered in the lecture notes for this portion of the exercises.</span>
-<span id="cb20-20"><a href="#cb20-20" aria-hidden="true" tabindex="-1"></a>The LHON dataset is from a case-control study and includes both phenotype and genotype data for a candidate gene.</span>
-<span id="cb20-21"><a href="#cb20-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-22"><a href="#cb20-22" aria-hidden="true" tabindex="-1"></a>Let's first load the LHON data file into the R session. We need to define the path to the file (if you have it downloaded on your machine, change the path to the file location).</span>
-<span id="cb20-23"><a href="#cb20-23" aria-hidden="true" tabindex="-1"></a><span class="in">```{r set-lhon-file}</span></span>
-<span id="cb20-24"><a href="#cb20-24" aria-hidden="true" tabindex="-1"></a>LHON_FILE <span class="ot">&lt;-</span> <span class="st">"https://raw.githubusercontent.com/joellembatchou/SISG2025_Association_Mapping/master/data/LHON.txt"</span> </span>
-<span id="cb20-25"><a href="#cb20-25" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb20-26"><a href="#cb20-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-27"><a href="#cb20-27" aria-hidden="true" tabindex="-1"></a>We can now read the file</span>
-<span id="cb20-28"><a href="#cb20-28" aria-hidden="true" tabindex="-1"></a><span class="in">```{r load-lhon-data-direct, results = 'hide'}</span></span>
-<span id="cb20-29"><a href="#cb20-29" aria-hidden="true" tabindex="-1"></a>LHON <span class="ot">&lt;-</span> <span class="fu">fread</span>(LHON_FILE, <span class="at">header=</span><span class="cn">TRUE</span>)</span>
-<span id="cb20-30"><a href="#cb20-30" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb20-31"><a href="#cb20-31" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-32"><a href="#cb20-32" aria-hidden="true" tabindex="-1"></a><span class="fu">### Helpful suggestions for R</span></span>
-<span id="cb20-33"><a href="#cb20-33" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-34"><a href="#cb20-34" aria-hidden="true" tabindex="-1"></a>There are many ways to obtain summary information for a dataset. Here are some short examples:</span>
-<span id="cb20-35"><a href="#cb20-35" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-36"><a href="#cb20-36" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>Get information on number of rows/columns as well as the variables present in the data set</span>
-<span id="cb20-39"><a href="#cb20-39" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb20-40"><a href="#cb20-40" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(LHON)</span>
-<span id="cb20-41"><a href="#cb20-41" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb20-42"><a href="#cb20-42" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>Get counts for a specific variable in the table (use <span class="in">`$`</span> to access a variable)</span>
-<span id="cb20-45"><a href="#cb20-45" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb20-46"><a href="#cb20-46" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(LHON<span class="sc">$</span>GENO)</span>
-<span id="cb20-47"><a href="#cb20-47" aria-hidden="true" tabindex="-1"></a><span class="co"># cross tabulation for two variables</span></span>
-<span id="cb20-48"><a href="#cb20-48" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(LHON<span class="sc">$</span>GENO, LHON<span class="sc">$</span>PHENO)</span>
-<span id="cb20-49"><a href="#cb20-49" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb20-50"><a href="#cb20-50" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>Functions like <span class="in">`as.numeric()`</span> and <span class="in">`factor()`</span> will be useful to convert between numeric and categorical variables.</span>
-<span id="cb20-53"><a href="#cb20-53" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb20-54"><a href="#cb20-54" aria-hidden="true" tabindex="-1"></a>LHON<span class="sc">$</span>GENO[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>] <span class="co"># see the first 5 entries</span></span>
-<span id="cb20-55"><a href="#cb20-55" aria-hidden="true" tabindex="-1"></a><span class="fu">as.numeric</span>(<span class="fu">factor</span>(LHON<span class="sc">$</span>GENO, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"CC"</span>, <span class="st">"CT"</span>, <span class="st">"TT"</span>)))[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>] <span class="co"># convert to numeric specifying the order of the labels</span></span>
-<span id="cb20-56"><a href="#cb20-56" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb20-57"><a href="#cb20-57" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-58"><a href="#cb20-58" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>Note: For any R function you don't know the input syntax, you can get that information using <span class="in">`?&lt;function_name&gt;`</span>, e.g. <span class="in">`?table`</span> </span>
-<span id="cb20-59"><a href="#cb20-59" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-60"><a href="#cb20-60" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-61"><a href="#cb20-61" aria-hidden="true" tabindex="-1"></a><span class="fu">### Exercises</span></span>
-<span id="cb20-62"><a href="#cb20-62" aria-hidden="true" tabindex="-1"></a>Here are some things to look at:</span>
-<span id="cb20-63"><a href="#cb20-63" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-64"><a href="#cb20-64" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>Examine the variables in the dataset</span>
-<span id="cb20-65"><a href="#cb20-65" aria-hidden="true" tabindex="-1"></a><span class="ss">    * </span>How many observations?  (use <span class="in">`str`</span> function)</span>
-<span id="cb20-66"><a href="#cb20-66" aria-hidden="true" tabindex="-1"></a><span class="ss">    * </span>How many cases/controls?  (use <span class="in">`table`</span> function)</span>
-<span id="cb20-67"><a href="#cb20-67" aria-hidden="true" tabindex="-1"></a><span class="ss">    * </span>What are the genotypes present in the variable <span class="in">`GENO`</span>? (use <span class="in">`table`</span> function)</span>
-<span id="cb20-68"><a href="#cb20-68" aria-hidden="true" tabindex="-1"></a><span class="ss">        * </span>To visualize the counts, you can use <span class="in">`barplot(table(LHON$GENO))`</span></span>
-<span id="cb20-69"><a href="#cb20-69" aria-hidden="true" tabindex="-1"></a><span class="ss">    * </span>What is the distribution of the genotypes across cases/controls? (use <span class="in">`table`</span> function)</span>
-<span id="cb20-70"><a href="#cb20-70" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-71"><a href="#cb20-71" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>Perform a logistic regression analysis for this data with <span class="in">`CC`</span> as the reference genotype using the <span class="in">`glm()`</span> function. </span>
-<span id="cb20-72"><a href="#cb20-72" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-73"><a href="#cb20-73" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>First convert the <span class="in">`GENO`</span> variable to a factor</span>
-<span id="cb20-74"><a href="#cb20-74" aria-hidden="true" tabindex="-1"></a><span class="in">```{r, eval = FALSE}</span></span>
-<span id="cb20-75"><a href="#cb20-75" aria-hidden="true" tabindex="-1"></a>GENO_factor <span class="ot">&lt;-</span> <span class="fu">factor</span>(LHON<span class="sc">$</span>GENO, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"CC"</span>, <span class="st">"CT"</span>, <span class="st">"TT"</span>)) <span class="co"># convert to numeric specifying the order of the labels</span></span>
-<span id="cb20-76"><a href="#cb20-76" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb20-77"><a href="#cb20-77" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-78"><a href="#cb20-78" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>Convert the phenotype to a 0/1 variable</span>
-<span id="cb20-79"><a href="#cb20-79" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb20-80"><a href="#cb20-80" aria-hidden="true" tabindex="-1"></a><span class="in">```{r, eval = FALSE}</span></span>
-<span id="cb20-81"><a href="#cb20-81" aria-hidden="true" tabindex="-1"></a>pheno_binary <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">*</span> (LHON<span class="sc">$</span>PHENO <span class="sc">==</span> <span class="st">"CASE"</span>)</span>
-<span id="cb20-82"><a href="#cb20-82" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb20-83"><a href="#cb20-83" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>Check that the entries in <span class="in">`pheno_binary`</span> with 1 correspond to <span class="in">`PHENO='CASE'`</span></span>
-<span id="cb20-84"><a href="#cb20-84" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>Run logistic regression using the <span class="in">`glm`</span> function</span>
-<span id="cb20-85"><a href="#cb20-85" aria-hidden="true" tabindex="-1"></a><span class="in">```{r, eval = FALSE}</span></span>
-<span id="cb20-86"><a href="#cb20-86" aria-hidden="true" tabindex="-1"></a>logistic_model_LHON <span class="ot">&lt;-</span> <span class="fu">glm</span>(pheno_binary <span class="sc">~</span> GENO_factor, <span class="at">family =</span> <span class="fu">binomial</span>(<span class="at">link =</span> <span class="st">"logit"</span>))</span>
-<span id="cb20-87"><a href="#cb20-87" aria-hidden="true" tabindex="-1"></a><span class="in">```</span>  </span>
-<span id="cb20-88"><a href="#cb20-88" aria-hidden="true" tabindex="-1"></a>You can get information about the model fit and parameter estimates (i.e. coefficients):</span>
-<span id="cb20-89"><a href="#cb20-89" aria-hidden="true" tabindex="-1"></a><span class="in">```{r, eval = FALSE}</span></span>
-<span id="cb20-90"><a href="#cb20-90" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(logistic_model_LHON)</span>
-<span id="cb20-91"><a href="#cb20-91" aria-hidden="true" tabindex="-1"></a><span class="in">```</span>  </span>
-<span id="cb20-92"><a href="#cb20-92" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-93"><a href="#cb20-93" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>Obtain odds ratios and confidence intervals (CI) for the <span class="in">`CT`</span> and <span class="in">`TT`</span> genotypes relative to the <span class="in">`CC`</span> reference genotype. Interpret.</span>
-<span id="cb20-94"><a href="#cb20-94" aria-hidden="true" tabindex="-1"></a><span class="ss">    * </span>use the lecture notes to obtain odds ratios &amp; CI from estimates and standard errors.</span>
-<span id="cb20-95"><a href="#cb20-95" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-96"><a href="#cb20-96" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>Is there evidence of differences in odds of being a case for the <span class="in">`CT`</span> and <span class="in">`TT`</span> genotypes (compared to <span class="in">`CC`</span>)?</span>
-<span id="cb20-97"><a href="#cb20-97" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-98"><a href="#cb20-98" aria-hidden="true" tabindex="-1"></a><span class="fu">#### *Extra*</span></span>
-<span id="cb20-99"><a href="#cb20-99" aria-hidden="true" tabindex="-1"></a><span class="ss">5. </span>Perform the logistic regression analysis with an additive genotype coding (e.g. counting the number of 'T' alleles). </span>
-<span id="cb20-100"><a href="#cb20-100" aria-hidden="true" tabindex="-1"></a><span class="ss">    * </span>Hint: To convert to numerical, create a new variable with values 0/1/2 based on the genotypes (you can then use <span class="in">`table()`</span> function to make sure the new variable was defined correctly).</span>
-<span id="cb20-101"><a href="#cb20-101" aria-hidden="true" tabindex="-1"></a><span class="in">```{r, eval = FALSE}</span></span>
-<span id="cb20-102"><a href="#cb20-102" aria-hidden="true" tabindex="-1"></a>GENO_additive_T <span class="ot">&lt;-</span> <span class="dv">0</span> <span class="sc">+</span> <span class="dv">1</span> <span class="sc">*</span> (LHON<span class="sc">$</span>GENO <span class="sc">==</span> <span class="st">"CT"</span>) <span class="sc">+</span> <span class="dv">2</span> <span class="sc">*</span> (LHON<span class="sc">$</span>GENO <span class="sc">==</span> <span class="st">"TT"</span>)</span>
-<span id="cb20-103"><a href="#cb20-103" aria-hidden="true" tabindex="-1"></a><span class="in">```</span> </span>
-<span id="cb20-104"><a href="#cb20-104" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-105"><a href="#cb20-105" aria-hidden="true" tabindex="-1"></a><span class="ss">6. </span>Obtain odds ratios and confidence intervals. Is there evidence of an association? How does it compare with the 2-parameter model?</span>
-<span id="cb20-106"><a href="#cb20-106" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-107"><a href="#cb20-107" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb20-108"><a href="#cb20-108" aria-hidden="true" tabindex="-1"></a><span class="fu">## Association Testing with Quantitative Traits</span></span>
-<span id="cb20-109"><a href="#cb20-109" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-110"><a href="#cb20-110" aria-hidden="true" tabindex="-1"></a><span class="fu">### Introduction</span></span>
-<span id="cb20-111"><a href="#cb20-111" aria-hidden="true" tabindex="-1"></a>We will be using the <span class="co">[</span><span class="ot">Blood Pressure dataset</span><span class="co">](https://raw.githubusercontent.com/joellembatchou/SISG2025_Association_Mapping/master/data/bpdata.csv)</span> for this portion of the exercises.</span>
-<span id="cb20-112"><a href="#cb20-112" aria-hidden="true" tabindex="-1"></a>This dataset contains diastolic and systolic blood pressure measurements for 1000 individuals, and genotype data at 11 SNPs in a candidate gene for blood pressure. Covariates such as gender (sex) and body mass index (bmi) are included as well.</span>
-<span id="cb20-113"><a href="#cb20-113" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-114"><a href="#cb20-114" aria-hidden="true" tabindex="-1"></a>Let's first load the file into R. We need to define the path to the file (if you have it downloaded on your machine, change the path to the file location).</span>
-<span id="cb20-115"><a href="#cb20-115" aria-hidden="true" tabindex="-1"></a><span class="in">```{r set-bp-data, results = 'hide'}</span></span>
-<span id="cb20-116"><a href="#cb20-116" aria-hidden="true" tabindex="-1"></a>BP_FILE <span class="ot">&lt;-</span> <span class="st">"https://raw.githubusercontent.com/joellembatchou/SISG2025_Association_Mapping/master/data/bpdata.csv"</span> </span>
-<span id="cb20-117"><a href="#cb20-117" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb20-118"><a href="#cb20-118" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-119"><a href="#cb20-119" aria-hidden="true" tabindex="-1"></a>Use the following command to read it into R:</span>
-<span id="cb20-120"><a href="#cb20-120" aria-hidden="true" tabindex="-1"></a><span class="in">```{r load-bp-data, results = 'hide'}</span></span>
-<span id="cb20-121"><a href="#cb20-121" aria-hidden="true" tabindex="-1"></a>BP <span class="ot">&lt;-</span> <span class="fu">fread</span>(BP_FILE, <span class="at">header=</span><span class="cn">TRUE</span>)</span>
-<span id="cb20-122"><a href="#cb20-122" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb20-123"><a href="#cb20-123" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-124"><a href="#cb20-124" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>Get a snippet of the data:</span>
-<span id="cb20-127"><a href="#cb20-127" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb20-128"><a href="#cb20-128" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(BP, <span class="dv">2</span>)</span>
-<span id="cb20-129"><a href="#cb20-129" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb20-130"><a href="#cb20-130" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-131"><a href="#cb20-131" aria-hidden="true" tabindex="-1"></a><span class="fu">### Exercises</span></span>
-<span id="cb20-132"><a href="#cb20-132" aria-hidden="true" tabindex="-1"></a>Here are some things to try:</span>
-<span id="cb20-133"><a href="#cb20-133" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-134"><a href="#cb20-134" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>Perform a linear regression of systolic blood pressure (<span class="in">`sbp`</span>) on <span class="in">`SNP3`</span> using the <span class="in">`lm()`</span> function.</span>
-<span id="cb20-135"><a href="#cb20-135" aria-hidden="true" tabindex="-1"></a><span class="in">```{r, eval = FALSE}</span></span>
-<span id="cb20-136"><a href="#cb20-136" aria-hidden="true" tabindex="-1"></a>linear_model_BP <span class="ot">&lt;-</span> <span class="fu">lm</span>(sbp <span class="sc">~</span> snp3, <span class="at">data =</span> BP)</span>
-<span id="cb20-137"><a href="#cb20-137" aria-hidden="true" tabindex="-1"></a><span class="in">```</span>  </span>
-<span id="cb20-138"><a href="#cb20-138" aria-hidden="true" tabindex="-1"></a>You can get information about the model fit and parameter estimates (i.e. coefficients):</span>
-<span id="cb20-139"><a href="#cb20-139" aria-hidden="true" tabindex="-1"></a><span class="in">```{r, eval = FALSE}</span></span>
-<span id="cb20-140"><a href="#cb20-140" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(linear_model_BP)</span>
-<span id="cb20-141"><a href="#cb20-141" aria-hidden="true" tabindex="-1"></a><span class="in">```</span>  </span>
-<span id="cb20-142"><a href="#cb20-142" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>Is there any evidence of an effect of the SNP on systolic blood pressure?</span>
-<span id="cb20-143"><a href="#cb20-143" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-144"><a href="#cb20-144" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>Provide a plot illustrating the relationship between sbp and the three genotypes at SNP3.</span>
-<span id="cb20-145"><a href="#cb20-145" aria-hidden="true" tabindex="-1"></a><span class="in">```{r, eval = FALSE}</span></span>
-<span id="cb20-146"><a href="#cb20-146" aria-hidden="true" tabindex="-1"></a><span class="fu">with</span>(BP, <span class="fu">boxplot</span>(sbp <span class="sc">~</span> snp3))</span>
-<span id="cb20-147"><a href="#cb20-147" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb20-148"><a href="#cb20-148" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-149"><a href="#cb20-149" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>How does it compare with the linear model fitted in question (1)?</span>
-<span id="cb20-150"><a href="#cb20-150" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-151"><a href="#cb20-151" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>By default, the 2-parameter model is used since the SNP is stored in the data as categorical. Contrast the parameter estimates, p-values and confidence intervals obtained between this model and using:</span>
-<span id="cb20-152"><a href="#cb20-152" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-153"><a href="#cb20-153" aria-hidden="true" tabindex="-1"></a><span class="ss">    * </span>additive (linear) model (counting the T allele)</span>
-<span id="cb20-154"><a href="#cb20-154" aria-hidden="true" tabindex="-1"></a><span class="ss">    * </span>dominant model </span>
-<span id="cb20-155"><a href="#cb20-155" aria-hidden="true" tabindex="-1"></a><span class="ss">    * </span>recessive model</span>
-<span id="cb20-156"><a href="#cb20-156" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-157"><a href="#cb20-157" aria-hidden="true" tabindex="-1"></a>*Hint*: for each case, generate the appropriate allele coding variable and pass it to the <span class="in">`lm()`</span> function. For example with additive coding:</span>
-<span id="cb20-158"><a href="#cb20-158" aria-hidden="true" tabindex="-1"></a><span class="in">```{r, eval = FALSE}</span></span>
-<span id="cb20-159"><a href="#cb20-159" aria-hidden="true" tabindex="-1"></a>SNP3_additive <span class="ot">&lt;-</span> <span class="dv">0</span> <span class="sc">+</span> <span class="dv">1</span> <span class="sc">*</span> (BP<span class="sc">$</span>snp3 <span class="sc">==</span> <span class="st">"TC"</span>) <span class="sc">+</span> <span class="dv">2</span> <span class="sc">*</span> (BP<span class="sc">$</span>snp3 <span class="sc">==</span> <span class="st">"TT"</span>)</span>
-<span id="cb20-160"><a href="#cb20-160" aria-hidden="true" tabindex="-1"></a>linear_model_BP_additive <span class="ot">&lt;-</span> <span class="fu">lm</span>(sbp <span class="sc">~</span> SNP3_additive, <span class="at">data =</span> BP)</span>
-<span id="cb20-161"><a href="#cb20-161" aria-hidden="true" tabindex="-1"></a><span class="in">```</span>  </span>
-<span id="cb20-162"><a href="#cb20-162" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-163"><a href="#cb20-163" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-164"><a href="#cb20-164" aria-hidden="true" tabindex="-1"></a>For question 5 and 6 below, R also has a 'formula' syntax, frequently used when specifying regression models with many predictors. To regress an outcome <span class="in">`y`</span> on several covariates, the syntax is:</span>
-<span id="cb20-165"><a href="#cb20-165" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-166"><a href="#cb20-166" aria-hidden="true" tabindex="-1"></a><span class="in">```{r lm-ex, eval=FALSE}</span></span>
-<span id="cb20-167"><a href="#cb20-167" aria-hidden="true" tabindex="-1"></a><span class="fu">lm</span>(y <span class="sc">~</span> covariate1 <span class="sc">+</span> covariate2 <span class="sc">+</span> covariate3)</span>
-<span id="cb20-168"><a href="#cb20-168" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb20-169"><a href="#cb20-169" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-170"><a href="#cb20-170" aria-hidden="true" tabindex="-1"></a><span class="ss">5. </span>Now redo the linear regression analysis of <span class="in">`sbp`</span> from question 4 for the **additive model**, but this time adjust for <span class="in">`sex`</span> and <span class="in">`bmi`</span>. Do the results change?</span>
-<span id="cb20-171"><a href="#cb20-171" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-172"><a href="#cb20-172" aria-hidden="true" tabindex="-1"></a><span class="fu">#### *Extra*</span></span>
-<span id="cb20-173"><a href="#cb20-173" aria-hidden="true" tabindex="-1"></a><span class="ss">6. </span>What proportion of the variance of <span class="in">`sbp`</span> is explained by all 11 SNPs combined using categorical coding?</span>
-<span id="cb20-174"><a href="#cb20-174" aria-hidden="true" tabindex="-1"></a><span class="ss">    * </span>Use the <span class="in">`summary()`</span> function to see the model results (the proportion of variance is the "Multiple R-squared" quantity)</span>
-<span id="cb20-175"><a href="#cb20-175" aria-hidden="true" tabindex="-1"></a><span class="ss">    * </span>How would it differ if an additive coding is used for the 11 SNPs? </span>
-<span id="cb20-176"><a href="#cb20-176" aria-hidden="true" tabindex="-1"></a><span class="ss">       * </span>use <span class="in">`unique()`</span> to check the genotypes for each SNP, e.g. <span class="in">`unique(BP$snp1)`</span></span>
-<span id="cb20-177"><a href="#cb20-177" aria-hidden="true" tabindex="-1"></a><span class="ss">       * </span>count the T allele (or A allele if applicable)</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb27" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Practical 1 - Association Testing"</span></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a><span class="an">author:</span><span class="co"> ""</span></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> ""</span></span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>Before you begin:</span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>Make sure that R is installed on your computer</span>
+<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>For this lab, we will use a few R libraries:</span>
+<span id="cb27-11"><a href="#cb27-11" aria-hidden="true" tabindex="-1"></a><span class="in">```{r load-libs}</span></span>
+<span id="cb27-12"><a href="#cb27-12" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(data.table)</span>
+<span id="cb27-13"><a href="#cb27-13" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb27-14"><a href="#cb27-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-15"><a href="#cb27-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-16"><a href="#cb27-16" aria-hidden="true" tabindex="-1"></a><span class="fu">## Case-Control Association Testing</span></span>
+<span id="cb27-17"><a href="#cb27-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-18"><a href="#cb27-18" aria-hidden="true" tabindex="-1"></a><span class="fu">### Introduction</span></span>
+<span id="cb27-19"><a href="#cb27-19" aria-hidden="true" tabindex="-1"></a>We will be using the <span class="co">[</span><span class="ot">LHON dataset</span><span class="co">](https://raw.githubusercontent.com/joellembatchou/SISG2026_Association_Mapping/master/data/LHON.txt)</span> covered in the lecture notes for this portion of the exercises.</span>
+<span id="cb27-20"><a href="#cb27-20" aria-hidden="true" tabindex="-1"></a>The LHON dataset is from a case-control study and includes both phenotype and genotype data for a candidate gene.</span>
+<span id="cb27-21"><a href="#cb27-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-22"><a href="#cb27-22" aria-hidden="true" tabindex="-1"></a>**What we're testing**: Do individuals with different genotypes have different odds of being a case (having the disease)? We use logistic regression because our outcome is binary (case/control).</span>
+<span id="cb27-23"><a href="#cb27-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-24"><a href="#cb27-24" aria-hidden="true" tabindex="-1"></a>Let's first load the LHON data file into the R session. We need to define the path to the file (if you have it downloaded on your machine, change the path to the file location).</span>
+<span id="cb27-25"><a href="#cb27-25" aria-hidden="true" tabindex="-1"></a><span class="in">```{r set-lhon-file}</span></span>
+<span id="cb27-26"><a href="#cb27-26" aria-hidden="true" tabindex="-1"></a>LHON_FILE <span class="ot">&lt;-</span> <span class="st">"https://raw.githubusercontent.com/joellembatchou/SISG2026_Association_Mapping/master/data/LHON.txt"</span> </span>
+<span id="cb27-27"><a href="#cb27-27" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb27-28"><a href="#cb27-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-29"><a href="#cb27-29" aria-hidden="true" tabindex="-1"></a>We can now read the file</span>
+<span id="cb27-30"><a href="#cb27-30" aria-hidden="true" tabindex="-1"></a><span class="in">```{r load-lhon-data-direct, results = 'hide'}</span></span>
+<span id="cb27-31"><a href="#cb27-31" aria-hidden="true" tabindex="-1"></a>LHON <span class="ot">&lt;-</span> <span class="fu">fread</span>(LHON_FILE, <span class="at">header=</span><span class="cn">TRUE</span>)</span>
+<span id="cb27-32"><a href="#cb27-32" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb27-33"><a href="#cb27-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-34"><a href="#cb27-34" aria-hidden="true" tabindex="-1"></a><span class="fu">### Helpful suggestions for R</span></span>
+<span id="cb27-35"><a href="#cb27-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-36"><a href="#cb27-36" aria-hidden="true" tabindex="-1"></a>There are many ways to obtain summary information for a dataset. Here are some short examples:</span>
+<span id="cb27-37"><a href="#cb27-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-38"><a href="#cb27-38" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>Get information on number of rows/columns as well as the variables present in the data set</span>
+<span id="cb27-41"><a href="#cb27-41" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb27-42"><a href="#cb27-42" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(LHON)</span>
+<span id="cb27-43"><a href="#cb27-43" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb27-44"><a href="#cb27-44" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>Get counts for a specific variable in the table (use <span class="in">`$`</span> to access a variable)</span>
+<span id="cb27-47"><a href="#cb27-47" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb27-48"><a href="#cb27-48" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(LHON<span class="sc">$</span>GENO)</span>
+<span id="cb27-49"><a href="#cb27-49" aria-hidden="true" tabindex="-1"></a><span class="co"># cross tabulation for two variables</span></span>
+<span id="cb27-50"><a href="#cb27-50" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(LHON<span class="sc">$</span>GENO, LHON<span class="sc">$</span>PHENO)</span>
+<span id="cb27-51"><a href="#cb27-51" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb27-52"><a href="#cb27-52" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>Functions like <span class="in">`as.numeric()`</span> and <span class="in">`factor()`</span> will be useful to convert between numeric and categorical variables.</span>
+<span id="cb27-55"><a href="#cb27-55" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb27-56"><a href="#cb27-56" aria-hidden="true" tabindex="-1"></a>LHON<span class="sc">$</span>GENO[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>] <span class="co"># see the first 5 entries</span></span>
+<span id="cb27-57"><a href="#cb27-57" aria-hidden="true" tabindex="-1"></a><span class="fu">as.numeric</span>(<span class="fu">factor</span>(LHON<span class="sc">$</span>GENO, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"CC"</span>, <span class="st">"CT"</span>, <span class="st">"TT"</span>)))[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>] <span class="co"># convert to numeric specifying the order of the labels</span></span>
+<span id="cb27-58"><a href="#cb27-58" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb27-59"><a href="#cb27-59" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-60"><a href="#cb27-60" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>Note: For any R function you don't know the input syntax, you can get that information using <span class="in">`?&lt;function_name&gt;`</span>, e.g. <span class="in">`?table`</span> </span>
+<span id="cb27-61"><a href="#cb27-61" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-62"><a href="#cb27-62" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-63"><a href="#cb27-63" aria-hidden="true" tabindex="-1"></a><span class="fu">### Exercises</span></span>
+<span id="cb27-64"><a href="#cb27-64" aria-hidden="true" tabindex="-1"></a>Here are some things to look at:</span>
+<span id="cb27-65"><a href="#cb27-65" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-66"><a href="#cb27-66" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>Examine the variables in the dataset</span>
+<span id="cb27-67"><a href="#cb27-67" aria-hidden="true" tabindex="-1"></a><span class="ss">    * </span>How many observations?  (use <span class="in">`str`</span> function)</span>
+<span id="cb27-68"><a href="#cb27-68" aria-hidden="true" tabindex="-1"></a><span class="ss">    * </span>How many cases/controls?  (use <span class="in">`table`</span> function)</span>
+<span id="cb27-69"><a href="#cb27-69" aria-hidden="true" tabindex="-1"></a><span class="ss">    * </span>What are the genotypes present in the variable <span class="in">`GENO`</span>? (use <span class="in">`table`</span> function)</span>
+<span id="cb27-70"><a href="#cb27-70" aria-hidden="true" tabindex="-1"></a><span class="ss">        * </span>To visualize the counts, you can use <span class="in">`barplot(table(LHON$GENO))`</span></span>
+<span id="cb27-71"><a href="#cb27-71" aria-hidden="true" tabindex="-1"></a><span class="ss">    * </span>What is the distribution of the genotypes across cases/controls? (use <span class="in">`table`</span> function)</span>
+<span id="cb27-72"><a href="#cb27-72" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-73"><a href="#cb27-73" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>Perform a logistic regression analysis for this data with <span class="in">`CC`</span> as the reference genotype using the <span class="in">`glm()`</span> function. </span>
+<span id="cb27-74"><a href="#cb27-74" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-75"><a href="#cb27-75" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>First convert the <span class="in">`GENO`</span> variable to a factor</span>
+<span id="cb27-76"><a href="#cb27-76" aria-hidden="true" tabindex="-1"></a><span class="in">```{r, eval = FALSE}</span></span>
+<span id="cb27-77"><a href="#cb27-77" aria-hidden="true" tabindex="-1"></a>GENO_factor <span class="ot">&lt;-</span> <span class="fu">factor</span>(LHON<span class="sc">$</span>GENO, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"CC"</span>, <span class="st">"CT"</span>, <span class="st">"TT"</span>)) <span class="co"># convert to numeric specifying the order of the labels</span></span>
+<span id="cb27-78"><a href="#cb27-78" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb27-79"><a href="#cb27-79" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-80"><a href="#cb27-80" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>Convert the phenotype to a 0/1 variable</span>
+<span id="cb27-81"><a href="#cb27-81" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb27-82"><a href="#cb27-82" aria-hidden="true" tabindex="-1"></a><span class="in">```{r, eval = FALSE}</span></span>
+<span id="cb27-83"><a href="#cb27-83" aria-hidden="true" tabindex="-1"></a>pheno_binary <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">*</span> (LHON<span class="sc">$</span>PHENO <span class="sc">==</span> <span class="st">"CASE"</span>)</span>
+<span id="cb27-84"><a href="#cb27-84" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb27-85"><a href="#cb27-85" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>Check that the entries in <span class="in">`pheno_binary`</span> with 1 correspond to <span class="in">`PHENO='CASE'`</span></span>
+<span id="cb27-86"><a href="#cb27-86" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>Run logistic regression using the <span class="in">`glm`</span> function</span>
+<span id="cb27-87"><a href="#cb27-87" aria-hidden="true" tabindex="-1"></a><span class="in">```{r, eval = FALSE}</span></span>
+<span id="cb27-88"><a href="#cb27-88" aria-hidden="true" tabindex="-1"></a>logistic_model_LHON <span class="ot">&lt;-</span> <span class="fu">glm</span>(pheno_binary <span class="sc">~</span> GENO_factor, <span class="at">family =</span> <span class="fu">binomial</span>(<span class="at">link =</span> <span class="st">"logit"</span>))</span>
+<span id="cb27-89"><a href="#cb27-89" aria-hidden="true" tabindex="-1"></a><span class="in">```</span>  </span>
+<span id="cb27-90"><a href="#cb27-90" aria-hidden="true" tabindex="-1"></a>You can get information about the model fit and parameter estimates (i.e. coefficients):</span>
+<span id="cb27-91"><a href="#cb27-91" aria-hidden="true" tabindex="-1"></a><span class="in">```{r, eval = FALSE}</span></span>
+<span id="cb27-92"><a href="#cb27-92" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(logistic_model_LHON)</span>
+<span id="cb27-93"><a href="#cb27-93" aria-hidden="true" tabindex="-1"></a><span class="in">```</span>  </span>
+<span id="cb27-94"><a href="#cb27-94" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-95"><a href="#cb27-95" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>Obtain odds ratios and confidence intervals (CI) for the <span class="in">`CT`</span> and <span class="in">`TT`</span> genotypes relative to the <span class="in">`CC`</span> reference genotype.</span>
+<span id="cb27-96"><a href="#cb27-96" aria-hidden="true" tabindex="-1"></a><span class="ss">    * </span>Use the lecture notes to obtain odds ratios &amp; CI from estimates and standard errors.</span>
+<span id="cb27-97"><a href="#cb27-97" aria-hidden="true" tabindex="-1"></a><span class="ss">    * </span>**Interpret the results**: An odds ratio of 0.5 means what biologically? What about an OR of 2.0?</span>
+<span id="cb27-98"><a href="#cb27-98" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-99"><a href="#cb27-99" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>Is there evidence of differences in odds of being a case for the <span class="in">`CT`</span> and <span class="in">`TT`</span> genotypes (compared to <span class="in">`CC`</span>)?</span>
+<span id="cb27-100"><a href="#cb27-100" aria-hidden="true" tabindex="-1"></a><span class="ss">    * </span>Look at the p-values. What threshold would you use for significance?</span>
+<span id="cb27-101"><a href="#cb27-101" aria-hidden="true" tabindex="-1"></a><span class="ss">    * </span>**Important**: This is a candidate gene study (1 variant tested). How would your significance threshold differ in a GWAS testing 1 million variants?</span>
+<span id="cb27-102"><a href="#cb27-102" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-103"><a href="#cb27-103" aria-hidden="true" tabindex="-1"></a><span class="fu">#### *Extra*</span></span>
+<span id="cb27-104"><a href="#cb27-104" aria-hidden="true" tabindex="-1"></a><span class="ss">5. </span>Perform the logistic regression analysis with an additive genotype coding (e.g. counting the number of 'T' alleles). </span>
+<span id="cb27-105"><a href="#cb27-105" aria-hidden="true" tabindex="-1"></a><span class="ss">    * </span>Hint: To convert to numerical, create a new variable with values 0/1/2 based on the genotypes (you can then use <span class="in">`table()`</span> function to make sure the new variable was defined correctly).</span>
+<span id="cb27-106"><a href="#cb27-106" aria-hidden="true" tabindex="-1"></a><span class="in">```{r, eval = FALSE}</span></span>
+<span id="cb27-107"><a href="#cb27-107" aria-hidden="true" tabindex="-1"></a>GENO_additive_T <span class="ot">&lt;-</span> <span class="dv">0</span> <span class="sc">+</span> <span class="dv">1</span> <span class="sc">*</span> (LHON<span class="sc">$</span>GENO <span class="sc">==</span> <span class="st">"CT"</span>) <span class="sc">+</span> <span class="dv">2</span> <span class="sc">*</span> (LHON<span class="sc">$</span>GENO <span class="sc">==</span> <span class="st">"TT"</span>)</span>
+<span id="cb27-108"><a href="#cb27-108" aria-hidden="true" tabindex="-1"></a><span class="in">```</span> </span>
+<span id="cb27-109"><a href="#cb27-109" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-110"><a href="#cb27-110" aria-hidden="true" tabindex="-1"></a><span class="ss">6. </span>Obtain odds ratios and confidence intervals. Is there evidence of an association? How does it compare with the 2-parameter model?</span>
+<span id="cb27-111"><a href="#cb27-111" aria-hidden="true" tabindex="-1"></a><span class="ss">    * </span>**Think about**: What assumption does the additive model make? When would this be appropriate vs the 2-parameter model?</span>
+<span id="cb27-112"><a href="#cb27-112" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-113"><a href="#cb27-113" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-114"><a href="#cb27-114" aria-hidden="true" tabindex="-1"></a><span class="fu">## Association Testing with Quantitative Traits</span></span>
+<span id="cb27-115"><a href="#cb27-115" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-116"><a href="#cb27-116" aria-hidden="true" tabindex="-1"></a><span class="fu">### Introduction</span></span>
+<span id="cb27-117"><a href="#cb27-117" aria-hidden="true" tabindex="-1"></a>We will be using the <span class="co">[</span><span class="ot">Blood Pressure dataset</span><span class="co">](https://raw.githubusercontent.com/joellembatchou/SISG2026_Association_Mapping/master/data/bpdata.csv)</span> for this portion of the exercises.</span>
+<span id="cb27-118"><a href="#cb27-118" aria-hidden="true" tabindex="-1"></a>This dataset contains diastolic and systolic blood pressure measurements for 1000 individuals, and genotype data at 11 SNPs in a candidate gene for blood pressure. Covariates such as gender (sex) and body mass index (bmi) are included as well.</span>
+<span id="cb27-119"><a href="#cb27-119" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-120"><a href="#cb27-120" aria-hidden="true" tabindex="-1"></a>**What we're testing**: Do individuals with different genotypes have different mean blood pressure values? We use linear regression because our outcome is continuous (quantitative trait).</span>
+<span id="cb27-121"><a href="#cb27-121" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-122"><a href="#cb27-122" aria-hidden="true" tabindex="-1"></a>Let's first load the file into R. We need to define the path to the file (if you have it downloaded on your machine, change the path to the file location).</span>
+<span id="cb27-123"><a href="#cb27-123" aria-hidden="true" tabindex="-1"></a><span class="in">```{r set-bp-data, results = 'hide'}</span></span>
+<span id="cb27-124"><a href="#cb27-124" aria-hidden="true" tabindex="-1"></a>BP_FILE <span class="ot">&lt;-</span> <span class="st">"https://raw.githubusercontent.com/joellembatchou/SISG2026_Association_Mapping/master/data/bpdata.csv"</span> </span>
+<span id="cb27-125"><a href="#cb27-125" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb27-126"><a href="#cb27-126" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-127"><a href="#cb27-127" aria-hidden="true" tabindex="-1"></a>Use the following command to read it into R:</span>
+<span id="cb27-128"><a href="#cb27-128" aria-hidden="true" tabindex="-1"></a><span class="in">```{r load-bp-data, results = 'hide'}</span></span>
+<span id="cb27-129"><a href="#cb27-129" aria-hidden="true" tabindex="-1"></a>BP <span class="ot">&lt;-</span> <span class="fu">fread</span>(BP_FILE, <span class="at">header=</span><span class="cn">TRUE</span>)</span>
+<span id="cb27-130"><a href="#cb27-130" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb27-131"><a href="#cb27-131" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-132"><a href="#cb27-132" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>Get a snippet of the data:</span>
+<span id="cb27-135"><a href="#cb27-135" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb27-136"><a href="#cb27-136" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(BP, <span class="dv">2</span>)</span>
+<span id="cb27-137"><a href="#cb27-137" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb27-138"><a href="#cb27-138" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-139"><a href="#cb27-139" aria-hidden="true" tabindex="-1"></a><span class="fu">### Exercises</span></span>
+<span id="cb27-140"><a href="#cb27-140" aria-hidden="true" tabindex="-1"></a>Here are some things to try:</span>
+<span id="cb27-141"><a href="#cb27-141" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-142"><a href="#cb27-142" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>Perform a linear regression of systolic blood pressure (<span class="in">`sbp`</span>) on <span class="in">`SNP3`</span> using the <span class="in">`lm()`</span> function.</span>
+<span id="cb27-143"><a href="#cb27-143" aria-hidden="true" tabindex="-1"></a><span class="in">```{r, eval = FALSE}</span></span>
+<span id="cb27-144"><a href="#cb27-144" aria-hidden="true" tabindex="-1"></a>linear_model_BP <span class="ot">&lt;-</span> <span class="fu">lm</span>(sbp <span class="sc">~</span> snp3, <span class="at">data =</span> BP)</span>
+<span id="cb27-145"><a href="#cb27-145" aria-hidden="true" tabindex="-1"></a><span class="in">```</span>  </span>
+<span id="cb27-146"><a href="#cb27-146" aria-hidden="true" tabindex="-1"></a>You can get information about the model fit and parameter estimates (i.e. coefficients):</span>
+<span id="cb27-147"><a href="#cb27-147" aria-hidden="true" tabindex="-1"></a><span class="in">```{r, eval = FALSE}</span></span>
+<span id="cb27-148"><a href="#cb27-148" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(linear_model_BP)</span>
+<span id="cb27-149"><a href="#cb27-149" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb27-150"><a href="#cb27-150" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>Is there any evidence of an effect of the SNP on systolic blood pressure?</span>
+<span id="cb27-151"><a href="#cb27-151" aria-hidden="true" tabindex="-1"></a><span class="ss">    * </span>Check the p-values in the summary output.</span>
+<span id="cb27-152"><a href="#cb27-152" aria-hidden="true" tabindex="-1"></a><span class="ss">    * </span>**Interpret the results**: What do the SNP coefficients mean? How much higher/lower is blood pressure for individuals with different genotypes?</span>
+<span id="cb27-153"><a href="#cb27-153" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-154"><a href="#cb27-154" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>Provide a plot illustrating the relationship between sbp and the three genotypes at SNP3.</span>
+<span id="cb27-155"><a href="#cb27-155" aria-hidden="true" tabindex="-1"></a><span class="in">```{r, eval = FALSE}</span></span>
+<span id="cb27-156"><a href="#cb27-156" aria-hidden="true" tabindex="-1"></a><span class="fu">with</span>(BP, <span class="fu">boxplot</span>(sbp <span class="sc">~</span> snp3))</span>
+<span id="cb27-157"><a href="#cb27-157" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb27-158"><a href="#cb27-158" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-159"><a href="#cb27-159" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>How does it compare with the linear model fitted in question (1)?</span>
+<span id="cb27-160"><a href="#cb27-160" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>**Think about**: Does the boxplot suggest an additive effect (evenly spaced means) or something else?</span>
+<span id="cb27-161"><a href="#cb27-161" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-162"><a href="#cb27-162" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>By default, the 2-parameter model is used since the SNP is stored in the data as categorical. Contrast the parameter estimates, p-values and confidence intervals obtained between this model and using:</span>
+<span id="cb27-163"><a href="#cb27-163" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-164"><a href="#cb27-164" aria-hidden="true" tabindex="-1"></a><span class="ss">    * </span>additive (linear) model (counting the T allele)</span>
+<span id="cb27-165"><a href="#cb27-165" aria-hidden="true" tabindex="-1"></a><span class="ss">    * </span>dominant model </span>
+<span id="cb27-166"><a href="#cb27-166" aria-hidden="true" tabindex="-1"></a><span class="ss">    * </span>recessive model</span>
+<span id="cb27-167"><a href="#cb27-167" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-168"><a href="#cb27-168" aria-hidden="true" tabindex="-1"></a>*Hint*: for each case, generate the appropriate allele coding variable and pass it to the <span class="in">`lm()`</span> function. For example with additive coding:</span>
+<span id="cb27-169"><a href="#cb27-169" aria-hidden="true" tabindex="-1"></a><span class="in">```{r, eval = FALSE}</span></span>
+<span id="cb27-170"><a href="#cb27-170" aria-hidden="true" tabindex="-1"></a>SNP3_additive <span class="ot">&lt;-</span> <span class="dv">0</span> <span class="sc">+</span> <span class="dv">1</span> <span class="sc">*</span> (BP<span class="sc">$</span>snp3 <span class="sc">==</span> <span class="st">"TC"</span>) <span class="sc">+</span> <span class="dv">2</span> <span class="sc">*</span> (BP<span class="sc">$</span>snp3 <span class="sc">==</span> <span class="st">"TT"</span>)</span>
+<span id="cb27-171"><a href="#cb27-171" aria-hidden="true" tabindex="-1"></a>linear_model_BP_additive <span class="ot">&lt;-</span> <span class="fu">lm</span>(sbp <span class="sc">~</span> SNP3_additive, <span class="at">data =</span> BP)</span>
+<span id="cb27-172"><a href="#cb27-172" aria-hidden="true" tabindex="-1"></a><span class="in">```</span>  </span>
+<span id="cb27-173"><a href="#cb27-173" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-174"><a href="#cb27-174" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-175"><a href="#cb27-175" aria-hidden="true" tabindex="-1"></a>For question 5 and 6 below, R also has a 'formula' syntax, frequently used when specifying regression models with many predictors. To regress an outcome <span class="in">`y`</span> on several covariates, the syntax is:</span>
+<span id="cb27-176"><a href="#cb27-176" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-177"><a href="#cb27-177" aria-hidden="true" tabindex="-1"></a><span class="in">```{r lm-ex, eval=FALSE}</span></span>
+<span id="cb27-178"><a href="#cb27-178" aria-hidden="true" tabindex="-1"></a><span class="fu">lm</span>(y <span class="sc">~</span> covariate1 <span class="sc">+</span> covariate2 <span class="sc">+</span> covariate3)</span>
+<span id="cb27-179"><a href="#cb27-179" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb27-180"><a href="#cb27-180" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-181"><a href="#cb27-181" aria-hidden="true" tabindex="-1"></a><span class="ss">5. </span>Now redo the linear regression analysis of <span class="in">`sbp`</span> from question 4 for the **additive model**, but this time adjust for <span class="in">`sex`</span> and <span class="in">`bmi`</span>. Do the results change?</span>
+<span id="cb27-182"><a href="#cb27-182" aria-hidden="true" tabindex="-1"></a><span class="ss">    * </span>**Important concept**: Why do we adjust for covariates? What confounding could <span class="in">`bmi`</span> or <span class="in">`sex`</span> introduce?</span>
+<span id="cb27-183"><a href="#cb27-183" aria-hidden="true" tabindex="-1"></a><span class="ss">    * </span>Compare the SNP effect estimate and p-value before and after covariate adjustment.</span>
+<span id="cb27-184"><a href="#cb27-184" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-185"><a href="#cb27-185" aria-hidden="true" tabindex="-1"></a><span class="fu">#### *Extra*</span></span>
+<span id="cb27-186"><a href="#cb27-186" aria-hidden="true" tabindex="-1"></a><span class="ss">6. </span>What proportion of the variance of <span class="in">`sbp`</span> is explained by all 11 SNPs combined using categorical coding?</span>
+<span id="cb27-187"><a href="#cb27-187" aria-hidden="true" tabindex="-1"></a><span class="ss">    * </span>Use the <span class="in">`summary()`</span> function to see the model results (the proportion of variance is the "Multiple R-squared" quantity)</span>
+<span id="cb27-188"><a href="#cb27-188" aria-hidden="true" tabindex="-1"></a><span class="ss">    * </span>How would it differ if an additive coding is used for the 11 SNPs?</span>
+<span id="cb27-189"><a href="#cb27-189" aria-hidden="true" tabindex="-1"></a><span class="ss">       * </span>use <span class="in">`unique()`</span> to check the genotypes for each SNP, e.g. <span class="in">`unique(BP$snp1)`</span></span>
+<span id="cb27-190"><a href="#cb27-190" aria-hidden="true" tabindex="-1"></a><span class="ss">       * </span>count the T allele (or A allele if applicable)</span>
+<span id="cb27-191"><a href="#cb27-191" aria-hidden="true" tabindex="-1"></a><span class="ss">    * </span>**Think about**: If R² = 0.10, what does that mean? Is genetic variation a major or minor contributor to blood pressure?</span>
+<span id="cb27-192"><a href="#cb27-192" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-193"><a href="#cb27-193" aria-hidden="true" tabindex="-1"></a>---</span>
+<span id="cb27-194"><a href="#cb27-194" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-195"><a href="#cb27-195" aria-hidden="true" tabindex="-1"></a><span class="fu">## Key Takeaways from This Practical</span></span>
+<span id="cb27-196"><a href="#cb27-196" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-197"><a href="#cb27-197" aria-hidden="true" tabindex="-1"></a>**Concepts you should understand**:</span>
+<span id="cb27-198"><a href="#cb27-198" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>**Regression framework**: Both logistic and linear regression test for association while accounting for covariates</span>
+<span id="cb27-199"><a href="#cb27-199" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>**Odds ratios vs effect sizes**: OR &lt; 1 means protective; OR &gt; 1 means risk-increasing; effect size is change in trait mean per allele</span>
+<span id="cb27-200"><a href="#cb27-200" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>**Genotype encoding**: Additive (0/1/2) assumes linear relationship; 2-parameter model allows any pattern</span>
+<span id="cb27-201"><a href="#cb27-201" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>**Multiple testing**: Must correct for number of tests to avoid false positives</span>
+<span id="cb27-202"><a href="#cb27-202" aria-hidden="true" tabindex="-1"></a><span class="ss">5. </span>**Interpretation matters**: Statistical significance depends on sample size, but biological relevance depends on effect size</span>
+<span id="cb27-203"><a href="#cb27-203" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-204"><a href="#cb27-204" aria-hidden="true" tabindex="-1"></a>**You are NOT expected to**:</span>
+<span id="cb27-205"><a href="#cb27-205" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Memorize R syntax (you can look it up!)</span>
+<span id="cb27-206"><a href="#cb27-206" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Become an R expert</span>
+<span id="cb27-207"><a href="#cb27-207" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Finish every question</span>
+<span id="cb27-208"><a href="#cb27-208" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-209"><a href="#cb27-209" aria-hidden="true" tabindex="-1"></a>**Next session**: We'll see why population structure (ancestry) can cause spurious associations and how to detect it.</span>
 </code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
