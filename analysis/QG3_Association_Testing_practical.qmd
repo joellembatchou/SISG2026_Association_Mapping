@@ -16,12 +16,14 @@ library(data.table)
 ## Case-Control Association Testing
 
 ### Introduction
-We will be using the [LHON dataset](https://raw.githubusercontent.com/joellembatchou/SISG2025_Association_Mapping/master/data/LHON.txt) covered in the lecture notes for this portion of the exercises.
+We will be using the [LHON dataset](https://raw.githubusercontent.com/joellembatchou/SISG2026_Association_Mapping/master/data/LHON.txt) covered in the lecture notes for this portion of the exercises.
 The LHON dataset is from a case-control study and includes both phenotype and genotype data for a candidate gene.
+
+**What we're testing**: Do individuals with different genotypes have different odds of being a case (having the disease)? We use logistic regression because our outcome is binary (case/control).
 
 Let's first load the LHON data file into the R session. We need to define the path to the file (if you have it downloaded on your machine, change the path to the file location).
 ```{r set-lhon-file}
-LHON_FILE <- "https://raw.githubusercontent.com/joellembatchou/SISG2025_Association_Mapping/master/data/LHON.txt" 
+LHON_FILE <- "https://raw.githubusercontent.com/joellembatchou/SISG2026_Association_Mapping/master/data/LHON.txt" 
 ```
 
 We can now read the file
@@ -84,10 +86,13 @@ You can get information about the model fit and parameter estimates (i.e. coeffi
 summary(logistic_model_LHON)
 ```  
 
-3. Obtain odds ratios and confidence intervals (CI) for the `CT` and `TT` genotypes relative to the `CC` reference genotype. Interpret.
-    * use the lecture notes to obtain odds ratios & CI from estimates and standard errors.
+3. Obtain odds ratios and confidence intervals (CI) for the `CT` and `TT` genotypes relative to the `CC` reference genotype.
+    * Use the lecture notes to obtain odds ratios & CI from estimates and standard errors.
+    * **Interpret the results**: An odds ratio of 0.5 means what biologically? What about an OR of 2.0?
 
 4. Is there evidence of differences in odds of being a case for the `CT` and `TT` genotypes (compared to `CC`)?
+    * Look at the p-values. What threshold would you use for significance?
+    * **Important**: This is a candidate gene study (1 variant tested). How would your significance threshold differ in a GWAS testing 1 million variants?
 
 #### *Extra*
 5. Perform the logistic regression analysis with an additive genotype coding (e.g. counting the number of 'T' alleles). 
@@ -97,17 +102,20 @@ GENO_additive_T <- 0 + 1 * (LHON$GENO == "CT") + 2 * (LHON$GENO == "TT")
 ``` 
 
 6. Obtain odds ratios and confidence intervals. Is there evidence of an association? How does it compare with the 2-parameter model?
+    * **Think about**: What assumption does the additive model make? When would this be appropriate vs the 2-parameter model?
 
-  
+
 ## Association Testing with Quantitative Traits
 
 ### Introduction
-We will be using the [Blood Pressure dataset](https://raw.githubusercontent.com/joellembatchou/SISG2025_Association_Mapping/master/data/bpdata.csv) for this portion of the exercises.
+We will be using the [Blood Pressure dataset](https://raw.githubusercontent.com/joellembatchou/SISG2026_Association_Mapping/master/data/bpdata.csv) for this portion of the exercises.
 This dataset contains diastolic and systolic blood pressure measurements for 1000 individuals, and genotype data at 11 SNPs in a candidate gene for blood pressure. Covariates such as gender (sex) and body mass index (bmi) are included as well.
+
+**What we're testing**: Do individuals with different genotypes have different mean blood pressure values? We use linear regression because our outcome is continuous (quantitative trait).
 
 Let's first load the file into R. We need to define the path to the file (if you have it downloaded on your machine, change the path to the file location).
 ```{r set-bp-data, results = 'hide'}
-BP_FILE <- "https://raw.githubusercontent.com/joellembatchou/SISG2025_Association_Mapping/master/data/bpdata.csv" 
+BP_FILE <- "https://raw.githubusercontent.com/joellembatchou/SISG2026_Association_Mapping/master/data/bpdata.csv" 
 ```
 
 Use the following command to read it into R:
@@ -130,8 +138,10 @@ linear_model_BP <- lm(sbp ~ snp3, data = BP)
 You can get information about the model fit and parameter estimates (i.e. coefficients):
 ```{r, eval = FALSE}
 summary(linear_model_BP)
-```  
+```
 2. Is there any evidence of an effect of the SNP on systolic blood pressure?
+    * Check the p-values in the summary output.
+    * **Interpret the results**: What do the SNP coefficients mean? How much higher/lower is blood pressure for individuals with different genotypes?
 
 3. Provide a plot illustrating the relationship between sbp and the three genotypes at SNP3.
 ```{r, eval = FALSE}
@@ -139,6 +149,7 @@ with(BP, boxplot(sbp ~ snp3))
 ```
 
 * How does it compare with the linear model fitted in question (1)?
+* **Think about**: Does the boxplot suggest an additive effect (evenly spaced means) or something else?
 
 4. By default, the 2-parameter model is used since the SNP is stored in the data as categorical. Contrast the parameter estimates, p-values and confidence intervals obtained between this model and using:
 
@@ -160,10 +171,31 @@ lm(y ~ covariate1 + covariate2 + covariate3)
 ```
 
 5. Now redo the linear regression analysis of `sbp` from question 4 for the **additive model**, but this time adjust for `sex` and `bmi`. Do the results change?
+    * **Important concept**: Why do we adjust for covariates? What confounding could `bmi` or `sex` introduce?
+    * Compare the SNP effect estimate and p-value before and after covariate adjustment.
 
 #### *Extra*
 6. What proportion of the variance of `sbp` is explained by all 11 SNPs combined using categorical coding?
     * Use the `summary()` function to see the model results (the proportion of variance is the "Multiple R-squared" quantity)
-    * How would it differ if an additive coding is used for the 11 SNPs? 
+    * How would it differ if an additive coding is used for the 11 SNPs?
        * use `unique()` to check the genotypes for each SNP, e.g. `unique(BP$snp1)`
        * count the T allele (or A allele if applicable)
+    * **Think about**: If R² = 0.10, what does that mean? Is genetic variation a major or minor contributor to blood pressure?
+
+---
+
+## Key Takeaways from This Practical
+
+**Concepts you should understand**:
+1. **Regression framework**: Both logistic and linear regression test for association while accounting for covariates
+2. **Odds ratios vs effect sizes**: OR < 1 means protective; OR > 1 means risk-increasing; effect size is change in trait mean per allele
+3. **Genotype encoding**: Additive (0/1/2) assumes linear relationship; 2-parameter model allows any pattern
+4. **Multiple testing**: Must correct for number of tests to avoid false positives
+5. **Interpretation matters**: Statistical significance depends on sample size, but biological relevance depends on effect size
+
+**You are NOT expected to**:
+- Memorize R syntax (you can look it up!)
+- Become an R expert
+- Finish every question
+
+**Next session**: We'll see why population structure (ancestry) can cause spurious associations and how to detect it.
