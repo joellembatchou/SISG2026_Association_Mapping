@@ -78,10 +78,10 @@ data.frame(
     "Rare Variant Analysis: Collapsing Tests, Kernel (Variance Component) Tests and Omnibus Tests"
     ),
   Lecture = c(
-    '<a href="https://gatech.box.com/s/yjb8q69k4e63ogufooccrfkd097di3m2" target="_blank">Slides</a>',
-    '<a href="https://gatech.box.com/s/e3mbpg5i590dzcz8fhedhwjszq8fjsve" target="_blank">Slides</a>',
-    '<a href="https://gatech.box.com/s/tuhlzrrfosl4i7zgd2gqp0yir2b428zh" target="_blank">Slides</a>',
-    '<a href="https://gatech.box.com/s/tqgn2agytnu1gltndcvqjfirag4j87jt" target="_blank">Slides</a>'
+    '<a href="https://gatech.box.com/s/2xjedvhnv1j0jxczdrl9brw0peuza5ii" target="_blank">Slides</a>',
+    '<a href="https://gatech.box.com/s/3ogiqqvtljgmrv1kp8ytv6m4yhyeqeoq" target="_blank">Slides</a>',
+    '<a href="https://gatech.box.com/s/jt8f6977ji619pk64prfwhsvf7ecec45" target="_blank">Slides</a>',
+    '<a href="https://gatech.box.com/s/soukkj3xew95gbbh30ft3ljyt19q94v5" target="_blank">Slides</a>'
   ),
   Exercises = c(
     '<a href="analysis/QG3_Association_Testing_practical.html">Practical</a>',
@@ -111,10 +111,10 @@ data.frame(
     "Beyond traditional GWAS: Variance QTL, Interaction Testing, GWAX, Time-to-event, Multi-trait analysis"
     ),
   Lecture = c(
-    '<a href="https://gatech.box.com/s/04qa51r6tw7prfhdflc1taroim6jaudv" target="_blank">Slides</a>',
-    '<a href="https://gatech.box.com/s/k4q4mtscwa9txdcc6qdxiviyrzob3djf" target="_blank">Slides</a>',
-    '<a href="https://gatech.box.com/s/gr7jq894brykdq4s64nqd09b5guateel" target="_blank">Slides</a>',
-    '<a href="https://gatech.box.com/s/f9hhb4cjnumy4i7yp7hgxcyv3fgwo9xf" target="_blank">Slides</a>'
+    "",
+    "",
+    "",
+    '<a href="https://gatech.box.com/s/163v98wn6wrq1yib08cee3ck1wm1quje" target="_blank">Slides</a>'
   ),
   Exercises = c(
     '<a href="analysis/QG3_Beyond_Standard_GWAS_practical.html">Practical</a>',
