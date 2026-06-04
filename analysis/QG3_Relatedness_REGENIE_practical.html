@@ -238,6 +238,7 @@ window.Quarto = {
   <li><a href="#if-regenie-software-is-installed-on-your-machine" id="toc-if-regenie-software-is-installed-on-your-machine" class="nav-link" data-scroll-target="#if-regenie-software-is-installed-on-your-machine">If REGENIE software is installed on your machine</a></li>
   <li><a href="#if-regenie-software-does-not-run-on-your-machine" id="toc-if-regenie-software-does-not-run-on-your-machine" class="nav-link" data-scroll-target="#if-regenie-software-does-not-run-on-your-machine">If REGENIE software does not run on your machine</a></li>
   </ul></li>
+  <li><a href="#key-takeaways-from-this-practical" id="toc-key-takeaways-from-this-practical" class="nav-link" data-scroll-target="#key-takeaways-from-this-practical">Key Takeaways from This Practical</a></li>
   </ul>
 </nav>
     </div>
@@ -277,8 +278,9 @@ window.Quarto = {
 </div>
 <section id="introduction" class="level2">
 <h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
+<p><strong>What we’re testing</strong>: How do we handle population structure and relatedness in GWAS? We’ll compare naive PLINK analysis with REGENIE’s mixed model approach to see how structure affects results.</p>
 <p>We will be analyzing a simulated data set which contains sample structure to better understand the impact it can have in GWAS analyses if not accounted for. We will perform GWAS on a quantitative phenotype which was simulated with high heritability and polygenic.</p>
-<p>The file <a href="https://github.com/joellembatchou/SISG2025_Association_Mapping/tree/master/data">“sim_rels_pheno.txt”</a>” contains the phenotype measurements for a set of individuals and the file “sim_rels_geno.bed” is a binary file in PLINK BED format with accompanying BIM and FAM files which contains the genotype data <strong>at null variants</strong> (i.e.&nbsp;not associated with the phenotype).</p>
+<p>The file <a href="https://github.com/joellembatchou/SISG2026_Association_Mapping/tree/master/data">“sim_rels_pheno.txt”</a>” contains the phenotype measurements for a set of individuals and the file “sim_rels_geno.bed” is a binary file in PLINK BED format with accompanying BIM and FAM files which contains the genotype data <strong>at null variants</strong> (i.e.&nbsp;not associated with the phenotype).</p>
 <p><em>How should we expect the QQ/Manhatthan plots to look like under this scenario?</em></p>
 <section id="data-preparation" class="level3">
 <h3 class="anchored" data-anchor-id="data-preparation">Data preparation</h3>
@@ -360,7 +362,10 @@ window.Quarto = {
 </div>
 <p>The results of the GWAS are stored in <code>gwas_plink.Pheno.glm.linear</code>.</p>
 <ol start="4" type="1">
-<li>Make a Manhattan plot of the association results. Make sure to check what information is stored in the PLINK output file (using <code>str()</code>).</li>
+<li>Make a Manhattan plot of the association results. Make sure to check what information is stored in the PLINK output file (using <code>str()</code>).
+<ul>
+<li><strong>Interpret</strong>: Should we see associations given that variants are null (not truly associated)? What does the plot tell us?</li>
+</ul></li>
 </ol>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>plink.gwas <span class="ot">&lt;-</span> <span class="fu">fread</span>(<span class="st">"gwas_plink.Pheno.glm.linear"</span>, <span class="at">header =</span> <span class="cn">TRUE</span>)</span>
@@ -372,17 +377,24 @@ window.Quarto = {
 <span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <ol start="5" type="1">
-<li>Make a Q-Q plot of the association results.</li>
+<li>Make a Q-Q plot of the association results.
+<ul>
+<li><strong>Interpret</strong>: Does the QQ plot show deviation from the diagonal? What does this mean?</li>
+</ul></li>
 </ol>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">qq</span>(plink.gwas<span class="sc">$</span>P)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <ol start="6" type="1">
-<li>Compute the genomic control inflation factor <span class="math inline">\(\lambda_{GC}\)</span> based on the p-values. Is there evidence of possible inflation due to confounding?</li>
+<li>Compute the genomic control inflation factor <span class="math inline">\(\lambda_{GC}\)</span> based on the p-values. Is there evidence of possible inflation due to confounding?
+<ul>
+<li><strong>Hint</strong>: Divide median chi-squared by 0.456 to get genomic control lambda</li>
+</ul></li>
 </ol>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>chisq.values <span class="ot">&lt;-</span> <span class="fu">qchisq</span>(plink.gwas<span class="sc">$</span>P, <span class="dv">1</span>, <span class="at">lower.tail =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">median</span>(chisq.values)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>lambda_gc <span class="ot">&lt;-</span> <span class="fu">median</span>(chisq.values) <span class="sc">/</span> <span class="fl">0.456</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Is lambda &gt; 1.05? This suggests population structure inflation</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <ol start="7" type="1">
 <li>Now we will run REGENIE to perform a GWAS of the phenotype using a whole genome regression model. We first want to extract a set of high quality variants for the Step 1 null model fitting. Using PLINK, apply QC filters to remove variants with MAF below 5%, missingness above 1%, HWE p-value below 0.001, minor allele count (MAC) below 20. We will use <code>--write-snplist</code> to store list of variants passing QC without making a new BED file.</li>
@@ -458,13 +470,35 @@ window.Quarto = {
 </div>
 <p>This function returns a data frame containing the REGENIE summary statistics.</p>
 <ol start="10" type="1">
-<li>Generate Manhatthan and Q-Q plots based on the REGENIE association results and compute <span class="math inline">\(\lambda_{GC}\)</span>. Compare with output from Questions 4-6.</li>
+<li>Generate Manhatthan and Q-Q plots based on the REGENIE association results and compute <span class="math inline">\(\lambda_{GC}\)</span>. Compare with output from Questions 4-6.
+<ul>
+<li><strong>Compare</strong>: How do REGENIE results differ from PLINK? Is the inflation reduced? Why?</li>
+</ul></li>
 </ol>
+<hr>
+</section>
+</section>
+<section id="key-takeaways-from-this-practical" class="level2">
+<h2 class="anchored" data-anchor-id="key-takeaways-from-this-practical">Key Takeaways from This Practical</h2>
+<p><strong>Concepts you should understand:</strong></p>
+<ol type="1">
+<li><strong>Genomic control inflation</strong>: <span class="math inline">\(\lambda_{GC}\)</span> &gt; 1.05 suggests population stratification/relatedness bias</li>
+<li><strong>PLINK limitations</strong>: Standard regression assumes unrelated samples, gets inflated with structure</li>
+<li><strong>Mixed models</strong>: REGENIE accounts for relatedness through random effects in Step 1</li>
+<li><strong>LOCO procedure</strong>: Leave-one-chromosome-out avoids proximal contamination in polygenic predictions</li>
+<li><strong>QQ plots as diagnosis</strong>: Deviation from diagonal reveals unwanted correlations in test statistics</li>
+</ol>
+<p><strong>Why this matters:</strong></p>
+<ul>
+<li><strong>False positives</strong>: Inflation from structure can lead to spurious associations if not corrected</li>
+<li><strong>Different methods</strong>: PLINK finds structure-driven signals; REGENIE accounts for it</li>
+<li><strong>Sample quality</strong>: Knowing your relatedness structure is essential for GWAS design</li>
+</ul>
+<p><strong>Next session:</strong> We’ll see how to test rare variants using different strategies when single-SNP tests fail.</p>
 
 
 <!-- -->
 
-</section>
 </section>
 
 </main> <!-- /main -->
@@ -940,160 +974,188 @@ window.Quarto = {
 <span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb17-20"><a href="#cb17-20" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb17-21"><a href="#cb17-21" aria-hidden="true" tabindex="-1"></a><span class="fu">## Introduction</span></span>
-<span id="cb17-22"><a href="#cb17-22" aria-hidden="true" tabindex="-1"></a>We will be analyzing a simulated data set which contains sample structure to better understand the impact it can have in GWAS analyses if not accounted for. </span>
-<span id="cb17-23"><a href="#cb17-23" aria-hidden="true" tabindex="-1"></a>We will perform GWAS on a quantitative phenotype which was simulated with high heritability and polygenic.</span>
+<span id="cb17-22"><a href="#cb17-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-23"><a href="#cb17-23" aria-hidden="true" tabindex="-1"></a>**What we're testing**: How do we handle population structure and relatedness in GWAS? We'll compare naive PLINK analysis with REGENIE's mixed model approach to see how structure affects results.</span>
 <span id="cb17-24"><a href="#cb17-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-25"><a href="#cb17-25" aria-hidden="true" tabindex="-1"></a>The file <span class="co">[</span><span class="ot">"sim_rels_pheno.txt"</span><span class="co">](https://github.com/joellembatchou/SISG2025_Association_Mapping/tree/master/data)</span>” contains the phenotype measurements for a set of individuals and the file "sim_rels_geno.bed" is a binary file in PLINK BED format with accompanying BIM and FAM files which contains the genotype data **at null variants** (i.e. not associated with the phenotype).  </span>
-<span id="cb17-26"><a href="#cb17-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-27"><a href="#cb17-27" aria-hidden="true" tabindex="-1"></a>*How should we expect the QQ/Manhatthan plots to look like under this scenario?*</span>
-<span id="cb17-28"><a href="#cb17-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-29"><a href="#cb17-29" aria-hidden="true" tabindex="-1"></a><span class="fu">### Data preparation</span></span>
-<span id="cb17-30"><a href="#cb17-30" aria-hidden="true" tabindex="-1"></a>Let’s first load the simulated data into the R session. We need to define the path to the directory containing the phenotype and genotype files (change the path to the files location).</span>
-<span id="cb17-31"><a href="#cb17-31" aria-hidden="true" tabindex="-1"></a><span class="in">```{r echo=FALSE}</span></span>
-<span id="cb17-32"><a href="#cb17-32" aria-hidden="true" tabindex="-1"></a>files_dir <span class="ot">&lt;-</span> <span class="st">"/Users/joelle.mbatchou/SISG/2025/SISG2025_Association_Mapping/data/"</span> </span>
-<span id="cb17-33"><a href="#cb17-33" aria-hidden="true" tabindex="-1"></a>plink2_binary <span class="ot">&lt;-</span> <span class="st">"/Users/joelle.mbatchou/software/bins/plink2"</span> </span>
-<span id="cb17-34"><a href="#cb17-34" aria-hidden="true" tabindex="-1"></a>regenie_binary <span class="ot">&lt;-</span> <span class="st">"/Users/joelle.mbatchou/software/bins/regenie"</span></span>
-<span id="cb17-35"><a href="#cb17-35" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb17-36"><a href="#cb17-36" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-37"><a href="#cb17-37" aria-hidden="true" tabindex="-1"></a><span class="in">```{r eval=FALSE}</span></span>
-<span id="cb17-38"><a href="#cb17-38" aria-hidden="true" tabindex="-1"></a>files_dir <span class="ot">&lt;-</span> <span class="st">"/SISGM19/data/"</span> </span>
-<span id="cb17-39"><a href="#cb17-39" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb17-40"><a href="#cb17-40" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-41"><a href="#cb17-41" aria-hidden="true" tabindex="-1"></a>Also specify the paths to the PLINK2 and REGENIE binaries:</span>
-<span id="cb17-42"><a href="#cb17-42" aria-hidden="true" tabindex="-1"></a><span class="in">```{r eval=FALSE}</span></span>
-<span id="cb17-43"><a href="#cb17-43" aria-hidden="true" tabindex="-1"></a>plink2_binary <span class="ot">&lt;-</span> <span class="st">"/SISGM19/bin/plink2"</span> </span>
-<span id="cb17-44"><a href="#cb17-44" aria-hidden="true" tabindex="-1"></a>regenie_binary <span class="ot">&lt;-</span> <span class="st">"/SISGM19/bin/regenie"</span> </span>
-<span id="cb17-45"><a href="#cb17-45" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb17-46"><a href="#cb17-46" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-47"><a href="#cb17-47" aria-hidden="true" tabindex="-1"></a>We can now read the files (recall the PLINK BED file is a binary file):</span>
-<span id="cb17-50"><a href="#cb17-50" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb17-51"><a href="#cb17-51" aria-hidden="true" tabindex="-1"></a>pheno_file <span class="ot">&lt;-</span> <span class="fu">fread</span>(<span class="fu">glue</span>(<span class="st">"{files_dir}/sim_rels_pheno.txt"</span>), <span class="at">header =</span> <span class="cn">TRUE</span>) </span>
-<span id="cb17-52"><a href="#cb17-52" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(pheno_file, <span class="dv">3</span>)</span>
-<span id="cb17-53"><a href="#cb17-53" aria-hidden="true" tabindex="-1"></a>sim_bim <span class="ot">&lt;-</span> <span class="fu">fread</span>(<span class="fu">glue</span>(<span class="st">"{files_dir}/sim_rels_geno.bim"</span>), <span class="at">header =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb17-54"><a href="#cb17-54" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(sim_bim, <span class="dv">3</span>)</span>
-<span id="cb17-55"><a href="#cb17-55" aria-hidden="true" tabindex="-1"></a>sim_fam <span class="ot">&lt;-</span> <span class="fu">fread</span>(<span class="fu">glue</span>(<span class="st">"{files_dir}/sim_rels_geno.fam"</span>), <span class="at">header =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb17-56"><a href="#cb17-56" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(sim_fam, <span class="dv">3</span>)</span>
-<span id="cb17-57"><a href="#cb17-57" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb17-58"><a href="#cb17-58" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-59"><a href="#cb17-59" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-60"><a href="#cb17-60" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-61"><a href="#cb17-61" aria-hidden="true" tabindex="-1"></a><span class="fu">## Exercises</span></span>
-<span id="cb17-62"><a href="#cb17-62" aria-hidden="true" tabindex="-1"></a>Here are some things to try:</span>
+<span id="cb17-25"><a href="#cb17-25" aria-hidden="true" tabindex="-1"></a>We will be analyzing a simulated data set which contains sample structure to better understand the impact it can have in GWAS analyses if not accounted for.</span>
+<span id="cb17-26"><a href="#cb17-26" aria-hidden="true" tabindex="-1"></a>We will perform GWAS on a quantitative phenotype which was simulated with high heritability and polygenic.</span>
+<span id="cb17-27"><a href="#cb17-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-28"><a href="#cb17-28" aria-hidden="true" tabindex="-1"></a>The file <span class="co">[</span><span class="ot">“sim_rels_pheno.txt”</span><span class="co">](https://github.com/joellembatchou/SISG2026_Association_Mapping/tree/master/data)</span>” contains the phenotype measurements for a set of individuals and the file "sim_rels_geno.bed" is a binary file in PLINK BED format with accompanying BIM and FAM files which contains the genotype data **at null variants** (i.e. not associated with the phenotype).  </span>
+<span id="cb17-29"><a href="#cb17-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-30"><a href="#cb17-30" aria-hidden="true" tabindex="-1"></a>*How should we expect the QQ/Manhatthan plots to look like under this scenario?*</span>
+<span id="cb17-31"><a href="#cb17-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-32"><a href="#cb17-32" aria-hidden="true" tabindex="-1"></a><span class="fu">### Data preparation</span></span>
+<span id="cb17-33"><a href="#cb17-33" aria-hidden="true" tabindex="-1"></a>Let’s first load the simulated data into the R session. We need to define the path to the directory containing the phenotype and genotype files (change the path to the files location).</span>
+<span id="cb17-34"><a href="#cb17-34" aria-hidden="true" tabindex="-1"></a><span class="in">```{r echo=FALSE}</span></span>
+<span id="cb17-35"><a href="#cb17-35" aria-hidden="true" tabindex="-1"></a>files_dir <span class="ot">&lt;-</span> <span class="st">"/Users/joelle.mbatchou/SISG/2026/SISG2026_Association_Mapping/data/"</span> </span>
+<span id="cb17-36"><a href="#cb17-36" aria-hidden="true" tabindex="-1"></a>plink2_binary <span class="ot">&lt;-</span> <span class="st">"/Users/joelle.mbatchou/software/bins/plink2"</span> </span>
+<span id="cb17-37"><a href="#cb17-37" aria-hidden="true" tabindex="-1"></a>regenie_binary <span class="ot">&lt;-</span> <span class="st">"/Users/joelle.mbatchou/software/bins/regenie"</span></span>
+<span id="cb17-38"><a href="#cb17-38" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb17-39"><a href="#cb17-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-40"><a href="#cb17-40" aria-hidden="true" tabindex="-1"></a><span class="in">```{r eval=FALSE}</span></span>
+<span id="cb17-41"><a href="#cb17-41" aria-hidden="true" tabindex="-1"></a>files_dir <span class="ot">&lt;-</span> <span class="st">"/SISGM19/data/"</span> </span>
+<span id="cb17-42"><a href="#cb17-42" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb17-43"><a href="#cb17-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-44"><a href="#cb17-44" aria-hidden="true" tabindex="-1"></a>Also specify the paths to the PLINK2 and REGENIE binaries:</span>
+<span id="cb17-45"><a href="#cb17-45" aria-hidden="true" tabindex="-1"></a><span class="in">```{r eval=FALSE}</span></span>
+<span id="cb17-46"><a href="#cb17-46" aria-hidden="true" tabindex="-1"></a>plink2_binary <span class="ot">&lt;-</span> <span class="st">"/SISGM19/bin/plink2"</span> </span>
+<span id="cb17-47"><a href="#cb17-47" aria-hidden="true" tabindex="-1"></a>regenie_binary <span class="ot">&lt;-</span> <span class="st">"/SISGM19/bin/regenie"</span> </span>
+<span id="cb17-48"><a href="#cb17-48" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb17-49"><a href="#cb17-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-50"><a href="#cb17-50" aria-hidden="true" tabindex="-1"></a>We can now read the files (recall the PLINK BED file is a binary file):</span>
+<span id="cb17-53"><a href="#cb17-53" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb17-54"><a href="#cb17-54" aria-hidden="true" tabindex="-1"></a>pheno_file <span class="ot">&lt;-</span> <span class="fu">fread</span>(<span class="fu">glue</span>(<span class="st">"{files_dir}/sim_rels_pheno.txt"</span>), <span class="at">header =</span> <span class="cn">TRUE</span>) </span>
+<span id="cb17-55"><a href="#cb17-55" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(pheno_file, <span class="dv">3</span>)</span>
+<span id="cb17-56"><a href="#cb17-56" aria-hidden="true" tabindex="-1"></a>sim_bim <span class="ot">&lt;-</span> <span class="fu">fread</span>(<span class="fu">glue</span>(<span class="st">"{files_dir}/sim_rels_geno.bim"</span>), <span class="at">header =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb17-57"><a href="#cb17-57" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(sim_bim, <span class="dv">3</span>)</span>
+<span id="cb17-58"><a href="#cb17-58" aria-hidden="true" tabindex="-1"></a>sim_fam <span class="ot">&lt;-</span> <span class="fu">fread</span>(<span class="fu">glue</span>(<span class="st">"{files_dir}/sim_rels_geno.fam"</span>), <span class="at">header =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb17-59"><a href="#cb17-59" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(sim_fam, <span class="dv">3</span>)</span>
+<span id="cb17-60"><a href="#cb17-60" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb17-61"><a href="#cb17-61" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-62"><a href="#cb17-62" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb17-63"><a href="#cb17-63" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-64"><a href="#cb17-64" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>Examine the dataset:</span>
-<span id="cb17-65"><a href="#cb17-65" aria-hidden="true" tabindex="-1"></a><span class="ss">  * </span>How many samples are present? Use <span class="in">`str`</span></span>
-<span id="cb17-66"><a href="#cb17-66" aria-hidden="true" tabindex="-1"></a><span class="ss">  * </span>How many SNPs? In how many chromosomes? Use <span class="in">`str`</span> and <span class="in">`table`</span></span>
-<span id="cb17-67"><a href="#cb17-67" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-68"><a href="#cb17-68" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>Examine the phenotype data:</span>
-<span id="cb17-69"><a href="#cb17-69" aria-hidden="true" tabindex="-1"></a><span class="ss">  * </span>How many individuals in the study have measurements? Use <span class="in">`table(is.na(pheno_file$Pheno))`</span></span>
-<span id="cb17-70"><a href="#cb17-70" aria-hidden="true" tabindex="-1"></a><span class="ss">  * </span>Plot a histogram to show the distribution of the phenotype. Use the <span class="in">`hist()`</span> function</span>
-<span id="cb17-71"><a href="#cb17-71" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-72"><a href="#cb17-72" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>With PLINK, perform association mapping between the phenotype and the variants in the PLINK BED genotype file. Only perform association test on SNPs that pass the following quality control threshold filters:</span>
-<span id="cb17-73"><a href="#cb17-73" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-74"><a href="#cb17-74" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>minor allele frequency (MAF) &gt; 0.01</span>
-<span id="cb17-75"><a href="#cb17-75" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>at least a 99% genotyping call rate (less than 1% missing)</span>
-<span id="cb17-76"><a href="#cb17-76" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>HWE p-values greater than 0.001</span>
-<span id="cb17-77"><a href="#cb17-77" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-78"><a href="#cb17-78" aria-hidden="true" tabindex="-1"></a>The basic command would look like</span>
-<span id="cb17-79"><a href="#cb17-79" aria-hidden="true" tabindex="-1"></a><span class="in">```{r, eval = FALSE}</span></span>
-<span id="cb17-80"><a href="#cb17-80" aria-hidden="true" tabindex="-1"></a><span class="co"># first fill in the thresholds to use for each filter</span></span>
-<span id="cb17-81"><a href="#cb17-81" aria-hidden="true" tabindex="-1"></a>filter_maf <span class="ot">=</span> </span>
-<span id="cb17-82"><a href="#cb17-82" aria-hidden="true" tabindex="-1"></a>filter_missing_rate <span class="ot">=</span> </span>
-<span id="cb17-83"><a href="#cb17-83" aria-hidden="true" tabindex="-1"></a>filter_hwe <span class="ot">=</span> </span>
-<span id="cb17-84"><a href="#cb17-84" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-85"><a href="#cb17-85" aria-hidden="true" tabindex="-1"></a>cmd <span class="ot">&lt;-</span> <span class="fu">glue</span>(<span class="st">'{plink2_binary} --bfile "{files_dir}/sim_rels_geno" --pheno "{files_dir}/sim_rels_pheno.txt" --pheno-name Pheno --maf {filter_maf} --geno {filter_missing_rate} --hwe {filter_hwe} --glm allow-no-covars --out gwas_plink'</span>)</span>
-<span id="cb17-86"><a href="#cb17-86" aria-hidden="true" tabindex="-1"></a><span class="fu">system</span>(cmd, <span class="at">intern =</span> T)</span>
-<span id="cb17-87"><a href="#cb17-87" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb17-88"><a href="#cb17-88" aria-hidden="true" tabindex="-1"></a>The results of the GWAS are stored in <span class="in">`gwas_plink.Pheno.glm.linear`</span>.</span>
-<span id="cb17-89"><a href="#cb17-89" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-90"><a href="#cb17-90" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>Make a Manhattan plot of the association results. Make sure to check what information is stored in the PLINK output file (using <span class="in">`str()`</span>).</span>
-<span id="cb17-91"><a href="#cb17-91" aria-hidden="true" tabindex="-1"></a><span class="in">```{r, eval = FALSE}</span></span>
-<span id="cb17-92"><a href="#cb17-92" aria-hidden="true" tabindex="-1"></a>plink.gwas <span class="ot">&lt;-</span> <span class="fu">fread</span>(<span class="st">"gwas_plink.Pheno.glm.linear"</span>, <span class="at">header =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb17-93"><a href="#cb17-93" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(</span>
-<span id="cb17-94"><a href="#cb17-94" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(plink.gwas),</span>
-<span id="cb17-95"><a href="#cb17-95" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> <span class="sc">-</span><span class="fu">log10</span>(plink.gwas<span class="sc">$</span>P),</span>
-<span id="cb17-96"><a href="#cb17-96" aria-hidden="true" tabindex="-1"></a>  <span class="at">col =</span> <span class="fu">c</span>(<span class="st">"orange"</span>, <span class="st">"purple"</span>)[<span class="dv">1</span> <span class="sc">+</span> plink.gwas<span class="sc">$</span><span class="st">`</span><span class="at">#CHROM</span><span class="st">`</span> <span class="sc">%%</span> <span class="dv">2</span>],</span>
-<span id="cb17-97"><a href="#cb17-97" aria-hidden="true" tabindex="-1"></a>  <span class="at">xaxt =</span> <span class="st">"n"</span>, <span class="at">xlab =</span> <span class="st">"Genomic position"</span>, <span class="at">ylab =</span> <span class="st">"Observed -log10(P)"</span></span>
-<span id="cb17-98"><a href="#cb17-98" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb17-99"><a href="#cb17-99" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb17-100"><a href="#cb17-100" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-101"><a href="#cb17-101" aria-hidden="true" tabindex="-1"></a><span class="ss">5. </span>Make a Q-Q plot of the association results.</span>
-<span id="cb17-102"><a href="#cb17-102" aria-hidden="true" tabindex="-1"></a><span class="in">```{r, eval = FALSE}</span></span>
-<span id="cb17-103"><a href="#cb17-103" aria-hidden="true" tabindex="-1"></a><span class="fu">qq</span>(plink.gwas<span class="sc">$</span>P)</span>
-<span id="cb17-104"><a href="#cb17-104" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb17-105"><a href="#cb17-105" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-106"><a href="#cb17-106" aria-hidden="true" tabindex="-1"></a><span class="ss">6. </span>Compute the genomic control inflation factor $\lambda_{GC}$ based on the p-values. Is there evidence of possible inflation due to confounding?</span>
+<span id="cb17-64"><a href="#cb17-64" aria-hidden="true" tabindex="-1"></a><span class="fu">## Exercises</span></span>
+<span id="cb17-65"><a href="#cb17-65" aria-hidden="true" tabindex="-1"></a>Here are some things to try:</span>
+<span id="cb17-66"><a href="#cb17-66" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-67"><a href="#cb17-67" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>Examine the dataset:</span>
+<span id="cb17-68"><a href="#cb17-68" aria-hidden="true" tabindex="-1"></a><span class="ss">  * </span>How many samples are present? Use <span class="in">`str`</span></span>
+<span id="cb17-69"><a href="#cb17-69" aria-hidden="true" tabindex="-1"></a><span class="ss">  * </span>How many SNPs? In how many chromosomes? Use <span class="in">`str`</span> and <span class="in">`table`</span></span>
+<span id="cb17-70"><a href="#cb17-70" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-71"><a href="#cb17-71" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>Examine the phenotype data:</span>
+<span id="cb17-72"><a href="#cb17-72" aria-hidden="true" tabindex="-1"></a><span class="ss">  * </span>How many individuals in the study have measurements? Use <span class="in">`table(is.na(pheno_file$Pheno))`</span></span>
+<span id="cb17-73"><a href="#cb17-73" aria-hidden="true" tabindex="-1"></a><span class="ss">  * </span>Plot a histogram to show the distribution of the phenotype. Use the <span class="in">`hist()`</span> function</span>
+<span id="cb17-74"><a href="#cb17-74" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-75"><a href="#cb17-75" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>With PLINK, perform association mapping between the phenotype and the variants in the PLINK BED genotype file. Only perform association test on SNPs that pass the following quality control threshold filters:</span>
+<span id="cb17-76"><a href="#cb17-76" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-77"><a href="#cb17-77" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>minor allele frequency (MAF) &gt; 0.01</span>
+<span id="cb17-78"><a href="#cb17-78" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>at least a 99% genotyping call rate (less than 1% missing)</span>
+<span id="cb17-79"><a href="#cb17-79" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>HWE p-values greater than 0.001</span>
+<span id="cb17-80"><a href="#cb17-80" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-81"><a href="#cb17-81" aria-hidden="true" tabindex="-1"></a>The basic command would look like</span>
+<span id="cb17-82"><a href="#cb17-82" aria-hidden="true" tabindex="-1"></a><span class="in">```{r, eval = FALSE}</span></span>
+<span id="cb17-83"><a href="#cb17-83" aria-hidden="true" tabindex="-1"></a><span class="co"># first fill in the thresholds to use for each filter</span></span>
+<span id="cb17-84"><a href="#cb17-84" aria-hidden="true" tabindex="-1"></a>filter_maf <span class="ot">=</span> </span>
+<span id="cb17-85"><a href="#cb17-85" aria-hidden="true" tabindex="-1"></a>filter_missing_rate <span class="ot">=</span> </span>
+<span id="cb17-86"><a href="#cb17-86" aria-hidden="true" tabindex="-1"></a>filter_hwe <span class="ot">=</span> </span>
+<span id="cb17-87"><a href="#cb17-87" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-88"><a href="#cb17-88" aria-hidden="true" tabindex="-1"></a>cmd <span class="ot">&lt;-</span> <span class="fu">glue</span>(<span class="st">'{plink2_binary} --bfile "{files_dir}/sim_rels_geno" --pheno "{files_dir}/sim_rels_pheno.txt" --pheno-name Pheno --maf {filter_maf} --geno {filter_missing_rate} --hwe {filter_hwe} --glm allow-no-covars --out gwas_plink'</span>)</span>
+<span id="cb17-89"><a href="#cb17-89" aria-hidden="true" tabindex="-1"></a><span class="fu">system</span>(cmd, <span class="at">intern =</span> T)</span>
+<span id="cb17-90"><a href="#cb17-90" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb17-91"><a href="#cb17-91" aria-hidden="true" tabindex="-1"></a>The results of the GWAS are stored in <span class="in">`gwas_plink.Pheno.glm.linear`</span>.</span>
+<span id="cb17-92"><a href="#cb17-92" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-93"><a href="#cb17-93" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>Make a Manhattan plot of the association results. Make sure to check what information is stored in the PLINK output file (using <span class="in">`str()`</span>).</span>
+<span id="cb17-94"><a href="#cb17-94" aria-hidden="true" tabindex="-1"></a><span class="ss">    * </span>**Interpret**: Should we see associations given that variants are null (not truly associated)? What does the plot tell us?</span>
+<span id="cb17-95"><a href="#cb17-95" aria-hidden="true" tabindex="-1"></a><span class="in">```{r, eval = FALSE}</span></span>
+<span id="cb17-96"><a href="#cb17-96" aria-hidden="true" tabindex="-1"></a>plink.gwas <span class="ot">&lt;-</span> <span class="fu">fread</span>(<span class="st">"gwas_plink.Pheno.glm.linear"</span>, <span class="at">header =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb17-97"><a href="#cb17-97" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(</span>
+<span id="cb17-98"><a href="#cb17-98" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(plink.gwas),</span>
+<span id="cb17-99"><a href="#cb17-99" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> <span class="sc">-</span><span class="fu">log10</span>(plink.gwas<span class="sc">$</span>P),</span>
+<span id="cb17-100"><a href="#cb17-100" aria-hidden="true" tabindex="-1"></a>  <span class="at">col =</span> <span class="fu">c</span>(<span class="st">"orange"</span>, <span class="st">"purple"</span>)[<span class="dv">1</span> <span class="sc">+</span> plink.gwas<span class="sc">$</span><span class="st">`</span><span class="at">#CHROM</span><span class="st">`</span> <span class="sc">%%</span> <span class="dv">2</span>],</span>
+<span id="cb17-101"><a href="#cb17-101" aria-hidden="true" tabindex="-1"></a>  <span class="at">xaxt =</span> <span class="st">"n"</span>, <span class="at">xlab =</span> <span class="st">"Genomic position"</span>, <span class="at">ylab =</span> <span class="st">"Observed -log10(P)"</span></span>
+<span id="cb17-102"><a href="#cb17-102" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb17-103"><a href="#cb17-103" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb17-104"><a href="#cb17-104" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-105"><a href="#cb17-105" aria-hidden="true" tabindex="-1"></a><span class="ss">5. </span>Make a Q-Q plot of the association results.</span>
+<span id="cb17-106"><a href="#cb17-106" aria-hidden="true" tabindex="-1"></a><span class="ss">    * </span>**Interpret**: Does the QQ plot show deviation from the diagonal? What does this mean?</span>
 <span id="cb17-107"><a href="#cb17-107" aria-hidden="true" tabindex="-1"></a><span class="in">```{r, eval = FALSE}</span></span>
-<span id="cb17-108"><a href="#cb17-108" aria-hidden="true" tabindex="-1"></a>chisq.values <span class="ot">&lt;-</span> <span class="fu">qchisq</span>(plink.gwas<span class="sc">$</span>P, <span class="dv">1</span>, <span class="at">lower.tail =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb17-109"><a href="#cb17-109" aria-hidden="true" tabindex="-1"></a><span class="fu">median</span>(chisq.values)</span>
-<span id="cb17-110"><a href="#cb17-110" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb17-111"><a href="#cb17-111" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-112"><a href="#cb17-112" aria-hidden="true" tabindex="-1"></a><span class="ss">7. </span>Now we will run REGENIE to perform a GWAS of the phenotype using a whole genome regression model. We first want to extract a set of high quality variants for the Step 1 null model fitting. Using PLINK, apply QC filters to remove variants with MAF below 5%, missingness above 1%, HWE p-value below 0.001, minor allele count (MAC) below 20. </span>
-<span id="cb17-113"><a href="#cb17-113" aria-hidden="true" tabindex="-1"></a>We will use <span class="in">`--write-snplist`</span> to store list of variants passing QC without making a new BED file.</span>
-<span id="cb17-114"><a href="#cb17-114" aria-hidden="true" tabindex="-1"></a><span class="in">```{r, eval = FALSE}</span></span>
-<span id="cb17-115"><a href="#cb17-115" aria-hidden="true" tabindex="-1"></a><span class="co"># first fill in the thresholds to use for each filter</span></span>
-<span id="cb17-116"><a href="#cb17-116" aria-hidden="true" tabindex="-1"></a>filter_maf <span class="ot">=</span> </span>
-<span id="cb17-117"><a href="#cb17-117" aria-hidden="true" tabindex="-1"></a>filter_missing_rate <span class="ot">=</span> </span>
-<span id="cb17-118"><a href="#cb17-118" aria-hidden="true" tabindex="-1"></a>filter_hwe <span class="ot">=</span> </span>
-<span id="cb17-119"><a href="#cb17-119" aria-hidden="true" tabindex="-1"></a>filter_mac <span class="ot">=</span> </span>
-<span id="cb17-120"><a href="#cb17-120" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-121"><a href="#cb17-121" aria-hidden="true" tabindex="-1"></a>cmd <span class="ot">&lt;-</span> <span class="fu">glue</span>(<span class="st">'{plink2_binary} --bfile "{files_dir}/sim_rels_geno" --pheno "{files_dir}/sim_rels_pheno.txt" --pheno-name Pheno --maf {filter_maf} --geno {filter_missing_rate} --hwe {filter_hwe} --mac {filter_mac} --write-snplist --out qc_pass'</span>)</span>
-<span id="cb17-122"><a href="#cb17-122" aria-hidden="true" tabindex="-1"></a><span class="fu">system</span>(cmd, <span class="at">intern =</span> T)</span>
-<span id="cb17-123"><a href="#cb17-123" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb17-124"><a href="#cb17-124" aria-hidden="true" tabindex="-1"></a>This produces a file <span class="in">`qc_pass.snplist`</span> containing a list of variant IDs that pass the QC filters.</span>
-<span id="cb17-125"><a href="#cb17-125" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb17-126"><a href="#cb17-126" aria-hidden="true" tabindex="-1"></a><span class="fu">### If REGENIE software is installed on your machine</span></span>
-<span id="cb17-127"><a href="#cb17-127" aria-hidden="true" tabindex="-1"></a><span class="ss">8. </span>Run REGENIE Step 1 to fit the null model and obtain polygenic predictions using a leave-one-chromosome-out (LOCO) scheme. </span>
-<span id="cb17-128"><a href="#cb17-128" aria-hidden="true" tabindex="-1"></a><span class="in">```{r, eval = FALSE}</span></span>
-<span id="cb17-129"><a href="#cb17-129" aria-hidden="true" tabindex="-1"></a>cmd <span class="ot">&lt;-</span> <span class="fu">glue</span>(<span class="st">'{regenie_binary} --bed "{files_dir}/sim_rels_geno" --phenoFile "{files_dir}/sim_rels_pheno.txt" --phenoCol Pheno --qt --step 1 --loocv --bsize 1000 --extract qc_pass.snplist --out gwas_regenie'</span>)</span>
-<span id="cb17-130"><a href="#cb17-130" aria-hidden="true" tabindex="-1"></a><span class="fu">system</span>(cmd, <span class="at">intern =</span> T)</span>
-<span id="cb17-131"><a href="#cb17-131" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb17-132"><a href="#cb17-132" aria-hidden="true" tabindex="-1"></a>The LOCO polygenic predictions for the phenotype are stored in <span class="in">`gwas_regenie_1.loco`</span>.</span>
-<span id="cb17-133"><a href="#cb17-133" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-134"><a href="#cb17-134" aria-hidden="true" tabindex="-1"></a><span class="ss">9. </span>Run REGENIE Step 2 to perform association testing.</span>
+<span id="cb17-108"><a href="#cb17-108" aria-hidden="true" tabindex="-1"></a><span class="fu">qq</span>(plink.gwas<span class="sc">$</span>P)</span>
+<span id="cb17-109"><a href="#cb17-109" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb17-110"><a href="#cb17-110" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-111"><a href="#cb17-111" aria-hidden="true" tabindex="-1"></a><span class="ss">6. </span>Compute the genomic control inflation factor $\lambda_{GC}$ based on the p-values. Is there evidence of possible inflation due to confounding?</span>
+<span id="cb17-112"><a href="#cb17-112" aria-hidden="true" tabindex="-1"></a><span class="ss">    * </span>**Hint**: Divide median chi-squared by 0.456 to get genomic control lambda</span>
+<span id="cb17-113"><a href="#cb17-113" aria-hidden="true" tabindex="-1"></a><span class="in">```{r, eval = FALSE}</span></span>
+<span id="cb17-114"><a href="#cb17-114" aria-hidden="true" tabindex="-1"></a>chisq.values <span class="ot">&lt;-</span> <span class="fu">qchisq</span>(plink.gwas<span class="sc">$</span>P, <span class="dv">1</span>, <span class="at">lower.tail =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb17-115"><a href="#cb17-115" aria-hidden="true" tabindex="-1"></a>lambda_gc <span class="ot">&lt;-</span> <span class="fu">median</span>(chisq.values) <span class="sc">/</span> <span class="fl">0.456</span></span>
+<span id="cb17-116"><a href="#cb17-116" aria-hidden="true" tabindex="-1"></a><span class="co"># Is lambda &gt; 1.05? This suggests population structure inflation</span></span>
+<span id="cb17-117"><a href="#cb17-117" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb17-118"><a href="#cb17-118" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-119"><a href="#cb17-119" aria-hidden="true" tabindex="-1"></a><span class="ss">7. </span>Now we will run REGENIE to perform a GWAS of the phenotype using a whole genome regression model. We first want to extract a set of high quality variants for the Step 1 null model fitting. Using PLINK, apply QC filters to remove variants with MAF below 5%, missingness above 1%, HWE p-value below 0.001, minor allele count (MAC) below 20. </span>
+<span id="cb17-120"><a href="#cb17-120" aria-hidden="true" tabindex="-1"></a>We will use <span class="in">`--write-snplist`</span> to store list of variants passing QC without making a new BED file.</span>
+<span id="cb17-121"><a href="#cb17-121" aria-hidden="true" tabindex="-1"></a><span class="in">```{r, eval = FALSE}</span></span>
+<span id="cb17-122"><a href="#cb17-122" aria-hidden="true" tabindex="-1"></a><span class="co"># first fill in the thresholds to use for each filter</span></span>
+<span id="cb17-123"><a href="#cb17-123" aria-hidden="true" tabindex="-1"></a>filter_maf <span class="ot">=</span> </span>
+<span id="cb17-124"><a href="#cb17-124" aria-hidden="true" tabindex="-1"></a>filter_missing_rate <span class="ot">=</span> </span>
+<span id="cb17-125"><a href="#cb17-125" aria-hidden="true" tabindex="-1"></a>filter_hwe <span class="ot">=</span> </span>
+<span id="cb17-126"><a href="#cb17-126" aria-hidden="true" tabindex="-1"></a>filter_mac <span class="ot">=</span> </span>
+<span id="cb17-127"><a href="#cb17-127" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-128"><a href="#cb17-128" aria-hidden="true" tabindex="-1"></a>cmd <span class="ot">&lt;-</span> <span class="fu">glue</span>(<span class="st">'{plink2_binary} --bfile "{files_dir}/sim_rels_geno" --pheno "{files_dir}/sim_rels_pheno.txt" --pheno-name Pheno --maf {filter_maf} --geno {filter_missing_rate} --hwe {filter_hwe} --mac {filter_mac} --write-snplist --out qc_pass'</span>)</span>
+<span id="cb17-129"><a href="#cb17-129" aria-hidden="true" tabindex="-1"></a><span class="fu">system</span>(cmd, <span class="at">intern =</span> T)</span>
+<span id="cb17-130"><a href="#cb17-130" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb17-131"><a href="#cb17-131" aria-hidden="true" tabindex="-1"></a>This produces a file <span class="in">`qc_pass.snplist`</span> containing a list of variant IDs that pass the QC filters.</span>
+<span id="cb17-132"><a href="#cb17-132" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb17-133"><a href="#cb17-133" aria-hidden="true" tabindex="-1"></a><span class="fu">### If REGENIE software is installed on your machine</span></span>
+<span id="cb17-134"><a href="#cb17-134" aria-hidden="true" tabindex="-1"></a><span class="ss">8. </span>Run REGENIE Step 1 to fit the null model and obtain polygenic predictions using a leave-one-chromosome-out (LOCO) scheme. </span>
 <span id="cb17-135"><a href="#cb17-135" aria-hidden="true" tabindex="-1"></a><span class="in">```{r, eval = FALSE}</span></span>
-<span id="cb17-136"><a href="#cb17-136" aria-hidden="true" tabindex="-1"></a>cmd <span class="ot">&lt;-</span> <span class="fu">glue</span>(<span class="st">'{regenie_binary} --bed "{files_dir}/sim_rels_geno" --phenoFile "{files_dir}/sim_rels_pheno.txt" --phenoCol Pheno --qt --step 2 --bsize 400 --pred gwas_regenie_pred.list --out step2_gwas_regenie'</span>)</span>
+<span id="cb17-136"><a href="#cb17-136" aria-hidden="true" tabindex="-1"></a>cmd <span class="ot">&lt;-</span> <span class="fu">glue</span>(<span class="st">'{regenie_binary} --bed "{files_dir}/sim_rels_geno" --phenoFile "{files_dir}/sim_rels_pheno.txt" --phenoCol Pheno --qt --step 1 --loocv --bsize 1000 --extract qc_pass.snplist --out gwas_regenie'</span>)</span>
 <span id="cb17-137"><a href="#cb17-137" aria-hidden="true" tabindex="-1"></a><span class="fu">system</span>(cmd, <span class="at">intern =</span> T)</span>
-<span id="cb17-138"><a href="#cb17-138" aria-hidden="true" tabindex="-1"></a><span class="in">```</span>  </span>
-<span id="cb17-139"><a href="#cb17-139" aria-hidden="true" tabindex="-1"></a>The REGENIE summary statistics will be in <span class="in">`step2_gwas_regenie_Pheno.regenie`</span>.</span>
+<span id="cb17-138"><a href="#cb17-138" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb17-139"><a href="#cb17-139" aria-hidden="true" tabindex="-1"></a>The LOCO polygenic predictions for the phenotype are stored in <span class="in">`gwas_regenie_1.loco`</span>.</span>
 <span id="cb17-140"><a href="#cb17-140" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-141"><a href="#cb17-141" aria-hidden="true" tabindex="-1"></a><span class="ss">10. </span>Generate Manhatthan and Q-Q plots based on the REGENIE association results and compute $\lambda_{GC}$. Compare with output from Questions 4-6.</span>
-<span id="cb17-142"><a href="#cb17-142" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb17-143"><a href="#cb17-143" aria-hidden="true" tabindex="-1"></a><span class="fu">### If REGENIE software does not run on your machine</span></span>
-<span id="cb17-144"><a href="#cb17-144" aria-hidden="true" tabindex="-1"></a><span class="ss">8. </span>We will use an implementation of REGENIE in R. Download it <span class="co">[</span><span class="ot">here</span><span class="co">](https://gatech.box.com/s/k7yk3tpqlekuc7zh6xquyjh9vbvumcx7)</span> and change the path of the variable <span class="in">`regenie_script`</span> to the path of the script on your machine</span>
-<span id="cb17-145"><a href="#cb17-145" aria-hidden="true" tabindex="-1"></a><span class="in">```{r, eval = FALSE}</span></span>
-<span id="cb17-146"><a href="#cb17-146" aria-hidden="true" tabindex="-1"></a>regenie_script <span class="ot">&lt;-</span> <span class="st">"/Users/xyz/Downloads/run_regenie.r"</span></span>
-<span id="cb17-147"><a href="#cb17-147" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(regenie_script)</span>
-<span id="cb17-148"><a href="#cb17-148" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb17-149"><a href="#cb17-149" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-150"><a href="#cb17-150" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>We now run REGENIE Step 1 to fit the null model and obtain polygenic predictions using a leave-one-chromosome-out (LOCO) scheme.</span>
-<span id="cb17-151"><a href="#cb17-151" aria-hidden="true" tabindex="-1"></a><span class="in">```{r, eval = FALSE}</span></span>
-<span id="cb17-152"><a href="#cb17-152" aria-hidden="true" tabindex="-1"></a>loco_pred <span class="ot">&lt;-</span> <span class="fu">run_regenie_step1</span>(</span>
-<span id="cb17-153"><a href="#cb17-153" aria-hidden="true" tabindex="-1"></a>  <span class="at">bedfile =</span> <span class="fu">paste0</span>(files_dir, <span class="st">"/sim_rels_geno"</span>),</span>
-<span id="cb17-154"><a href="#cb17-154" aria-hidden="true" tabindex="-1"></a>  <span class="at">phenofile =</span> <span class="fu">paste0</span>(files_dir, <span class="st">"/sim_rels_pheno.txt"</span>),</span>
-<span id="cb17-155"><a href="#cb17-155" aria-hidden="true" tabindex="-1"></a>  <span class="at">phenocol =</span> <span class="st">"Pheno"</span>,</span>
-<span id="cb17-156"><a href="#cb17-156" aria-hidden="true" tabindex="-1"></a>  <span class="at">bsize =</span> <span class="dv">1000</span>,</span>
-<span id="cb17-157"><a href="#cb17-157" aria-hidden="true" tabindex="-1"></a>  <span class="at">extract =</span> <span class="st">"qc_pass.snplist"</span></span>
-<span id="cb17-158"><a href="#cb17-158" aria-hidden="true" tabindex="-1"></a>) </span>
-<span id="cb17-159"><a href="#cb17-159" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb17-160"><a href="#cb17-160" aria-hidden="true" tabindex="-1"></a>This function will return the LOCO polygenic predictions for the phenotype.</span>
-<span id="cb17-161"><a href="#cb17-161" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-162"><a href="#cb17-162" aria-hidden="true" tabindex="-1"></a><span class="ss">9. </span>Run REGENIE Step 2 to perform association testing.</span>
-<span id="cb17-163"><a href="#cb17-163" aria-hidden="true" tabindex="-1"></a><span class="in">```{r, eval = FALSE}</span></span>
-<span id="cb17-164"><a href="#cb17-164" aria-hidden="true" tabindex="-1"></a>sumstats_regenie <span class="ot">&lt;-</span> <span class="fu">run_regenie_step2</span>(</span>
-<span id="cb17-165"><a href="#cb17-165" aria-hidden="true" tabindex="-1"></a>  <span class="at">bedfile =</span> <span class="fu">paste0</span>(files_dir, <span class="st">"/sim_rels_geno"</span>),</span>
-<span id="cb17-166"><a href="#cb17-166" aria-hidden="true" tabindex="-1"></a>  <span class="at">phenofile =</span> <span class="fu">paste0</span>(files_dir, <span class="st">"/sim_rels_pheno.txt"</span>),</span>
-<span id="cb17-167"><a href="#cb17-167" aria-hidden="true" tabindex="-1"></a>  <span class="at">phenocol =</span> <span class="st">"Pheno"</span>,</span>
-<span id="cb17-168"><a href="#cb17-168" aria-hidden="true" tabindex="-1"></a>  <span class="at">bsize =</span> <span class="dv">200</span>,</span>
-<span id="cb17-169"><a href="#cb17-169" aria-hidden="true" tabindex="-1"></a>  <span class="at">loco.mat =</span> loco_pred</span>
-<span id="cb17-170"><a href="#cb17-170" aria-hidden="true" tabindex="-1"></a>) </span>
-<span id="cb17-171"><a href="#cb17-171" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-172"><a href="#cb17-172" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(sumstats_regenie)</span>
-<span id="cb17-173"><a href="#cb17-173" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb17-174"><a href="#cb17-174" aria-hidden="true" tabindex="-1"></a>This function returns a data frame containing the REGENIE summary statistics.</span>
-<span id="cb17-175"><a href="#cb17-175" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-176"><a href="#cb17-176" aria-hidden="true" tabindex="-1"></a><span class="ss">10. </span>Generate Manhatthan and Q-Q plots based on the REGENIE association results and compute $\lambda_{GC}$. Compare with output from Questions 4-6.</span>
-<span id="cb17-177"><a href="#cb17-177" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb17-141"><a href="#cb17-141" aria-hidden="true" tabindex="-1"></a><span class="ss">9. </span>Run REGENIE Step 2 to perform association testing.</span>
+<span id="cb17-142"><a href="#cb17-142" aria-hidden="true" tabindex="-1"></a><span class="in">```{r, eval = FALSE}</span></span>
+<span id="cb17-143"><a href="#cb17-143" aria-hidden="true" tabindex="-1"></a>cmd <span class="ot">&lt;-</span> <span class="fu">glue</span>(<span class="st">'{regenie_binary} --bed "{files_dir}/sim_rels_geno" --phenoFile "{files_dir}/sim_rels_pheno.txt" --phenoCol Pheno --qt --step 2 --bsize 400 --pred gwas_regenie_pred.list --out step2_gwas_regenie'</span>)</span>
+<span id="cb17-144"><a href="#cb17-144" aria-hidden="true" tabindex="-1"></a><span class="fu">system</span>(cmd, <span class="at">intern =</span> T)</span>
+<span id="cb17-145"><a href="#cb17-145" aria-hidden="true" tabindex="-1"></a><span class="in">```</span>  </span>
+<span id="cb17-146"><a href="#cb17-146" aria-hidden="true" tabindex="-1"></a>The REGENIE summary statistics will be in <span class="in">`step2_gwas_regenie_Pheno.regenie`</span>.</span>
+<span id="cb17-147"><a href="#cb17-147" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-148"><a href="#cb17-148" aria-hidden="true" tabindex="-1"></a><span class="ss">10. </span>Generate Manhatthan and Q-Q plots based on the REGENIE association results and compute $\lambda_{GC}$. Compare with output from Questions 4-6.</span>
+<span id="cb17-149"><a href="#cb17-149" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb17-150"><a href="#cb17-150" aria-hidden="true" tabindex="-1"></a><span class="fu">### If REGENIE software does not run on your machine</span></span>
+<span id="cb17-151"><a href="#cb17-151" aria-hidden="true" tabindex="-1"></a><span class="ss">8. </span>We will use an implementation of REGENIE in R. Download it <span class="co">[</span><span class="ot">here</span><span class="co">](https://gatech.box.com/s/k7yk3tpqlekuc7zh6xquyjh9vbvumcx7)</span> and change the path of the variable <span class="in">`regenie_script`</span> to the path of the script on your machine</span>
+<span id="cb17-152"><a href="#cb17-152" aria-hidden="true" tabindex="-1"></a><span class="in">```{r, eval = FALSE}</span></span>
+<span id="cb17-153"><a href="#cb17-153" aria-hidden="true" tabindex="-1"></a>regenie_script <span class="ot">&lt;-</span> <span class="st">"/Users/xyz/Downloads/run_regenie.r"</span></span>
+<span id="cb17-154"><a href="#cb17-154" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(regenie_script)</span>
+<span id="cb17-155"><a href="#cb17-155" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb17-156"><a href="#cb17-156" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-157"><a href="#cb17-157" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>We now run REGENIE Step 1 to fit the null model and obtain polygenic predictions using a leave-one-chromosome-out (LOCO) scheme.</span>
+<span id="cb17-158"><a href="#cb17-158" aria-hidden="true" tabindex="-1"></a><span class="in">```{r, eval = FALSE}</span></span>
+<span id="cb17-159"><a href="#cb17-159" aria-hidden="true" tabindex="-1"></a>loco_pred <span class="ot">&lt;-</span> <span class="fu">run_regenie_step1</span>(</span>
+<span id="cb17-160"><a href="#cb17-160" aria-hidden="true" tabindex="-1"></a>  <span class="at">bedfile =</span> <span class="fu">paste0</span>(files_dir, <span class="st">"/sim_rels_geno"</span>),</span>
+<span id="cb17-161"><a href="#cb17-161" aria-hidden="true" tabindex="-1"></a>  <span class="at">phenofile =</span> <span class="fu">paste0</span>(files_dir, <span class="st">"/sim_rels_pheno.txt"</span>),</span>
+<span id="cb17-162"><a href="#cb17-162" aria-hidden="true" tabindex="-1"></a>  <span class="at">phenocol =</span> <span class="st">"Pheno"</span>,</span>
+<span id="cb17-163"><a href="#cb17-163" aria-hidden="true" tabindex="-1"></a>  <span class="at">bsize =</span> <span class="dv">1000</span>,</span>
+<span id="cb17-164"><a href="#cb17-164" aria-hidden="true" tabindex="-1"></a>  <span class="at">extract =</span> <span class="st">"qc_pass.snplist"</span></span>
+<span id="cb17-165"><a href="#cb17-165" aria-hidden="true" tabindex="-1"></a>) </span>
+<span id="cb17-166"><a href="#cb17-166" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb17-167"><a href="#cb17-167" aria-hidden="true" tabindex="-1"></a>This function will return the LOCO polygenic predictions for the phenotype.</span>
+<span id="cb17-168"><a href="#cb17-168" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-169"><a href="#cb17-169" aria-hidden="true" tabindex="-1"></a><span class="ss">9. </span>Run REGENIE Step 2 to perform association testing.</span>
+<span id="cb17-170"><a href="#cb17-170" aria-hidden="true" tabindex="-1"></a><span class="in">```{r, eval = FALSE}</span></span>
+<span id="cb17-171"><a href="#cb17-171" aria-hidden="true" tabindex="-1"></a>sumstats_regenie <span class="ot">&lt;-</span> <span class="fu">run_regenie_step2</span>(</span>
+<span id="cb17-172"><a href="#cb17-172" aria-hidden="true" tabindex="-1"></a>  <span class="at">bedfile =</span> <span class="fu">paste0</span>(files_dir, <span class="st">"/sim_rels_geno"</span>),</span>
+<span id="cb17-173"><a href="#cb17-173" aria-hidden="true" tabindex="-1"></a>  <span class="at">phenofile =</span> <span class="fu">paste0</span>(files_dir, <span class="st">"/sim_rels_pheno.txt"</span>),</span>
+<span id="cb17-174"><a href="#cb17-174" aria-hidden="true" tabindex="-1"></a>  <span class="at">phenocol =</span> <span class="st">"Pheno"</span>,</span>
+<span id="cb17-175"><a href="#cb17-175" aria-hidden="true" tabindex="-1"></a>  <span class="at">bsize =</span> <span class="dv">200</span>,</span>
+<span id="cb17-176"><a href="#cb17-176" aria-hidden="true" tabindex="-1"></a>  <span class="at">loco.mat =</span> loco_pred</span>
+<span id="cb17-177"><a href="#cb17-177" aria-hidden="true" tabindex="-1"></a>) </span>
+<span id="cb17-178"><a href="#cb17-178" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-179"><a href="#cb17-179" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(sumstats_regenie)</span>
+<span id="cb17-180"><a href="#cb17-180" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb17-181"><a href="#cb17-181" aria-hidden="true" tabindex="-1"></a>This function returns a data frame containing the REGENIE summary statistics.</span>
+<span id="cb17-182"><a href="#cb17-182" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-183"><a href="#cb17-183" aria-hidden="true" tabindex="-1"></a><span class="ss">10. </span>Generate Manhatthan and Q-Q plots based on the REGENIE association results and compute $\lambda_{GC}$. Compare with output from Questions 4-6.</span>
+<span id="cb17-184"><a href="#cb17-184" aria-hidden="true" tabindex="-1"></a><span class="ss">    * </span>**Compare**: How do REGENIE results differ from PLINK? Is the inflation reduced? Why?</span>
+<span id="cb17-185"><a href="#cb17-185" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-186"><a href="#cb17-186" aria-hidden="true" tabindex="-1"></a>---</span>
+<span id="cb17-187"><a href="#cb17-187" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-188"><a href="#cb17-188" aria-hidden="true" tabindex="-1"></a><span class="fu">## Key Takeaways from This Practical</span></span>
+<span id="cb17-189"><a href="#cb17-189" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-190"><a href="#cb17-190" aria-hidden="true" tabindex="-1"></a>**Concepts you should understand:**</span>
+<span id="cb17-191"><a href="#cb17-191" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-192"><a href="#cb17-192" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>**Genomic control inflation**: $\lambda_{GC}$ &gt; 1.05 suggests population stratification/relatedness bias</span>
+<span id="cb17-193"><a href="#cb17-193" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>**PLINK limitations**: Standard regression assumes unrelated samples, gets inflated with structure</span>
+<span id="cb17-194"><a href="#cb17-194" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>**Mixed models**: REGENIE accounts for relatedness through random effects in Step 1</span>
+<span id="cb17-195"><a href="#cb17-195" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>**LOCO procedure**: Leave-one-chromosome-out avoids proximal contamination in polygenic predictions</span>
+<span id="cb17-196"><a href="#cb17-196" aria-hidden="true" tabindex="-1"></a><span class="ss">5. </span>**QQ plots as diagnosis**: Deviation from diagonal reveals unwanted correlations in test statistics</span>
+<span id="cb17-197"><a href="#cb17-197" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-198"><a href="#cb17-198" aria-hidden="true" tabindex="-1"></a>**Why this matters:**</span>
+<span id="cb17-199"><a href="#cb17-199" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-200"><a href="#cb17-200" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**False positives**: Inflation from structure can lead to spurious associations if not corrected</span>
+<span id="cb17-201"><a href="#cb17-201" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Different methods**: PLINK finds structure-driven signals; REGENIE accounts for it</span>
+<span id="cb17-202"><a href="#cb17-202" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Sample quality**: Knowing your relatedness structure is essential for GWAS design</span>
+<span id="cb17-203"><a href="#cb17-203" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-204"><a href="#cb17-204" aria-hidden="true" tabindex="-1"></a>**Next session:** We'll see how to test rare variants using different strategies when single-SNP tests fail.</span>
+<span id="cb17-205"><a href="#cb17-205" aria-hidden="true" tabindex="-1"></a></span>
 </code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
