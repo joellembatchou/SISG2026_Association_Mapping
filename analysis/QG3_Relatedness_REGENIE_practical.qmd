@@ -19,17 +19,20 @@ library(glue)
 
 
 ## Introduction
-We will be analyzing a simulated data set which contains sample structure to better understand the impact it can have in GWAS analyses if not accounted for. 
+
+**What we're testing**: How do we handle population structure and relatedness in GWAS? We'll compare naive PLINK analysis with REGENIE's mixed model approach to see how structure affects results.
+
+We will be analyzing a simulated data set which contains sample structure to better understand the impact it can have in GWAS analyses if not accounted for.
 We will perform GWAS on a quantitative phenotype which was simulated with high heritability and polygenic.
 
-The file ["sim_rels_pheno.txt"](https://github.com/joellembatchou/SISG2025_Association_Mapping/tree/master/data)” contains the phenotype measurements for a set of individuals and the file "sim_rels_geno.bed" is a binary file in PLINK BED format with accompanying BIM and FAM files which contains the genotype data **at null variants** (i.e. not associated with the phenotype).  
+The file [“sim_rels_pheno.txt”](https://github.com/joellembatchou/SISG2026_Association_Mapping/tree/master/data)” contains the phenotype measurements for a set of individuals and the file "sim_rels_geno.bed" is a binary file in PLINK BED format with accompanying BIM and FAM files which contains the genotype data **at null variants** (i.e. not associated with the phenotype).  
 
 *How should we expect the QQ/Manhatthan plots to look like under this scenario?*
 
 ### Data preparation
 Let’s first load the simulated data into the R session. We need to define the path to the directory containing the phenotype and genotype files (change the path to the files location).
 ```{r echo=FALSE}
-files_dir <- "/Users/joelle.mbatchou/SISG/2025/SISG2025_Association_Mapping/data/" 
+files_dir <- "/Users/joelle.mbatchou/SISG/2026/SISG2026_Association_Mapping/data/" 
 plink2_binary <- "/Users/joelle.mbatchou/software/bins/plink2" 
 regenie_binary <- "/Users/joelle.mbatchou/software/bins/regenie"
 ```
@@ -86,6 +89,7 @@ system(cmd, intern = T)
 The results of the GWAS are stored in `gwas_plink.Pheno.glm.linear`.
 
 4. Make a Manhattan plot of the association results. Make sure to check what information is stored in the PLINK output file (using `str()`).
+    * **Interpret**: Should we see associations given that variants are null (not truly associated)? What does the plot tell us?
 ```{r, eval = FALSE}
 plink.gwas <- fread("gwas_plink.Pheno.glm.linear", header = TRUE)
 plot(
@@ -97,14 +101,17 @@ plot(
 ```
 
 5. Make a Q-Q plot of the association results.
+    * **Interpret**: Does the QQ plot show deviation from the diagonal? What does this mean?
 ```{r, eval = FALSE}
 qq(plink.gwas$P)
 ```
 
 6. Compute the genomic control inflation factor $\lambda_{GC}$ based on the p-values. Is there evidence of possible inflation due to confounding?
+    * **Hint**: Divide median chi-squared by 0.456 to get genomic control lambda
 ```{r, eval = FALSE}
 chisq.values <- qchisq(plink.gwas$P, 1, lower.tail = FALSE)
-median(chisq.values)
+lambda_gc <- median(chisq.values) / 0.456
+# Is lambda > 1.05? This suggests population structure inflation
 ```
 
 7. Now we will run REGENIE to perform a GWAS of the phenotype using a whole genome regression model. We first want to extract a set of high quality variants for the Step 1 null model fitting. Using PLINK, apply QC filters to remove variants with MAF below 5%, missingness above 1%, HWE p-value below 0.001, minor allele count (MAC) below 20. 
@@ -172,4 +179,26 @@ str(sumstats_regenie)
 This function returns a data frame containing the REGENIE summary statistics.
 
 10. Generate Manhatthan and Q-Q plots based on the REGENIE association results and compute $\lambda_{GC}$. Compare with output from Questions 4-6.
-  
+    * **Compare**: How do REGENIE results differ from PLINK? Is the inflation reduced? Why?
+
+---
+
+## Key Takeaways from This Practical
+
+**Concepts you should understand:**
+
+1. **Genomic control inflation**: $\lambda_{GC}$ > 1.05 suggests population stratification/relatedness bias
+2. **PLINK limitations**: Standard regression assumes unrelated samples, gets inflated with structure
+3. **Mixed models**: REGENIE accounts for relatedness through random effects in Step 1
+4. **LOCO procedure**: Leave-one-chromosome-out avoids proximal contamination in polygenic predictions
+5. **QQ plots as diagnosis**: Deviation from diagonal reveals unwanted correlations in test statistics
+
+**Why this matters:**
+
+- **False positives**: Inflation from structure can lead to spurious associations if not corrected
+- **Different methods**: PLINK finds structure-driven signals; REGENIE accounts for it
+- **Sample quality**: Knowing your relatedness structure is essential for GWAS design
+
+**Next session:** We'll see how to test rare variants using different strategies when single-SNP tests fail.
+
+
