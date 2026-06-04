@@ -1,7 +1,7 @@
 ---
 title: 'Interaction testing and vQTL mapping'
 author: "Summer Institute of Statical Genetics (Module  QG3)"
-date: '2025-06-10'
+date: '2026-06-10'
 format:
   html: default
 ---
@@ -19,7 +19,9 @@ For this lab, we will use the following R libraries:
 library(qqman)
 ```
 
-This practical aims at illustrating the relationship between tests for vQTLs and tests for interaction effects. We provide a set of `R` commands below to simulate the phenotypes, genotypes and covariates (at $M=1000$ SNPs) of $N=10,000$ samples and 2 covariates. We will chose the first of the 10 SNPs to be causal (either QTL, vQTL or both). We generate two phenotypes which differ based on whether the causal variant influences the phenotypic variance of the trait directly or influences the phenotypic mean through GxE effects.
+**What we're exploring**: GWAS tests mean effects, but variants can affect trait **variance** (vQTLs) or act through **gene-by-environment interactions** (GxE). We'll understand when each test has power and how they relate to each other.
+
+This practical aims at illustrating the relationship between tests for vQTLs and tests for interaction effects. We provide a set of `R` commands below to simulate the phenotypes, genotypes and covariates (at $M=1000$ SNPs) of $N=10,000$ samples and 2 covariates. We will chose the first of the 1000 SNPs to be causal (either QTL, vQTL or both). We generate two phenotypes which differ based on whether the causal variant influences the phenotypic variance of the trait directly or influences the phenotypic mean through GxE effects.
 
 $$
 E(Y_{vQTL}) = G\beta,\; Var(Y_{vQTL}) = 1 + G\alpha
@@ -117,6 +119,7 @@ lm_test <- function(data, trait_name) {
 ```  
 
 Based on the parameters used in the simulation, would we expect significant result when testing the causal SNP1?
+    * **Predict**: With `mean_effect = 0, variance_effect = 0`, do we expect to detect SNP1 in mean tests? Why not?
 
 First we do it for trait "Y_vQTL" (do it again on your own for the other trait "Y_gxe")
 ```{R, eval=FALSE}
@@ -174,6 +177,7 @@ levene_test <- function(data, trait_name) {
 ```  
 
 Based on the parameters used in the simulation, would we expect significant result when testing the causal SNP1?
+    * **Interpret**: Levene's test checks variance differences. What does it test vs the mean test?
 
 ```{R, eval=FALSE}
 trait_name <- "Y_vQTL"
@@ -219,12 +223,42 @@ plot_qq(gxe_pvals)
 ```
 
 Check these tests for both phenotypes `Y_vQTL` and `Y_gxe`.
+    * **Compare**: For Y_vQTL, which test detects SNP1? For Y_gxe, which test? Why the difference?
 
 ## Exploration across scenarios
+**Key insight**: By running the same tests on different simulated architectures, you'll see when each test has power:
 Modify `mean_effect` and `variance_effect` to simulate different scenarios:
 
 * SNP1 affects only the mean (`variance_effect = 0`).
-* SNP1 affects only the variance (`mean_effect = 0`).
-* SNP1 affects both the mean and variance.
+* **SNP1 affects only the mean** (`variance_effect = 0`): Which test(s) detect it?
+* **SNP1 affects only the variance** (`mean_effect = 0`): Which test(s) detect it?
+* **SNP1 affects both**: Do all tests have power? Any that lose power when effect split between mean/variance?
 
 *Note: You can choose values like 0.01 or 0.1 in those scenarios (choosing too large values may lead to 0 p-values for some tests)*
+
+---
+
+## Key Takeaways from This Practical
+
+**Concepts you should understand:**
+
+1. **vQTL tests variance**: Levene's test (or similar) detects when variants affect trait variability, not mean
+2. **GxE tests interactions**: Interaction term in regression (G×E) captures when SNP effects differ by environment
+3. **Different tests → different power**: Mean test powerful for vQTLs? No! vQTL test powerful for mean effects? No!
+4. **Genetic architecture matters**: Test power depends on HOW the variant affects the phenotype
+5. **Multiple testing perspectives**: Same variant can be detected (or missed) depending on the question asked
+
+**Method selection guide:**
+
+- **Suspect mean effects only** → Standard GWAS (mean test)
+- **Suspect variance effects only** → vQTL test (Levene's test or similar)
+- **Suspect GxE effects** → Interaction test (GxE regression)
+- **Unknown** → Test all three; might detect different signals
+
+**Important caveats:**
+
+- Power is specificity-dependent: being sensitive to variance means you miss mean effects
+- Sample size requirements: GxE needs larger samples than mean tests (split into environment strata)
+- LD and correlation: vQTLs and GxE can show similar spatial patterns at different loci
+
+**Next session:** We'll learn polygenic risk scores (PRS) - combining many variants for prediction.
