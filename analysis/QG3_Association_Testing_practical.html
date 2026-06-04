@@ -484,9 +484,21 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="key-takeaways-from-this-practical" class="level2">
 <h2 class="anchored" data-anchor-id="key-takeaways-from-this-practical">Key Takeaways from This Practical</h2>
-<p><strong>Concepts you should understand</strong>: 1. <strong>Regression framework</strong>: Both logistic and linear regression test for association while accounting for covariates 2. <strong>Odds ratios vs effect sizes</strong>: OR &lt; 1 means protective; OR &gt; 1 means risk-increasing; effect size is change in trait mean per allele 3. <strong>Genotype encoding</strong>: Additive (0/1/2) assumes linear relationship; 2-parameter model allows any pattern 4. <strong>Multiple testing</strong>: Must correct for number of tests to avoid false positives 5. <strong>Interpretation matters</strong>: Statistical significance depends on sample size, but biological relevance depends on effect size</p>
-<p><strong>You are NOT expected to</strong>: - Memorize R syntax (you can look it up!) - Become an R expert - Finish every question</p>
-<p><strong>Next session</strong>: We’ll see why population structure (ancestry) can cause spurious associations and how to detect it.</p>
+<p><strong>Concepts you should understand:</strong></p>
+<ol type="1">
+<li><strong>Regression framework</strong>: Both logistic and linear regression test for association while accounting for covariates</li>
+<li><strong>Odds ratios vs effect sizes</strong>: OR &lt; 1 means protective; OR &gt; 1 means risk-increasing; effect size is change in trait mean per allele</li>
+<li><strong>Genotype encoding</strong>: Additive (0/1/2) assumes linear relationship; 2-parameter model allows any pattern</li>
+<li><strong>Multiple testing</strong>: Must correct for number of tests to avoid false positives</li>
+<li><strong>Interpretation matters</strong>: Statistical significance depends on sample size, but biological relevance depends on effect size</li>
+</ol>
+<p><strong>You are NOT expected to:</strong></p>
+<ul>
+<li>Memorize R syntax (you can look it up!)</li>
+<li>Become an R expert</li>
+<li>Finish every question</li>
+</ul>
+<p><strong>Next session:</strong> We’ll see why population structure (ancestry) can cause spurious associations and how to detect it.</p>
 
 
 <!-- -->
@@ -1133,19 +1145,21 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb27-194"><a href="#cb27-194" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb27-195"><a href="#cb27-195" aria-hidden="true" tabindex="-1"></a><span class="fu">## Key Takeaways from This Practical</span></span>
 <span id="cb27-196"><a href="#cb27-196" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-197"><a href="#cb27-197" aria-hidden="true" tabindex="-1"></a>**Concepts you should understand**:</span>
-<span id="cb27-198"><a href="#cb27-198" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>**Regression framework**: Both logistic and linear regression test for association while accounting for covariates</span>
-<span id="cb27-199"><a href="#cb27-199" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>**Odds ratios vs effect sizes**: OR &lt; 1 means protective; OR &gt; 1 means risk-increasing; effect size is change in trait mean per allele</span>
-<span id="cb27-200"><a href="#cb27-200" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>**Genotype encoding**: Additive (0/1/2) assumes linear relationship; 2-parameter model allows any pattern</span>
-<span id="cb27-201"><a href="#cb27-201" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>**Multiple testing**: Must correct for number of tests to avoid false positives</span>
-<span id="cb27-202"><a href="#cb27-202" aria-hidden="true" tabindex="-1"></a><span class="ss">5. </span>**Interpretation matters**: Statistical significance depends on sample size, but biological relevance depends on effect size</span>
-<span id="cb27-203"><a href="#cb27-203" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-204"><a href="#cb27-204" aria-hidden="true" tabindex="-1"></a>**You are NOT expected to**:</span>
-<span id="cb27-205"><a href="#cb27-205" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Memorize R syntax (you can look it up!)</span>
-<span id="cb27-206"><a href="#cb27-206" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Become an R expert</span>
-<span id="cb27-207"><a href="#cb27-207" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Finish every question</span>
-<span id="cb27-208"><a href="#cb27-208" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-209"><a href="#cb27-209" aria-hidden="true" tabindex="-1"></a>**Next session**: We'll see why population structure (ancestry) can cause spurious associations and how to detect it.</span>
+<span id="cb27-197"><a href="#cb27-197" aria-hidden="true" tabindex="-1"></a>**Concepts you should understand:**</span>
+<span id="cb27-198"><a href="#cb27-198" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-199"><a href="#cb27-199" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>**Regression framework**: Both logistic and linear regression test for association while accounting for covariates</span>
+<span id="cb27-200"><a href="#cb27-200" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>**Odds ratios vs effect sizes**: OR &lt; 1 means protective; OR &gt; 1 means risk-increasing; effect size is change in trait mean per allele</span>
+<span id="cb27-201"><a href="#cb27-201" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>**Genotype encoding**: Additive (0/1/2) assumes linear relationship; 2-parameter model allows any pattern</span>
+<span id="cb27-202"><a href="#cb27-202" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>**Multiple testing**: Must correct for number of tests to avoid false positives</span>
+<span id="cb27-203"><a href="#cb27-203" aria-hidden="true" tabindex="-1"></a><span class="ss">5. </span>**Interpretation matters**: Statistical significance depends on sample size, but biological relevance depends on effect size</span>
+<span id="cb27-204"><a href="#cb27-204" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-205"><a href="#cb27-205" aria-hidden="true" tabindex="-1"></a>**You are NOT expected to:**</span>
+<span id="cb27-206"><a href="#cb27-206" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-207"><a href="#cb27-207" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Memorize R syntax (you can look it up!)</span>
+<span id="cb27-208"><a href="#cb27-208" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Become an R expert</span>
+<span id="cb27-209"><a href="#cb27-209" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Finish every question</span>
+<span id="cb27-210"><a href="#cb27-210" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-211"><a href="#cb27-211" aria-hidden="true" tabindex="-1"></a>**Next session:** We'll see why population structure (ancestry) can cause spurious associations and how to detect it.</span>
 </code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->

@@ -488,9 +488,21 @@ window.Quarto = {
 </section>
 <section id="key-takeaways-from-this-practical" class="level2">
 <h2 class="anchored" data-anchor-id="key-takeaways-from-this-practical">Key Takeaways from This Practical</h2>
-<p><strong>Concepts you should understand</strong>: 1. <strong>PCA captures ancestry</strong>: PC1/PC2 represent continental-level ancestry differences, not individual SNPs 2. <strong>Population stratification = confounding</strong>: If cases/controls differ in ancestry, you see spurious associations 3. <strong>LD pruning improves signal</strong>: Correlated SNPs don’t add information; pruning reduces noise in PCA 4. <strong>PCA is exploratory</strong>: Use it to identify population structure, then adjust for PCs in downstream analysis 5. <strong>Admixture detection</strong>: Some samples show mixed ancestry from multiple populations</p>
-<p><strong>Important caveats</strong>: - PCs are population-specific: PCs calculated in one population may not transfer to another - LD pruning parameters matter: Different thresholds can change results - Sample size affects PC estimates: Projected samples may be less reliable</p>
-<p><strong>Next session</strong>: We’ll use PCs as covariates to adjust for population structure in genome-wide association tests.</p>
+<p><strong>Concepts you should understand:</strong></p>
+<ol type="1">
+<li><strong>PCA captures ancestry</strong>: PC1/PC2 represent continental-level ancestry differences, not individual SNPs</li>
+<li><strong>Population stratification = confounding</strong>: If cases/controls differ in ancestry, you see spurious associations</li>
+<li><strong>LD pruning improves signal</strong>: Correlated SNPs don’t add information; pruning reduces noise in PCA</li>
+<li><strong>PCA is exploratory</strong>: Use it to identify population structure, then adjust for PCs in downstream analysis</li>
+<li><strong>Admixture detection</strong>: Some samples show mixed ancestry from multiple populations</li>
+</ol>
+<p><strong>Important caveats:</strong></p>
+<ul>
+<li>PCs are population-specific: PCs calculated in one population may not transfer to another</li>
+<li>LD pruning parameters matter: Different thresholds can change results</li>
+<li>Sample size affects PC estimates: Projected samples may be less reliable</li>
+</ul>
+<p><strong>Next session:</strong> We’ll use PCs as covariates to adjust for population structure in genome-wide association tests.</p>
 
 
 <!-- -->
@@ -1149,19 +1161,21 @@ window.Quarto = {
 <span id="cb17-202"><a href="#cb17-202" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb17-203"><a href="#cb17-203" aria-hidden="true" tabindex="-1"></a><span class="fu">## Key Takeaways from This Practical</span></span>
 <span id="cb17-204"><a href="#cb17-204" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-205"><a href="#cb17-205" aria-hidden="true" tabindex="-1"></a>**Concepts you should understand**:</span>
-<span id="cb17-206"><a href="#cb17-206" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>**PCA captures ancestry**: PC1/PC2 represent continental-level ancestry differences, not individual SNPs</span>
-<span id="cb17-207"><a href="#cb17-207" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>**Population stratification = confounding**: If cases/controls differ in ancestry, you see spurious associations</span>
-<span id="cb17-208"><a href="#cb17-208" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>**LD pruning improves signal**: Correlated SNPs don't add information; pruning reduces noise in PCA</span>
-<span id="cb17-209"><a href="#cb17-209" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>**PCA is exploratory**: Use it to identify population structure, then adjust for PCs in downstream analysis</span>
-<span id="cb17-210"><a href="#cb17-210" aria-hidden="true" tabindex="-1"></a><span class="ss">5. </span>**Admixture detection**: Some samples show mixed ancestry from multiple populations</span>
-<span id="cb17-211"><a href="#cb17-211" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-212"><a href="#cb17-212" aria-hidden="true" tabindex="-1"></a>**Important caveats**:</span>
-<span id="cb17-213"><a href="#cb17-213" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>PCs are population-specific: PCs calculated in one population may not transfer to another</span>
-<span id="cb17-214"><a href="#cb17-214" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>LD pruning parameters matter: Different thresholds can change results</span>
-<span id="cb17-215"><a href="#cb17-215" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Sample size affects PC estimates: Projected samples may be less reliable</span>
-<span id="cb17-216"><a href="#cb17-216" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-217"><a href="#cb17-217" aria-hidden="true" tabindex="-1"></a>**Next session**: We'll use PCs as covariates to adjust for population structure in genome-wide association tests.</span>
+<span id="cb17-205"><a href="#cb17-205" aria-hidden="true" tabindex="-1"></a>**Concepts you should understand:**</span>
+<span id="cb17-206"><a href="#cb17-206" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-207"><a href="#cb17-207" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>**PCA captures ancestry**: PC1/PC2 represent continental-level ancestry differences, not individual SNPs</span>
+<span id="cb17-208"><a href="#cb17-208" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>**Population stratification = confounding**: If cases/controls differ in ancestry, you see spurious associations</span>
+<span id="cb17-209"><a href="#cb17-209" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>**LD pruning improves signal**: Correlated SNPs don't add information; pruning reduces noise in PCA</span>
+<span id="cb17-210"><a href="#cb17-210" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>**PCA is exploratory**: Use it to identify population structure, then adjust for PCs in downstream analysis</span>
+<span id="cb17-211"><a href="#cb17-211" aria-hidden="true" tabindex="-1"></a><span class="ss">5. </span>**Admixture detection**: Some samples show mixed ancestry from multiple populations</span>
+<span id="cb17-212"><a href="#cb17-212" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-213"><a href="#cb17-213" aria-hidden="true" tabindex="-1"></a>**Important caveats:**</span>
+<span id="cb17-214"><a href="#cb17-214" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-215"><a href="#cb17-215" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>PCs are population-specific: PCs calculated in one population may not transfer to another</span>
+<span id="cb17-216"><a href="#cb17-216" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>LD pruning parameters matter: Different thresholds can change results</span>
+<span id="cb17-217"><a href="#cb17-217" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Sample size affects PC estimates: Projected samples may be less reliable</span>
+<span id="cb17-218"><a href="#cb17-218" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-219"><a href="#cb17-219" aria-hidden="true" tabindex="-1"></a>**Next session:** We'll use PCs as covariates to adjust for population structure in genome-wide association tests.</span>
 </code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
