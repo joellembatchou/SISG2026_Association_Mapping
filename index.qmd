@@ -60,6 +60,7 @@ install.packages("tidyverse")
 install.packages("cowplot")
 install.packages("BEDMatrix")
 install.packages("SKAT")
+install.packages("glue")
 devtools::install_github("yaowuliu/ACAT")
 ```
 
@@ -117,10 +118,10 @@ data.frame(
     '<a href="https://gatech.box.com/s/163v98wn6wrq1yib08cee3ck1wm1quje" target="_blank">Slides</a>'
   ),
   Exercises = c(
-    '<a href="analysis/QG3_Beyond_Standard_GWAS_practical.html">Practical</a>',
+    '<a href="https://moeenriaz2.github.io/SISG26/index.html" target="_blank">Practical</a>',
+    '<a href="https://moeenriaz2.github.io/SISG26/index.html" target="_blank">Practical</a>',
     '<a href="analysis/QG3_Downstream-Analyses_practical.html">Practical</a>',
-    '<a href="analysis/QG3_Polygenic_Scores_practical.html">Practical</a>',
-    ""
+    '<a href="analysis/QG3_Beyond_Standard_GWAS_practical.html">Practical</a>'
   ),
   Key = c("", "", "", "")
 ) %>%
