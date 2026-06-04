@@ -111,8 +111,8 @@ data.frame(
     "Beyond traditional GWAS: Variance QTL, Interaction Testing, GWAX, Time-to-event, Multi-trait analysis"
     ),
   Lecture = c(
-    "",
-    "",
+    '<a href="https://gatech.box.com/s/eaiwddxx1hs5dn3itz7pjjgjgjdfieg5" target="_blank">Slides</a>',
+    '<a href="https://gatech.box.com/s/eaiwddxx1hs5dn3itz7pjjgjgjdfieg5" target="_blank">Slides</a>',
     "",
     '<a href="https://gatech.box.com/s/163v98wn6wrq1yib08cee3ck1wm1quje" target="_blank">Slides</a>'
   ),
