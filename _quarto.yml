@@ -22,14 +22,12 @@ website:
             href: analysis/QG3_Relatedness_REGENIE_practical.qmd
           - text: "Session 4: Rare Variant Tests"
             href: analysis/QG3_RV_tests_practical.qmd
-          - text: "Session 5: Beyond Standard GWAS"
-            href: analysis/QG3_Beyond_Standard_GWAS_practical.qmd
-          - text: "Session 6: Downstream Analyses"
+          - text: "Session 7: Downstream Analyses"
             href: analysis/QG3_Downstream-Analyses_practical.qmd
-          - text: "Session 7: Polygenic Scores"
+          - text: "Session 8: Beyond Standard GWAS"
+            href: analysis/QG3_Beyond_Standard_GWAS_practical.qmd
+          - text: "Session 9: Polygenic Scores"
             href: analysis/QG3_Polygenic_Scores_practical.qmd
-          - text: "Session 9: Power & Design"
-            href: analysis/QG3_Power-Design_practical.qmd
           - text: "Session 10: Case-Control Imbalance"
             href: analysis/QG3_CC_Imbalance_practical.qmd
     right:

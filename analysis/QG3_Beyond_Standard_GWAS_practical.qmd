@@ -1,7 +1,8 @@
 ---
 title: 'Interaction testing and vQTL mapping'
 format:
-  html: default
+  html:
+    df-print: default
 ---
 
 
