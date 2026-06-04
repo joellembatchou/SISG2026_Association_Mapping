@@ -163,7 +163,7 @@ column_spec(3, width = "35%")
 
 ## Datasets
 
-All the data sets used can be downloaded from the [Box folder](https://gatech.box.com/s/s6m0970432k5pcrgx2xigng6acjpuo54) for the class.
+All the data sets used can be downloaded from the [Box folder](https://gatech.box.com/s/9x413qjl5cprqmkvh9xt1f105tysxtcw) for the class.
 
 ## Additional resources
 
