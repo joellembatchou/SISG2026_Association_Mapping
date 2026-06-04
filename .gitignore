@@ -29,3 +29,5 @@ tmp/
 
 /.quarto/
 **/*.quarto_ipynb
+QUARTO_GUIDE.md
+SETUP_NOTES.md
