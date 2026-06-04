@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://joellembatchou.github.io/SISG2026_Association_Mapping/index.html</loc>
-    <lastmod>2026-06-04T15:27:19.005Z</lastmod>
+    <lastmod>2026-06-04T17:08:31.583Z</lastmod>
   </url>
   <url>
     <loc>https://joellembatchou.github.io/SISG2026_Association_Mapping/analysis/QG3_Relatedness_REGENIE_practical.html</loc>
@@ -17,16 +17,12 @@
     <lastmod>2026-06-04T16:24:46.103Z</lastmod>
   </url>
   <url>
-    <loc>https://joellembatchou.github.io/SISG2026_Association_Mapping/analysis/QG3_CC_Imbalance_practical.html</loc>
-    <lastmod>2026-06-04T15:27:18.636Z</lastmod>
+    <loc>https://joellembatchou.github.io/SISG2026_Association_Mapping/analysis/QG3_Beyond_Standard_GWAS_practical.html</loc>
+    <lastmod>2026-06-04T16:46:54.302Z</lastmod>
   </url>
   <url>
     <loc>https://joellembatchou.github.io/SISG2026_Association_Mapping/analysis/QG3_Association_Testing_practical.html</loc>
     <lastmod>2026-06-04T16:24:37.386Z</lastmod>
-  </url>
-  <url>
-    <loc>https://joellembatchou.github.io/SISG2026_Association_Mapping/analysis/QG3_Beyond_Standard_GWAS_practical.html</loc>
-    <lastmod>2026-06-04T16:46:54.302Z</lastmod>
   </url>
   <url>
     <loc>https://joellembatchou.github.io/SISG2026_Association_Mapping/analysis/QG3_Downstream-Analyses_practical.html</loc>
