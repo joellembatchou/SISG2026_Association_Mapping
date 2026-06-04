@@ -151,7 +151,7 @@ data.frame(
   ),
   Exercises = c(
     '<a href="analysis/QG3_Polygenic_Scores_practical.html">Practical</a>',
-    '<a href="analysis/QG3_CC_Imbalance_practical.html">Practical</a>'
+    ""
   ),
   Key = c("", "")
 ) %>%
