@@ -1,0 +1,1439 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.38">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Summer Institute of Statical Genetics (Module 15)">
+<meta name="dcterms.date" content="2023-07-25">
+
+<title>Practical 6: Prediction using GWAS summary statistics – SISG 2026 - Association Mapping</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-8c38fd85d21bfe44b50360969156fb14.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<link href="../site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet">
+<script src="../site_libs/pagedtable-1.1/js/pagedtable.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../styles.css">
+</head>
+
+<body class="nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">SISG 2026 - Association Mapping</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-practicals" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Practicals</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-practicals">    
+        <li>
+    <a class="dropdown-item" href="../analysis/QG3_Association_Testing_practical.html">
+ <span class="dropdown-text">Session 1: Association Testing</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../analysis/QG3_Plink_Population_Structure_practical.html">
+ <span class="dropdown-text">Session 2: PLINK &amp; Population Structure</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../analysis/QG3_Relatedness_REGENIE_practical.html">
+ <span class="dropdown-text">Session 3: Relatedness &amp; REGENIE</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../analysis/QG3_RV_tests_practical.html">
+ <span class="dropdown-text">Session 4: Rare Variant Tests</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../analysis/QG3_Downstream-Analyses_practical.html">
+ <span class="dropdown-text">Session 7: Downstream Analyses</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../analysis/QG3_Beyond_Standard_GWAS_practical.html">
+ <span class="dropdown-text">Session 8: Beyond Standard GWAS</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../analysis/QG3_Polygenic_Scores_practical.html">
+ <span class="dropdown-text">Session 9: Polygenic Scores</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../#">
+ <span class="dropdown-text">Session 10: Emerging Issues (Lecture only)</span></a>
+  </li>  
+    </ul>
+  </li>
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/joellembatchou/SISG2026_Association_Mapping"> <i class="bi bi-github" role="img" aria-label="GitHub">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#preparation" id="toc-preparation" class="nav-link active" data-scroll-target="#preparation">Preparation</a></li>
+  <li><a href="#part-1.-prediction-using-cpt." id="toc-part-1.-prediction-using-cpt." class="nav-link" data-scroll-target="#part-1.-prediction-using-cpt.">Part 1. Prediction using C+PT.</a></li>
+  <li><a href="#part-2.-prediction-using-sblup." id="toc-part-2.-prediction-using-sblup." class="nav-link" data-scroll-target="#part-2.-prediction-using-sblup.">Part 2. Prediction using SBLUP.</a></li>
+  <li><a href="#part-3.-prediction-using-sbayes-c" id="toc-part-3.-prediction-using-sbayes-c" class="nav-link" data-scroll-target="#part-3.-prediction-using-sbayes-c">Part 3. Prediction using SBayes C</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<div class="quarto-title-block"><div><h1 class="title">Practical 6: Prediction using GWAS summary statistics</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Summer Institute of Statical Genetics (Module 15) </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">July 25, 2023</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p><span style="color:red;"><strong>This practical runs on the SISG2023 server.</strong></span></p>
+<section id="preparation" class="level2">
+<h2 class="anchored" data-anchor-id="preparation">Preparation</h2>
+<p>This practical proposes a detailed tutorial for running three popular polygenic score (PGS) methods using GWAS summary statistics as introduced in <strong>Lecture 6</strong>.</p>
+<p><strong>Method 1: C+PT</strong></p>
+<p>The first method is classically denoted as “Clumping + P-value Thresholding (C+PT)”. This method is also abbreviated as P+T or C+T in certain publications. In brief, the principle of this method is compare various sets of uncorrelated SNPs (e.g., maximum squared pairwise correlation between allele counts at SNPs in the selected set is <span class="math inline">\(r^2 \leq 0.1\)</span>) that are associated with the trait / disease as certain p-value threshold (e.g., p&lt;0.01). We then select the set of SNPs that yields the largest prediction accuracy with the trait / disease of interest in a validation set. This method is broadly used because of it simplicity but may not often yield the largest accuracy. In this practical, we will use <code>PLINK</code> and <code>R</code> to determine these optimal sets of SNPs. PGS will be calculated using marginal/GWAS SNP effects as weights.</p>
+<p><strong>Method 2: SBLUP</strong></p>
+<p>The second method, the Summary-data based BLUP, is an approximation of the BLUP prediction method introduced in <strong>Lecture 5</strong>. In brief, SBLUP calculates PGS weights <span class="math inline">\(\mathbf{b}\)</span> using the following equation</p>
+<p><span class="math display">\[ \mathbf{b} = \left( \mathbf{R} + \frac{M_{SNP}(1-h_{SNP}^2)}{N_{GWAS}h_{SNP}^2}\mathbf{I}_M \right)^{-1} \boldsymbol{\beta} \]</span> where <span class="math inline">\(\boldsymbol{\beta}\)</span> is the vector of GWAS SNP effects and <span class="math inline">\(\mathbf{R}\)</span> a LD correlation matrix between SNPs estimated from a reference sample. Note that the SBLUP method is equivalent to the <code>LDpred-Inf</code> method. A detailed tutorial for LDpred2 is available at <a href="https://privefl.github.io/bigsnpr/articles/LDpred2.html" class="uri">https://privefl.github.io/bigsnpr/articles/LDpred2.html</a>. In this practical, we will calculate the SBLUP PGS weights “manually” in R.</p>
+<p><strong>Method 3: SBayes C</strong></p>
+<p>The Summary-data based BayesC (SBayesC) method is an approximation of the Bayes C method. This method is built upon a more flexible assumption regarding the distribution of SNP effects that only allows a subset of all <span class="math inline">\(M\)</span> SNPs to affect the trait/disease of interest. We denote <span class="math inline">\(\pi\)</span> the proportion of SNPs with a non-zero effect on the trait / disease. (S)BayesC implements a prior mixture distribution for the joint SNP effects <span class="math inline">\(\mathbf{b} = \left(b_1,\ldots,b_M\right)\)</span> defined as</p>
+<p><span class="math display">\[ b_j \sim \pi \mathcal{N}\left(0,\sigma^2_b\right)  + (1-\pi) \delta_0\]</span></p>
+<p>Note that the SBayesC method is equivalent to the <code>LDpred</code> (non-infinitesimal) method. In this practical, we will use the GCTB software to fit SBayes C.</p>
+<div style="page-break-after: always;"></div>
+<p><strong>Overview of the data</strong></p>
+<p>We provide GWAS summary statistics for two (simulated) traits hereafter denoted <code>Trait1</code> and <code>Trait2</code>. For simplicity, we will focus summary statistics of <span class="math inline">\(M=32,260\)</span> SNPs located on chromosome 20. These two GWAS were conducted in <span class="math inline">\(N=348,501\)</span> unrelated European ancestry participants from the UK Biobank (data accessed under project 12505) using the <code>fastGWA</code> module of the <code>GCTA</code> software (Yang et al.&nbsp;2011).</p>
+<p>We will assess prediction <span class="math inline">\(n=2504\)</span> samples from the 1000 Genomes Project (1KG) with different ancestries. Ancestries groups are European (EUR; N=503), East-Asian (EAS; N=504), South-Asian (SAS; N=489), Admixed individuals from the Americas (AMR; N=347) and African (AFR; N=661). We provide genotypes under binary PLINK format (three files: <code>1kg_hm3.bed</code>, <code>1kg_hm3.bim</code> and <code>1kg_hm3.fam</code>) for these 2504 samples and phenotypes (files named: <code>1kg.Trait1.phen</code> and <code>1kg.Trait2.phen</code>). For more details about this format please visit PLINK website (<a href="https://www.cog-genomics.org/plink/1.9/formats#bed" class="uri">https://www.cog-genomics.org/plink/1.9/formats#bed</a>).</p>
+<p>Create a folder for the practical and move in that folder</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> Practical6</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> Practical6</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Copy the data needed for the practical.</p>
+<ol type="1">
+<li>Copy the genotype files (data from 1000 Genomes Project; 1KG)</li>
+</ol>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cp</span> /data/SISG2023M15/data/1kg_hm3.<span class="pp">*</span> .</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<ol start="2" type="1">
+<li>Copy GWAS summary statistics generated using <code>fastGWA</code></li>
+</ol>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cp</span> /data/SISG2023M15/data/<span class="pp">*</span>.fastGWA .</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<ol start="3" type="1">
+<li>Copy phenotype data for the validation sample used to assess prediction accuracy</li>
+</ol>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cp</span> /data/SISG2023M15/data/<span class="pp">*</span>.phen .</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<ol start="4" type="1">
+<li>Copy ancestry information for the validation sample</li>
+</ol>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cp</span> /data/SISG2023M15/data/1kg-sample-2504-phased.txt .</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<ol start="5" type="1">
+<li>Copy list of 1KG samples with European ancestries</li>
+</ol>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cp</span> /data/SISG2023M15/data/EUR.id .</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="part-1.-prediction-using-cpt." class="level2">
+<h2 class="anchored" data-anchor-id="part-1.-prediction-using-cpt.">Part 1. Prediction using C+PT.</h2>
+<p>Create a sub-folder to store all intermediate files generated for this method.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> C+PT</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>We can run a first example using <code>Trait1</code> with following clumping parameters for PLINK: p-value below 5e-8 and squared correlation below <code>r2_thres=0.1</code> to determine independence between SNPs located within a window <code>window_kb=1000</code> kb (=1,000,000 base pairs). The command lines below allow you to that</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="va">window_kb</span><span class="op">=</span>1000 <span class="co"># 1000 kb = 1 Mb window</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="va">r2_thresh</span><span class="op">=</span>0.1  <span class="co"># LD threshold for clumping</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="va">trait</span><span class="op">=</span>Trait1</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="va">pv_thresh</span><span class="op">=</span>5e-8</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="va">PLINK</span><span class="op">=</span>/data/SISG2023M15/exe/plink</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="va">${PLINK}</span> <span class="at">--bfile</span> 1kg_hm3 <span class="dt">\</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>      <span class="at">--keep</span> EUR.id <span class="dt">\</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>      <span class="at">--clump</span> <span class="va">${trait}</span>.fastGWA <span class="dt">\</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>      <span class="at">--clump-kb</span> <span class="va">${window_kb}</span> <span class="dt">\</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>      <span class="at">--clump-p1</span> <span class="va">${pv_thresh}</span> <span class="dt">\</span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>      <span class="at">--clump-p2</span> <span class="va">${pv_thresh}</span> <span class="dt">\</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>      <span class="at">--clump-r2</span> <span class="va">${r2_thresh}</span> <span class="dt">\</span></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>      <span class="at">--out</span> C+PT/<span class="va">${trait}</span>_rsq_<span class="va">${r2_thresh}</span>_p_below_<span class="va">${pv_thresh}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p><strong>Question 1. How many SNPs were selected using the command above?</strong></p>
+<p>We will now consider multiple significance thresholds and also analyse the two traits. You could use the code below</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> pv_thresh <span class="kw">in</span> 5e-8 5e-7 5e-6 5e-5 5e-4 5e-3 5e-2</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="cf">do</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> trait <span class="kw">in</span> Trait1 Trait2</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">do</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    <span class="va">${PLINK}</span> <span class="at">--bfile</span> 1kg_hm3 <span class="dt">\</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>      <span class="at">--keep</span> EUR.id <span class="dt">\</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>      <span class="at">--clump</span> <span class="va">${trait}</span>.fastGWA <span class="dt">\</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>      <span class="at">--clump-kb</span> <span class="va">${window_kb}</span> <span class="dt">\</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>      <span class="at">--clump-p1</span> <span class="va">${pv_thresh}</span> <span class="dt">\</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>      <span class="at">--clump-p2</span> <span class="va">${pv_thresh}</span> <span class="dt">\</span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>      <span class="at">--clump-r2</span> <span class="va">${r2_thresh}</span> <span class="dt">\</span></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>      <span class="at">--out</span> C+PT/<span class="va">${trait}</span>_rsq_<span class="va">${r2_thresh}</span>_p_below_<span class="va">${pv_thresh}</span> <span class="at">--silent</span></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>  <span class="cf">done</span></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Now we can calculate the PGS with PLINK using the <code>--score</code> command (help: https://www.cog-genomics.org/plink/1.9/score).</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co">## Calculate PGS for each predictor</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> pv_thresh <span class="kw">in</span> 5e-8 5e-7 5e-6 5e-5 5e-4 5e-3 5e-2</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="cf">do</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> trait <span class="kw">in</span> Trait1 Trait2</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">do</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    <span class="va">${PLINK}</span> <span class="at">--bfile</span> 1kg_hm3 <span class="dt">\</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>      <span class="at">--score</span> <span class="va">${trait}</span>.fastGWA 2 4 8 sum center <span class="dt">\</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>      <span class="at">--extract</span> C+PT/<span class="va">${trait}</span>_rsq_<span class="va">${r2_thresh}</span>_p_below_<span class="va">${pv_thresh}</span>.clumped <span class="dt">\</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>      <span class="at">--out</span> C+PT/<span class="va">${trait}</span>_rsq_<span class="va">${r2_thresh}</span>_p_below_<span class="va">${pv_thresh}</span>.pred <span class="at">--silent</span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>  <span class="cf">done</span></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>PGS calculated using the command above are stored in the <code>*.profile</code> files (last column named <code>SCORESUM</code>). We can now load them in <code>R</code> and calculate prediction accuracy in each population.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">stringsAsFactors =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>r2_thr <span class="ot">&lt;-</span> <span class="fl">0.1</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>pops   <span class="ot">&lt;-</span> <span class="fu">read.table</span>(<span class="st">"1kg-sample-2504-phased.txt"</span>,<span class="at">h=</span>T) <span class="do">## This contains ancestry information</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>trait  <span class="ot">&lt;-</span> <span class="st">"Trait2"</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>phen   <span class="ot">&lt;-</span> <span class="fu">read.table</span>(<span class="fu">paste0</span>(<span class="st">"1kg."</span>,trait,<span class="st">".phen"</span>),<span class="at">h=</span>T)[,<span class="sc">-</span><span class="dv">1</span>] <span class="do">## Read phenotype</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(phen) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"IID"</span>,trait)</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="do">## Merge with all PGS</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>Threshs <span class="ot">&lt;-</span> <span class="dv">8</span><span class="sc">:</span><span class="dv">2</span></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(thresh <span class="cf">in</span> Threshs){</span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>  filename <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">"C+PT/"</span>,trait,<span class="st">"_rsq_"</span>,r2_thr,<span class="st">"_p_below_5e-"</span>,thresh,<span class="st">".pred.profile"</span>)</span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>  tmp <span class="ot">&lt;-</span> <span class="fu">read.table</span>(filename,<span class="at">h=</span>T)[,<span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">6</span>)]</span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">colnames</span>(tmp)[<span class="dv">2</span>] <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">"P"</span>,thresh)</span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>  phen <span class="ot">&lt;-</span> <span class="fu">merge</span>(phen,tmp,<span class="at">by=</span><span class="st">"IID"</span>)</span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a><span class="do">## This is the merged data containing all PGS</span></span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a><span class="do">## P8 denotes the PGS calculated using SNPs with p-value &lt;5e-8</span></span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a>phen <span class="ot">&lt;-</span> <span class="fu">merge</span>(phen,pops,<span class="at">by.x=</span><span class="st">"IID"</span>,<span class="at">by.y=</span><span class="st">"sample"</span>)</span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a><span class="do">## Look at prediction accuracy</span></span>
+<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a><span class="co"># across the sample</span></span>
+<span id="cb11-23"><a href="#cb11-23" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(<span class="fu">lm</span>(<span class="fu">paste0</span>(trait,<span class="st">"~P8"</span>),phen)) </span>
+<span id="cb11-24"><a href="#cb11-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-25"><a href="#cb11-25" aria-hidden="true" tabindex="-1"></a><span class="do">## within European ancestry individuals</span></span>
+<span id="cb11-26"><a href="#cb11-26" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(<span class="fu">lm</span>(<span class="fu">paste0</span>(trait,<span class="st">"~P8"</span>),phen[<span class="fu">which</span>(phen<span class="sc">$</span>super_pop<span class="sc">==</span><span class="st">"EUR"</span>),])) </span>
+<span id="cb11-27"><a href="#cb11-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-28"><a href="#cb11-28" aria-hidden="true" tabindex="-1"></a><span class="do">## within African  ancestry individuals</span></span>
+<span id="cb11-29"><a href="#cb11-29" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(<span class="fu">lm</span>(<span class="fu">paste0</span>(trait,<span class="st">"~P8"</span>),phen[<span class="fu">which</span>(phen<span class="sc">$</span>super_pop<span class="sc">==</span><span class="st">"AFR"</span>),])) </span>
+<span id="cb11-30"><a href="#cb11-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-31"><a href="#cb11-31" aria-hidden="true" tabindex="-1"></a><span class="do">## Select best threshold</span></span>
+<span id="cb11-32"><a href="#cb11-32" aria-hidden="true" tabindex="-1"></a><span class="do">## Across all samples</span></span>
+<span id="cb11-33"><a href="#cb11-33" aria-hidden="true" tabindex="-1"></a>RsqOverall <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="cn">NA</span>,<span class="fu">length</span>(Threshs))</span>
+<span id="cb11-34"><a href="#cb11-34" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(RsqOverall) <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">"P"</span>,Threshs)</span>
+<span id="cb11-35"><a href="#cb11-35" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(thresh <span class="cf">in</span> Threshs){</span>
+<span id="cb11-36"><a href="#cb11-36" aria-hidden="true" tabindex="-1"></a>  idThresh <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">"P"</span>,thresh)</span>
+<span id="cb11-37"><a href="#cb11-37" aria-hidden="true" tabindex="-1"></a>  RsqOverall[idThresh] <span class="ot">&lt;-</span> <span class="fu">cor</span>(phen[,trait],phen[,idThresh])<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb11-38"><a href="#cb11-38" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb11-39"><a href="#cb11-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-40"><a href="#cb11-40" aria-hidden="true" tabindex="-1"></a><span class="do">## Within each ancestry group</span></span>
+<span id="cb11-41"><a href="#cb11-41" aria-hidden="true" tabindex="-1"></a>ancestries <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"EUR"</span>,<span class="st">"SAS"</span>,<span class="st">"EAS"</span>,<span class="st">"AMR"</span>,<span class="st">"AFR"</span>)</span>
+<span id="cb11-42"><a href="#cb11-42" aria-hidden="true" tabindex="-1"></a>RsqPerAnc  <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="cn">NA</span>,<span class="at">nrow=</span><span class="fu">length</span>(ancestries),<span class="at">ncol=</span><span class="fu">length</span>(Threshs))</span>
+<span id="cb11-43"><a href="#cb11-43" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(RsqPerAnc) <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">"P"</span>,Threshs)</span>
+<span id="cb11-44"><a href="#cb11-44" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(RsqPerAnc) <span class="ot">&lt;-</span> ancestries</span>
+<span id="cb11-45"><a href="#cb11-45" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(thresh <span class="cf">in</span> Threshs){</span>
+<span id="cb11-46"><a href="#cb11-46" aria-hidden="true" tabindex="-1"></a>  idThresh <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">"P"</span>,thresh)</span>
+<span id="cb11-47"><a href="#cb11-47" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span>(ancestry <span class="cf">in</span> ancestries){</span>
+<span id="cb11-48"><a href="#cb11-48" aria-hidden="true" tabindex="-1"></a>    idAnc <span class="ot">&lt;-</span> <span class="fu">which</span>(phen[,<span class="st">"super_pop"</span>]<span class="sc">==</span>ancestry)</span>
+<span id="cb11-49"><a href="#cb11-49" aria-hidden="true" tabindex="-1"></a>    RsqPerAnc[ancestry,idThresh] <span class="ot">&lt;-</span> <span class="fu">cor</span>(phen[idAnc,trait],phen[idAnc,idThresh])<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb11-50"><a href="#cb11-50" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb11-51"><a href="#cb11-51" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb11-52"><a href="#cb11-52" aria-hidden="true" tabindex="-1"></a>RsqPerAnc</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p><strong>Question 2. </strong></p>
+<p><strong>What is the best prediction accuracy in EUR individuals across all significance thresholds? Is the best accuracy reached using the same significance threshold consistently across all ancestry groups? In which ancestry group is the prediction higher? Do you see any difference between <code>Trait1</code> and <code>Trait2</code>?</strong></p>
+<p>If you have time (<strong>at the end of the Practical</strong>) and answered the question above then you could split the EUR sample in 2 (random) subsets, select the threshold that yields the larger accuracy in subset1, then re-evaluate the prediction accuracy of the corresponding PGS in subset 2. Compare the resulting prediction accuracy with your answer to the first part of <strong>Question 2</strong> above. This process is called cross-validation.</p>
+</section>
+<section id="part-2.-prediction-using-sblup." class="level2">
+<h2 class="anchored" data-anchor-id="part-2.-prediction-using-sblup.">Part 2. Prediction using SBLUP.</h2>
+<p>Create a folder to store all intermediate files generated for this method.</p>
+<p>(Back to the terminal!)</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> SBLUP</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>The SNP-based heritability of <code>Trait1</code> and <code>Trait2</code> is <span class="math inline">\(h^2_{SNP} = 0.2\)</span>. As shown above, the SBLUP uses a LD reference. Here we provide LD data calculated with PLINK in <span class="math inline">\(N=348,501\)</span> unrelated European ancestry participants from the UK Biobank using the following command.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co">## Calculate PGS for each predictor</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="va">${PLINK}</span> <span class="dt">\</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--bfile</span> UKBu_chrom20 <span class="dt">\</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--chr</span> 20 <span class="dt">\</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">--ld-window</span> 999999999 <span class="dt">\</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">--ld-window-kb</span> 1000 <span class="dt">\</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">--ld-window-r2</span> 0.00 <span class="dt">\</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">--r</span> <span class="st">'yes-really'</span> <span class="st">'gz'</span> <span class="dt">\</span></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">--out</span> plinkLDMat_chrom20</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p><span style="color:red;"><strong>We only show this command out of general interest. For the sake of time, we do not advise running this command during the practical but you could try it later at home. Note that the data named <code>UKBu_chrom20</code> has not been provided but you could replace it another dataset, e.g., with <code>1kg_hm3</code>.</strong></span></p>
+<p>You will see below an R script to run SBLUP. This code is provided in an external <code>R</code> script named <code>sblup.R</code>. You can run it using the following command</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co">## Calculate PGS for each predictor</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="ex">Rscript</span> /data/SISG2023M15/data/sblup.R Trait1</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>The command above will generate a file named <code>SBLUP/Trait1.sblupInR.res</code>.</p>
+<p><strong>Question 3. Using the examples above,1) calculate the PGS using SNP effects from SBLUP (for <code>Trait1</code> and <code>Trait2</code>); 2) assess prediction accuracy in the test sample 3) compare your results with the prediction accuracy in EUR and non-EUR individuals obtained using the C+PT method</strong>.</p>
+<p>It is expected that you try to answer these questions using the R functions introduced above. The below code is a partial solution to the above questions and uses some key functions that you may want to use to answer the above questions.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">stringsAsFactors =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>pops   <span class="ot">&lt;-</span> <span class="fu">read.table</span>(<span class="st">"1kg-sample-2504-phased.txt"</span>,<span class="at">h=</span>T)</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>trait  <span class="ot">&lt;-</span> <span class="st">"Trait2"</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>phen   <span class="ot">&lt;-</span> <span class="fu">read.table</span>(<span class="fu">paste0</span>(<span class="st">"1kg."</span>,trait,<span class="st">".phen"</span>),<span class="at">h=</span>T)[,<span class="sc">-</span><span class="dv">1</span>] <span class="do">## Read phenotype</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(phen) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"IID"</span>,trait)</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>sblup  <span class="ot">&lt;-</span> <span class="fu">read.table</span>(<span class="fu">paste0</span>(<span class="st">"SBLUP/"</span>,trait,<span class="st">".pred.R.profile"</span>),<span class="at">h=</span>T)[,<span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">6</span>)]</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(sblup)[<span class="dv">2</span>] <span class="ot">&lt;-</span> <span class="st">"SBLUP"</span></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>phen <span class="ot">&lt;-</span> <span class="fu">merge</span>(phen,sblup,<span class="at">by=</span><span class="st">"IID"</span>)</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>phen <span class="ot">&lt;-</span> <span class="fu">merge</span>(phen,pops,<span class="at">by.x=</span><span class="st">"IID"</span>,<span class="at">by.y=</span><span class="st">"sample"</span>)</span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a><span class="do">## Look at prediction accuracy</span></span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a><span class="co"># across the entire sample</span></span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(<span class="fu">lm</span>(<span class="fu">paste0</span>(trait,<span class="st">"~SBLUP"</span>),phen)) </span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a><span class="do">## within European ancestry individuals</span></span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(<span class="fu">lm</span>(<span class="fu">paste0</span>(trait,<span class="st">"~SBLUP"</span>),phen[<span class="fu">which</span>(phen<span class="sc">$</span>super_pop<span class="sc">==</span><span class="st">"EUR"</span>),])) </span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a><span class="do">## within African  ancestry individuals</span></span>
+<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(<span class="fu">lm</span>(<span class="fu">paste0</span>(trait,<span class="st">"~SBLUP"</span>),phen[<span class="fu">which</span>(phen<span class="sc">$</span>super_pop<span class="sc">==</span><span class="st">"AFR"</span>),])) </span>
+<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a><span class="do">## Within each ancestry group</span></span>
+<span id="cb15-23"><a href="#cb15-23" aria-hidden="true" tabindex="-1"></a>ancestries <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"EUR"</span>,<span class="st">"SAS"</span>,<span class="st">"EAS"</span>,<span class="st">"AMR"</span>,<span class="st">"AFR"</span>)</span>
+<span id="cb15-24"><a href="#cb15-24" aria-hidden="true" tabindex="-1"></a>RsqPerAnc  <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="cn">NA</span>,<span class="fu">length</span>(ancestries))</span>
+<span id="cb15-25"><a href="#cb15-25" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(RsqPerAnc) <span class="ot">&lt;-</span> ancestries</span>
+<span id="cb15-26"><a href="#cb15-26" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(ancestry <span class="cf">in</span> ancestries){</span>
+<span id="cb15-27"><a href="#cb15-27" aria-hidden="true" tabindex="-1"></a>  idAnc <span class="ot">&lt;-</span> <span class="fu">which</span>(phen[,<span class="st">"super_pop"</span>]<span class="sc">==</span>ancestry)</span>
+<span id="cb15-28"><a href="#cb15-28" aria-hidden="true" tabindex="-1"></a>  RsqPerAnc[ancestry] <span class="ot">&lt;-</span> <span class="fu">cor</span>(phen[idAnc,trait],phen[idAnc,<span class="st">"SBLUP"</span>])<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb15-29"><a href="#cb15-29" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>It is also possible to run SBLUP using <code>GCTA</code>. This will require a different formatting of GWAS summary statistics, which we provide (files named <code>Trait1.ma</code> and <code>Trait2.ma</code>). Note that the same format can also be used with <code>GCTB</code> to run SBayesC (see <strong>Part 3</strong> below). The implementation of SBLUP in <code>GCTA</code> requires genotype data as input (and not a pre-calculated LD correlation matrix) as well as shrinkage parameter <span class="math inline">\(\lambda = M_{SNPs}\left(\frac{1}{h^2_{SNP}}-1\right)\)</span>. An example command is given below</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="va">GCTA</span><span class="op">=</span>/data/SISG2023M15/exe/gcta-1.94.1</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="va">lambda</span><span class="op">=</span>135628</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> trait <span class="kw">in</span> Trait1 Trait2</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  <span class="cf">do</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>  <span class="va">${GCTA}</span> <span class="dt">\</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">--bfile</span> 1kg_hm3 <span class="dt">\</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">--chr</span> 20 <span class="dt">\</span></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">--cojo-file</span> /data/SISG2023M15/data/<span class="va">${trait}</span>.ma <span class="dt">\</span></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">--cojo-sblup</span> <span class="va">${lambda}</span> <span class="dt">\</span></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">--cojo-wind</span> 1000 <span class="dt">\</span></span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">--thread-num</span> 20 <span class="dt">\</span></span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">--out</span> SBLUP/<span class="va">${trait}</span></span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>This command will take approximately 5 min to run. In the interest of time, we recommend not running it and moving to <strong>Part 3</strong> instead. More details can be found here: https://yanglab.westlake.edu.cn/software/gcta/#SBLUP.</p>
+</section>
+<section id="part-3.-prediction-using-sbayes-c" class="level2">
+<h2 class="anchored" data-anchor-id="part-3.-prediction-using-sbayes-c">Part 3. Prediction using SBayes C</h2>
+<p>Create a folder to store all intermediate files generated for this method.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> SBC</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>SBayesC requires a different format for the LD matrix. We provide a LD matrix directly calculated with GCTB using a command like this</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="va">${GCTB}</span> <span class="at">--bfile</span> sampleForLD <span class="at">--make-full-ldm</span> <span class="at">--snp</span> 1-5000 <span class="at">--out</span> SBC/BLOCK1618.CHROM20</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p><code>sampleForLD</code> is a subset of 348,501 unrelated EUR participants of the UKB. LD correlations on chromosome 20 were calculated within 38 non-overlapping LD blocks identified in an EUR sample (see: http://bitbucket.org/nygcresearch/ldetect-data). Pre-calculated LD matrices can be downloaded from the <code>GCTB</code> website. We provide these 38 LD submatrices in the folder named <code>ldm</code> and paths for each file are listed in <code>mldm.txt</code> (note the similarity with <code>GCTA</code>: in <code>GCTB</code> <code>--mldm</code> indicates that multiple LD matrices will be used, while in <code>GCTA</code> <code>--mgrm</code> indicates that multiple GRMs will be used).</p>
+<p>Set the path to GCTB</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="va">GCTB</span><span class="op">=</span>/data/SISG2023M15/exe/gctb</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Now, to run SBayes C, you could run the following command.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="va">mldm</span><span class="op">=</span>/data/SISG2023M15/data/mldm.txt</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="va">trait</span><span class="op">=</span>Trait1</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="va">${GCTB}</span> <span class="at">--sbayes</span> C <span class="at">--mldm</span> <span class="va">${mldm}</span> <span class="dt">\</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>--gwas-summary /data/SISG2023M15/data/<span class="va">${trait}</span>.ma <span class="dt">\</span></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>--pi 0.0001 <span class="at">--hsq</span> 0.001 <span class="dt">\</span></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>--chain-length 10000 <span class="dt">\</span></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>--burn-in 5000 <span class="dt">\</span></span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>--no-mcmc-bin <span class="dt">\</span></span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>--robust <span class="dt">\</span></span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>--out-freq 100 <span class="dt">\</span></span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>--thin 10 <span class="dt">\</span></span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>--out SBC/<span class="va">${trait}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>This command will run 10,000 MCMC iterations (<code>--chain-length</code>) and output results every 100 iterations (<code>--out-freq</code>). Final statistics for parameters and prediction accuracy will be calculated using 1/10 iterations (<code>--thin</code>) after a burn-in of 5000 iterations (<code>--burn-in</code>).</p>
+<p><strong>Question 4. What is the heritability of <code>Trait1</code>? What is the proportion/expected number of SNPs with a non-zero effect on the trait? What is the genetic and residual variances?</strong>.</p>
+<p>The command above will generate a file named <code>SBC/Trait1.snpRes</code>. We can use that file to calculated a PGS using the following command</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="va">trait</span><span class="op">=</span>Trait1</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="va">${PLINK}</span> <span class="at">--bfile</span> 1kg_hm3 <span class="dt">\</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>--score SBC/<span class="va">${trait}</span>.snpRes 2 5 8 sum center <span class="dt">\</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>--out SBC/<span class="va">${trait}</span>.pred</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Assess the prediction accuracy of the SBayesC PGS in <code>R</code> as done previously</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="ex">options</span><span class="er">(</span><span class="ex">stringsAsFactors</span> = FALSE<span class="kw">)</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="ex">pops</span>   <span class="op">&lt;</span>- read.table<span class="er">(</span><span class="st">"1kg-sample-2504-phased.txt"</span><span class="ex">,h=T</span><span class="kw">)</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="ex">trait</span>  <span class="op">&lt;</span>- <span class="st">"Trait1"</span></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="ex">phen</span>   <span class="op">&lt;</span>- read.table<span class="er">(</span><span class="ex">paste0</span><span class="er">(</span><span class="st">"1kg."</span><span class="ex">,trait,</span><span class="st">".phen"</span><span class="kw">)</span><span class="ex">,h=T</span><span class="kw">)</span><span class="ex">[,-1]</span> <span class="co">## Read phenotype</span></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a><span class="ex">colnames</span><span class="er">(</span><span class="ex">phen</span><span class="kw">)</span> <span class="op">&lt;</span>- <span class="ex">c</span><span class="er">(</span><span class="st">"IID"</span><span class="ex">,trait</span><span class="kw">)</span></span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a><span class="ex">sblup</span>  <span class="op">&lt;</span>- read.table<span class="er">(</span><span class="ex">paste0</span><span class="er">(</span><span class="st">"SBC/"</span><span class="ex">,trait,</span><span class="st">".pred.profile"</span><span class="kw">)</span><span class="ex">,h=T</span><span class="kw">)</span><span class="ex">[,c</span><span class="er">(</span><span class="ex">2,6</span><span class="kw">)</span><span class="ex">]</span></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a><span class="ex">colnames</span><span class="er">(</span><span class="ex">sblup</span><span class="kw">)</span><span class="ex">[2]</span> <span class="op">&lt;</span>- <span class="st">"SBC"</span></span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a><span class="ex">phen</span> <span class="op">&lt;</span>- merge<span class="er">(</span><span class="ex">phen,sblup,by=</span><span class="st">"IID"</span><span class="kw">)</span></span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a><span class="ex">phen</span> <span class="op">&lt;</span>- merge<span class="er">(</span><span class="ex">phen,pops,by.x=</span><span class="st">"IID"</span><span class="ex">,by.y=</span><span class="st">"sample"</span><span class="kw">)</span></span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a><span class="co">## Look at prediction accuracy</span></span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a><span class="co"># across the sample</span></span>
+<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a><span class="ex">summary</span><span class="er">(</span><span class="ex">lm</span><span class="er">(</span><span class="ex">paste0</span><span class="er">(</span><span class="ex">trait,</span><span class="st">"~SBC"</span><span class="kw">)</span><span class="ex">,phen</span><span class="kw">))</span> </span>
+<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a><span class="co">## within European ancestry individuals</span></span>
+<span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a><span class="ex">summary</span><span class="er">(</span><span class="ex">lm</span><span class="er">(</span><span class="ex">paste0</span><span class="er">(</span><span class="ex">trait,</span><span class="st">"~SBC"</span><span class="kw">)</span><span class="ex">,phen[which</span><span class="er">(</span><span class="ex">phen</span><span class="va">$super_pop</span><span class="ex">==</span><span class="st">"EUR"</span><span class="kw">)</span><span class="ex">,]</span><span class="kw">))</span> </span>
+<span id="cb22-17"><a href="#cb22-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-18"><a href="#cb22-18" aria-hidden="true" tabindex="-1"></a><span class="co">## within African  ancestry individuals</span></span>
+<span id="cb22-19"><a href="#cb22-19" aria-hidden="true" tabindex="-1"></a><span class="ex">summary</span><span class="er">(</span><span class="ex">lm</span><span class="er">(</span><span class="ex">paste0</span><span class="er">(</span><span class="ex">trait,</span><span class="st">"~SBC"</span><span class="kw">)</span><span class="ex">,phen[which</span><span class="er">(</span><span class="ex">phen</span><span class="va">$super_pop</span><span class="ex">==</span><span class="st">"AFR"</span><span class="kw">)</span><span class="ex">,]</span><span class="kw">))</span> </span>
+<span id="cb22-20"><a href="#cb22-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-21"><a href="#cb22-21" aria-hidden="true" tabindex="-1"></a><span class="co">## Within each ancestry group</span></span>
+<span id="cb22-22"><a href="#cb22-22" aria-hidden="true" tabindex="-1"></a><span class="ex">ancestries</span> <span class="op">&lt;</span>- c<span class="er">(</span><span class="st">"EUR"</span><span class="ex">,</span><span class="st">"SAS"</span><span class="ex">,</span><span class="st">"EAS"</span><span class="ex">,</span><span class="st">"AMR"</span><span class="ex">,</span><span class="st">"AFR"</span><span class="kw">)</span></span>
+<span id="cb22-23"><a href="#cb22-23" aria-hidden="true" tabindex="-1"></a><span class="ex">RsqPerAnc</span>  <span class="op">&lt;</span>- rep<span class="er">(</span><span class="ex">NA,length</span><span class="er">(</span><span class="ex">ancestries</span><span class="kw">))</span></span>
+<span id="cb22-24"><a href="#cb22-24" aria-hidden="true" tabindex="-1"></a><span class="ex">names</span><span class="er">(</span><span class="ex">RsqPerAnc</span><span class="kw">)</span> <span class="op">&lt;</span>- <span class="ex">ancestries</span></span>
+<span id="cb22-25"><a href="#cb22-25" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span><span class="kw">(</span><span class="ex">ancestry</span> in ancestries<span class="kw">){</span></span>
+<span id="cb22-26"><a href="#cb22-26" aria-hidden="true" tabindex="-1"></a>  <span class="ex">idAnc</span> <span class="op">&lt;</span>- which<span class="er">(</span><span class="va">phen</span><span class="op">[</span>,<span class="st">"super_pop"</span><span class="op">]=</span>=ancestry<span class="kw">)</span></span>
+<span id="cb22-27"><a href="#cb22-27" aria-hidden="true" tabindex="-1"></a>  <span class="va">RsqPerAnc</span><span class="op">[</span>ancestry<span class="op">]</span> <span class="op">&lt;</span>- <span class="ex">cor</span><span class="er">(</span><span class="va">phen</span><span class="op">[</span>idAnc,trait<span class="op">]</span><span class="ex">,phen[idAnc,</span><span class="st">"SBC"</span><span class="ex">]</span><span class="kw">)</span><span class="ex">^2</span></span>
+<span id="cb22-28"><a href="#cb22-28" aria-hidden="true" tabindex="-1"></a><span class="kw">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+
+
+<!-- -->
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+    const viewSource = window.document.getElementById('quarto-view-source') ||
+                       window.document.getElementById('quarto-code-tools-source');
+    if (viewSource) {
+      const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+      viewSource.addEventListener("click", function(e) {
+        if (sourceUrl) {
+          // rstudio viewer pane
+          if (/\bcapabilities=\b/.test(window.location)) {
+            window.open(sourceUrl);
+          } else {
+            window.location.href = sourceUrl;
+          }
+        } else {
+          const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+          modal.show();
+        }
+        return false;
+      });
+    }
+    function toggleCodeHandler(show) {
+      return function(e) {
+        const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+        for (let i=0; i<detailsSrc.length; i++) {
+          const details = detailsSrc[i].parentElement;
+          if (show) {
+            details.open = true;
+          } else {
+            details.removeAttribute("open");
+          }
+        }
+        const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+        const fromCls = show ? "hidden" : "unhidden";
+        const toCls = show ? "unhidden" : "hidden";
+        for (let i=0; i<cellCodeDivs.length; i++) {
+          const codeDiv = cellCodeDivs[i];
+          if (codeDiv.classList.contains(fromCls)) {
+            codeDiv.classList.remove(fromCls);
+            codeDiv.classList.add(toCls);
+          } 
+        }
+        return false;
+      }
+    }
+    const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+    if (hideAllCode) {
+      hideAllCode.addEventListener("click", toggleCodeHandler(false));
+    }
+    const showAllCode = window.document.getElementById("quarto-show-all-code");
+    if (showAllCode) {
+      showAllCode.addEventListener("click", toggleCodeHandler(true));
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/joellembatchou\.github\.io\/SISG2026_Association_Mapping\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> 'Practical 6: Prediction using GWAS summary statistics'</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="an">author:</span><span class="co"> "Summer Institute of Statical Genetics (Module  15)"</span></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> '2023-07-25'</span></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span></span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a><span class="co">  html: default</span></span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a><span class="in">```{r setup, include=FALSE}</span></span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span>opts_chunk<span class="sc">$</span><span class="fu">set</span>(<span class="at">echo =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">span</span><span class="ot"> style</span><span class="op">=</span><span class="st">"color:red;"</span><span class="dt">&gt;</span>**This practical runs on the SISG2023 server.**<span class="dt">&lt;/</span><span class="kw">span</span><span class="dt">&gt;</span></span>
+<span id="cb23-15"><a href="#cb23-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-16"><a href="#cb23-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-17"><a href="#cb23-17" aria-hidden="true" tabindex="-1"></a><span class="fu">## Preparation</span></span>
+<span id="cb23-18"><a href="#cb23-18" aria-hidden="true" tabindex="-1"></a>This practical proposes a detailed tutorial for running three popular polygenic score (PGS) methods using GWAS summary statistics as introduced in **Lecture 6**. </span>
+<span id="cb23-19"><a href="#cb23-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-20"><a href="#cb23-20" aria-hidden="true" tabindex="-1"></a>**Method 1: C+PT**</span>
+<span id="cb23-21"><a href="#cb23-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-22"><a href="#cb23-22" aria-hidden="true" tabindex="-1"></a>The first method is classically denoted as "Clumping + P-value Thresholding (C+PT)". This method is also abbreviated as P+T or C+T in certain publications. In brief, the principle of this method is compare various sets of uncorrelated SNPs (e.g., maximum squared pairwise correlation between allele counts at SNPs in the selected set is $r^2 \leq 0.1$) that are associated with the trait / disease as certain p-value threshold (e.g., p&lt;0.01). We then select the set of SNPs that yields the largest prediction accuracy with the trait / disease of interest in a validation set. This method is broadly used because of it simplicity but may not often yield the largest accuracy. In this practical, we will use <span class="in">`PLINK`</span> and <span class="in">`R`</span> to determine these optimal sets of SNPs. PGS will be calculated using marginal/GWAS SNP effects as weights.</span>
+<span id="cb23-23"><a href="#cb23-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-24"><a href="#cb23-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-25"><a href="#cb23-25" aria-hidden="true" tabindex="-1"></a>**Method 2: SBLUP**</span>
+<span id="cb23-26"><a href="#cb23-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-27"><a href="#cb23-27" aria-hidden="true" tabindex="-1"></a>The second method, the Summary-data based BLUP, is an approximation of the BLUP prediction method introduced in **Lecture 5**. In brief, SBLUP calculates PGS weights $\mathbf{b}$ using the following equation</span>
+<span id="cb23-28"><a href="#cb23-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-29"><a href="#cb23-29" aria-hidden="true" tabindex="-1"></a>$$ \mathbf{b} = \left( \mathbf{R} + \frac{M_{SNP}(1-h_{SNP}^2)}{N_{GWAS}h_{SNP}^2}\mathbf{I}_M \right)^{-1} \boldsymbol{\beta} $$</span>
+<span id="cb23-30"><a href="#cb23-30" aria-hidden="true" tabindex="-1"></a>where $\boldsymbol{\beta}$ is the vector of GWAS SNP effects and $\mathbf{R}$ a LD correlation matrix between SNPs estimated from a reference sample. Note that the SBLUP method is equivalent to the <span class="in">`LDpred-Inf`</span> method. A detailed tutorial for LDpred2 is available at <span class="ot">&lt;https://privefl.github.io/bigsnpr/articles/LDpred2.html&gt;</span>. In this practical, we will calculate the SBLUP PGS weights "manually" in R.</span>
+<span id="cb23-31"><a href="#cb23-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-32"><a href="#cb23-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-33"><a href="#cb23-33" aria-hidden="true" tabindex="-1"></a>**Method 3: SBayes C**</span>
+<span id="cb23-34"><a href="#cb23-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-35"><a href="#cb23-35" aria-hidden="true" tabindex="-1"></a>The Summary-data based BayesC (SBayesC) method is an approximation of the Bayes C method. This method is built upon a more flexible assumption regarding the distribution of SNP effects that only allows a subset of all $M$ SNPs to affect the trait/disease of interest. We denote $\pi$ the proportion of SNPs with a non-zero effect on the trait / disease. (S)BayesC implements a prior mixture distribution for the joint SNP effects $\mathbf{b} = \left(b_1,\ldots,b_M\right)$ defined as</span>
+<span id="cb23-36"><a href="#cb23-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-37"><a href="#cb23-37" aria-hidden="true" tabindex="-1"></a>$$ b_j \sim \pi \mathcal{N}\left(0,\sigma^2_b\right)  + (1-\pi) \delta_0$$</span>
+<span id="cb23-38"><a href="#cb23-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-39"><a href="#cb23-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-40"><a href="#cb23-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-41"><a href="#cb23-41" aria-hidden="true" tabindex="-1"></a>Note that the SBayesC method is equivalent to the <span class="in">`LDpred`</span> (non-infinitesimal) method. In this practical, we will use the GCTB software to fit SBayes C.</span>
+<span id="cb23-42"><a href="#cb23-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-43"><a href="#cb23-43" aria-hidden="true" tabindex="-1"></a>\newpage</span>
+<span id="cb23-44"><a href="#cb23-44" aria-hidden="true" tabindex="-1"></a>**Overview of the data**</span>
+<span id="cb23-45"><a href="#cb23-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-46"><a href="#cb23-46" aria-hidden="true" tabindex="-1"></a>We provide GWAS summary statistics for two (simulated) traits hereafter denoted <span class="in">`Trait1`</span> and <span class="in">`Trait2`</span>. For simplicity, we will focus summary statistics of $M=32,260$ SNPs located on chromosome 20. These two GWAS were conducted in $N=348,501$ unrelated European ancestry participants from the UK Biobank (data accessed under project 12505) using the <span class="in">`fastGWA`</span> module of the <span class="in">`GCTA`</span> software (Yang et al. 2011).</span>
+<span id="cb23-47"><a href="#cb23-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-48"><a href="#cb23-48" aria-hidden="true" tabindex="-1"></a>We will assess prediction $n=2504$ samples from the 1000 Genomes Project (1KG) with different ancestries. Ancestries groups are European (EUR; N=503), East-Asian (EAS; N=504), South-Asian (SAS; N=489), Admixed individuals from the Americas (AMR; N=347) and African (AFR; N=661). We provide genotypes under binary PLINK format (three files: <span class="in">`1kg_hm3.bed`</span>, <span class="in">`1kg_hm3.bim`</span> and <span class="in">`1kg_hm3.fam`</span>) for these 2504 samples and phenotypes (files named: <span class="in">`1kg.Trait1.phen`</span> and <span class="in">`1kg.Trait2.phen`</span>). For more details about this format please visit PLINK website (<span class="ot">&lt;https://www.cog-genomics.org/plink/1.9/formats#bed&gt;</span>).</span>
+<span id="cb23-49"><a href="#cb23-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-50"><a href="#cb23-50" aria-hidden="true" tabindex="-1"></a>Create a folder for the practical and move in that folder</span>
+<span id="cb23-51"><a href="#cb23-51" aria-hidden="true" tabindex="-1"></a><span class="in">```{bash, eval=FALSE}</span></span>
+<span id="cb23-52"><a href="#cb23-52" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> Practical6</span>
+<span id="cb23-53"><a href="#cb23-53" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> Practical6</span>
+<span id="cb23-54"><a href="#cb23-54" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb23-55"><a href="#cb23-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-56"><a href="#cb23-56" aria-hidden="true" tabindex="-1"></a>Copy the data needed for the practical.</span>
+<span id="cb23-57"><a href="#cb23-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-58"><a href="#cb23-58" aria-hidden="true" tabindex="-1"></a>1) Copy the genotype files (data from 1000 Genomes Project; 1KG)</span>
+<span id="cb23-59"><a href="#cb23-59" aria-hidden="true" tabindex="-1"></a><span class="in">```{bash, eval=FALSE}</span></span>
+<span id="cb23-60"><a href="#cb23-60" aria-hidden="true" tabindex="-1"></a><span class="fu">cp</span> /data/SISG2023M15/data/1kg_hm3.<span class="pp">*</span> .</span>
+<span id="cb23-61"><a href="#cb23-61" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb23-62"><a href="#cb23-62" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-63"><a href="#cb23-63" aria-hidden="true" tabindex="-1"></a>2) Copy GWAS summary statistics generated using <span class="in">`fastGWA`</span></span>
+<span id="cb23-64"><a href="#cb23-64" aria-hidden="true" tabindex="-1"></a><span class="in">```{bash, eval=FALSE}</span></span>
+<span id="cb23-65"><a href="#cb23-65" aria-hidden="true" tabindex="-1"></a><span class="fu">cp</span> /data/SISG2023M15/data/<span class="pp">*</span>.fastGWA .</span>
+<span id="cb23-66"><a href="#cb23-66" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb23-67"><a href="#cb23-67" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-68"><a href="#cb23-68" aria-hidden="true" tabindex="-1"></a>3) Copy phenotype data for the validation sample used to assess prediction accuracy</span>
+<span id="cb23-69"><a href="#cb23-69" aria-hidden="true" tabindex="-1"></a><span class="in">```{bash, eval=FALSE}</span></span>
+<span id="cb23-70"><a href="#cb23-70" aria-hidden="true" tabindex="-1"></a><span class="fu">cp</span> /data/SISG2023M15/data/<span class="pp">*</span>.phen .</span>
+<span id="cb23-71"><a href="#cb23-71" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb23-72"><a href="#cb23-72" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-73"><a href="#cb23-73" aria-hidden="true" tabindex="-1"></a>4) Copy ancestry information for the validation sample</span>
+<span id="cb23-74"><a href="#cb23-74" aria-hidden="true" tabindex="-1"></a><span class="in">```{bash, eval=FALSE}</span></span>
+<span id="cb23-75"><a href="#cb23-75" aria-hidden="true" tabindex="-1"></a><span class="fu">cp</span> /data/SISG2023M15/data/1kg-sample-2504-phased.txt .</span>
+<span id="cb23-76"><a href="#cb23-76" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb23-77"><a href="#cb23-77" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-78"><a href="#cb23-78" aria-hidden="true" tabindex="-1"></a>5) Copy list of 1KG samples with European ancestries</span>
+<span id="cb23-79"><a href="#cb23-79" aria-hidden="true" tabindex="-1"></a><span class="in">```{bash, eval=FALSE}</span></span>
+<span id="cb23-80"><a href="#cb23-80" aria-hidden="true" tabindex="-1"></a><span class="fu">cp</span> /data/SISG2023M15/data/EUR.id .</span>
+<span id="cb23-81"><a href="#cb23-81" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb23-82"><a href="#cb23-82" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-83"><a href="#cb23-83" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-84"><a href="#cb23-84" aria-hidden="true" tabindex="-1"></a><span class="fu">## Part 1. Prediction using C+PT.</span></span>
+<span id="cb23-85"><a href="#cb23-85" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-86"><a href="#cb23-86" aria-hidden="true" tabindex="-1"></a>Create a sub-folder to store all intermediate files generated for this method.</span>
+<span id="cb23-87"><a href="#cb23-87" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-88"><a href="#cb23-88" aria-hidden="true" tabindex="-1"></a><span class="in">```{bash, eval=FALSE}</span></span>
+<span id="cb23-89"><a href="#cb23-89" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> C+PT</span>
+<span id="cb23-90"><a href="#cb23-90" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb23-91"><a href="#cb23-91" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-92"><a href="#cb23-92" aria-hidden="true" tabindex="-1"></a>We can run a first example using <span class="in">`Trait1`</span> with following clumping parameters for PLINK: p-value below 5e-8 and squared correlation below  <span class="in">`r2_thres=0.1`</span> to determine independence between SNPs located within a window <span class="in">`window_kb=1000`</span> kb (=1,000,000 base pairs). The command lines below allow you to that</span>
+<span id="cb23-93"><a href="#cb23-93" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-94"><a href="#cb23-94" aria-hidden="true" tabindex="-1"></a><span class="in">```{bash, eval=FALSE}</span></span>
+<span id="cb23-95"><a href="#cb23-95" aria-hidden="true" tabindex="-1"></a><span class="va">window_kb</span><span class="op">=</span>1000 <span class="co"># 1000 kb = 1 Mb window</span></span>
+<span id="cb23-96"><a href="#cb23-96" aria-hidden="true" tabindex="-1"></a><span class="va">r2_thresh</span><span class="op">=</span>0.1  <span class="co"># LD threshold for clumping</span></span>
+<span id="cb23-97"><a href="#cb23-97" aria-hidden="true" tabindex="-1"></a><span class="va">trait</span><span class="op">=</span>Trait1</span>
+<span id="cb23-98"><a href="#cb23-98" aria-hidden="true" tabindex="-1"></a><span class="va">pv_thresh</span><span class="op">=</span>5e-8</span>
+<span id="cb23-99"><a href="#cb23-99" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-100"><a href="#cb23-100" aria-hidden="true" tabindex="-1"></a><span class="va">PLINK</span><span class="op">=</span>/data/SISG2023M15/exe/plink</span>
+<span id="cb23-101"><a href="#cb23-101" aria-hidden="true" tabindex="-1"></a><span class="va">${PLINK}</span> <span class="at">--bfile</span> 1kg_hm3 <span class="dt">\</span></span>
+<span id="cb23-102"><a href="#cb23-102" aria-hidden="true" tabindex="-1"></a>      <span class="at">--keep</span> EUR.id <span class="dt">\</span></span>
+<span id="cb23-103"><a href="#cb23-103" aria-hidden="true" tabindex="-1"></a>      <span class="at">--clump</span> <span class="va">${trait}</span>.fastGWA <span class="dt">\</span></span>
+<span id="cb23-104"><a href="#cb23-104" aria-hidden="true" tabindex="-1"></a>      <span class="at">--clump-kb</span> <span class="va">${window_kb}</span> <span class="dt">\</span></span>
+<span id="cb23-105"><a href="#cb23-105" aria-hidden="true" tabindex="-1"></a>      <span class="at">--clump-p1</span> <span class="va">${pv_thresh}</span> <span class="dt">\</span></span>
+<span id="cb23-106"><a href="#cb23-106" aria-hidden="true" tabindex="-1"></a>      <span class="at">--clump-p2</span> <span class="va">${pv_thresh}</span> <span class="dt">\</span></span>
+<span id="cb23-107"><a href="#cb23-107" aria-hidden="true" tabindex="-1"></a>      <span class="at">--clump-r2</span> <span class="va">${r2_thresh}</span> <span class="dt">\</span></span>
+<span id="cb23-108"><a href="#cb23-108" aria-hidden="true" tabindex="-1"></a>      <span class="at">--out</span> C+PT/<span class="va">${trait}</span>_rsq_<span class="va">${r2_thresh}</span>_p_below_<span class="va">${pv_thresh}</span></span>
+<span id="cb23-109"><a href="#cb23-109" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb23-110"><a href="#cb23-110" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-111"><a href="#cb23-111" aria-hidden="true" tabindex="-1"></a>**Question 1. How many SNPs were selected using the command above?**</span>
+<span id="cb23-112"><a href="#cb23-112" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-113"><a href="#cb23-113" aria-hidden="true" tabindex="-1"></a>We will now consider multiple significance thresholds and also analyse the two traits. You could use the code below</span>
+<span id="cb23-114"><a href="#cb23-114" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-115"><a href="#cb23-115" aria-hidden="true" tabindex="-1"></a><span class="in">```{bash, eval=FALSE}</span></span>
+<span id="cb23-116"><a href="#cb23-116" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> pv_thresh <span class="kw">in</span> 5e-8 5e-7 5e-6 5e-5 5e-4 5e-3 5e-2</span>
+<span id="cb23-117"><a href="#cb23-117" aria-hidden="true" tabindex="-1"></a><span class="cf">do</span></span>
+<span id="cb23-118"><a href="#cb23-118" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> trait <span class="kw">in</span> Trait1 Trait2</span>
+<span id="cb23-119"><a href="#cb23-119" aria-hidden="true" tabindex="-1"></a>    <span class="cf">do</span></span>
+<span id="cb23-120"><a href="#cb23-120" aria-hidden="true" tabindex="-1"></a>    <span class="va">${PLINK}</span> <span class="at">--bfile</span> 1kg_hm3 <span class="dt">\</span></span>
+<span id="cb23-121"><a href="#cb23-121" aria-hidden="true" tabindex="-1"></a>      <span class="at">--keep</span> EUR.id <span class="dt">\</span></span>
+<span id="cb23-122"><a href="#cb23-122" aria-hidden="true" tabindex="-1"></a>      <span class="at">--clump</span> <span class="va">${trait}</span>.fastGWA <span class="dt">\</span></span>
+<span id="cb23-123"><a href="#cb23-123" aria-hidden="true" tabindex="-1"></a>      <span class="at">--clump-kb</span> <span class="va">${window_kb}</span> <span class="dt">\</span></span>
+<span id="cb23-124"><a href="#cb23-124" aria-hidden="true" tabindex="-1"></a>      <span class="at">--clump-p1</span> <span class="va">${pv_thresh}</span> <span class="dt">\</span></span>
+<span id="cb23-125"><a href="#cb23-125" aria-hidden="true" tabindex="-1"></a>      <span class="at">--clump-p2</span> <span class="va">${pv_thresh}</span> <span class="dt">\</span></span>
+<span id="cb23-126"><a href="#cb23-126" aria-hidden="true" tabindex="-1"></a>      <span class="at">--clump-r2</span> <span class="va">${r2_thresh}</span> <span class="dt">\</span></span>
+<span id="cb23-127"><a href="#cb23-127" aria-hidden="true" tabindex="-1"></a>      <span class="at">--out</span> C+PT/<span class="va">${trait}</span>_rsq_<span class="va">${r2_thresh}</span>_p_below_<span class="va">${pv_thresh}</span> <span class="at">--silent</span></span>
+<span id="cb23-128"><a href="#cb23-128" aria-hidden="true" tabindex="-1"></a>  <span class="cf">done</span></span>
+<span id="cb23-129"><a href="#cb23-129" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span>
+<span id="cb23-130"><a href="#cb23-130" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb23-131"><a href="#cb23-131" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-132"><a href="#cb23-132" aria-hidden="true" tabindex="-1"></a>Now we can calculate the PGS with PLINK using the <span class="in">`--score`</span> command (help: https://www.cog-genomics.org/plink/1.9/score).</span>
+<span id="cb23-133"><a href="#cb23-133" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-134"><a href="#cb23-134" aria-hidden="true" tabindex="-1"></a><span class="in">```{bash, eval=FALSE}</span></span>
+<span id="cb23-135"><a href="#cb23-135" aria-hidden="true" tabindex="-1"></a><span class="co">## Calculate PGS for each predictor</span></span>
+<span id="cb23-136"><a href="#cb23-136" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> pv_thresh <span class="kw">in</span> 5e-8 5e-7 5e-6 5e-5 5e-4 5e-3 5e-2</span>
+<span id="cb23-137"><a href="#cb23-137" aria-hidden="true" tabindex="-1"></a>  <span class="cf">do</span></span>
+<span id="cb23-138"><a href="#cb23-138" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> trait <span class="kw">in</span> Trait1 Trait2</span>
+<span id="cb23-139"><a href="#cb23-139" aria-hidden="true" tabindex="-1"></a>    <span class="cf">do</span></span>
+<span id="cb23-140"><a href="#cb23-140" aria-hidden="true" tabindex="-1"></a>    <span class="va">${PLINK}</span> <span class="at">--bfile</span> 1kg_hm3 <span class="dt">\</span></span>
+<span id="cb23-141"><a href="#cb23-141" aria-hidden="true" tabindex="-1"></a>      <span class="at">--score</span> <span class="va">${trait}</span>.fastGWA 2 4 8 sum center <span class="dt">\</span></span>
+<span id="cb23-142"><a href="#cb23-142" aria-hidden="true" tabindex="-1"></a>      <span class="at">--extract</span> C+PT/<span class="va">${trait}</span>_rsq_<span class="va">${r2_thresh}</span>_p_below_<span class="va">${pv_thresh}</span>.clumped <span class="dt">\</span></span>
+<span id="cb23-143"><a href="#cb23-143" aria-hidden="true" tabindex="-1"></a>      <span class="at">--out</span> C+PT/<span class="va">${trait}</span>_rsq_<span class="va">${r2_thresh}</span>_p_below_<span class="va">${pv_thresh}</span>.pred <span class="at">--silent</span></span>
+<span id="cb23-144"><a href="#cb23-144" aria-hidden="true" tabindex="-1"></a>  <span class="cf">done</span></span>
+<span id="cb23-145"><a href="#cb23-145" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span>
+<span id="cb23-146"><a href="#cb23-146" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb23-147"><a href="#cb23-147" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-148"><a href="#cb23-148" aria-hidden="true" tabindex="-1"></a>PGS calculated using the command above are stored in the <span class="in">`*.profile`</span> files (last column named <span class="in">`SCORESUM`</span>). We can now load them in <span class="in">`R`</span> and calculate prediction accuracy in each population.</span>
+<span id="cb23-149"><a href="#cb23-149" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-150"><a href="#cb23-150" aria-hidden="true" tabindex="-1"></a><span class="in">```{R, eval=FALSE}</span></span>
+<span id="cb23-151"><a href="#cb23-151" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">stringsAsFactors =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb23-152"><a href="#cb23-152" aria-hidden="true" tabindex="-1"></a>r2_thr <span class="ot">&lt;-</span> <span class="fl">0.1</span></span>
+<span id="cb23-153"><a href="#cb23-153" aria-hidden="true" tabindex="-1"></a>pops   <span class="ot">&lt;-</span> <span class="fu">read.table</span>(<span class="st">"1kg-sample-2504-phased.txt"</span>,<span class="at">h=</span>T) <span class="do">## This contains ancestry information</span></span>
+<span id="cb23-154"><a href="#cb23-154" aria-hidden="true" tabindex="-1"></a>trait  <span class="ot">&lt;-</span> <span class="st">"Trait2"</span></span>
+<span id="cb23-155"><a href="#cb23-155" aria-hidden="true" tabindex="-1"></a>phen   <span class="ot">&lt;-</span> <span class="fu">read.table</span>(<span class="fu">paste0</span>(<span class="st">"1kg."</span>,trait,<span class="st">".phen"</span>),<span class="at">h=</span>T)[,<span class="sc">-</span><span class="dv">1</span>] <span class="do">## Read phenotype</span></span>
+<span id="cb23-156"><a href="#cb23-156" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(phen) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"IID"</span>,trait)</span>
+<span id="cb23-157"><a href="#cb23-157" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-158"><a href="#cb23-158" aria-hidden="true" tabindex="-1"></a><span class="do">## Merge with all PGS</span></span>
+<span id="cb23-159"><a href="#cb23-159" aria-hidden="true" tabindex="-1"></a>Threshs <span class="ot">&lt;-</span> <span class="dv">8</span><span class="sc">:</span><span class="dv">2</span></span>
+<span id="cb23-160"><a href="#cb23-160" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(thresh <span class="cf">in</span> Threshs){</span>
+<span id="cb23-161"><a href="#cb23-161" aria-hidden="true" tabindex="-1"></a>  filename <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">"C+PT/"</span>,trait,<span class="st">"_rsq_"</span>,r2_thr,<span class="st">"_p_below_5e-"</span>,thresh,<span class="st">".pred.profile"</span>)</span>
+<span id="cb23-162"><a href="#cb23-162" aria-hidden="true" tabindex="-1"></a>  tmp <span class="ot">&lt;-</span> <span class="fu">read.table</span>(filename,<span class="at">h=</span>T)[,<span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">6</span>)]</span>
+<span id="cb23-163"><a href="#cb23-163" aria-hidden="true" tabindex="-1"></a>  <span class="fu">colnames</span>(tmp)[<span class="dv">2</span>] <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">"P"</span>,thresh)</span>
+<span id="cb23-164"><a href="#cb23-164" aria-hidden="true" tabindex="-1"></a>  phen <span class="ot">&lt;-</span> <span class="fu">merge</span>(phen,tmp,<span class="at">by=</span><span class="st">"IID"</span>)</span>
+<span id="cb23-165"><a href="#cb23-165" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb23-166"><a href="#cb23-166" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-167"><a href="#cb23-167" aria-hidden="true" tabindex="-1"></a><span class="do">## This is the merged data containing all PGS</span></span>
+<span id="cb23-168"><a href="#cb23-168" aria-hidden="true" tabindex="-1"></a><span class="do">## P8 denotes the PGS calculated using SNPs with p-value &lt;5e-8</span></span>
+<span id="cb23-169"><a href="#cb23-169" aria-hidden="true" tabindex="-1"></a>phen <span class="ot">&lt;-</span> <span class="fu">merge</span>(phen,pops,<span class="at">by.x=</span><span class="st">"IID"</span>,<span class="at">by.y=</span><span class="st">"sample"</span>)</span>
+<span id="cb23-170"><a href="#cb23-170" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-171"><a href="#cb23-171" aria-hidden="true" tabindex="-1"></a><span class="do">## Look at prediction accuracy</span></span>
+<span id="cb23-172"><a href="#cb23-172" aria-hidden="true" tabindex="-1"></a><span class="co"># across the sample</span></span>
+<span id="cb23-173"><a href="#cb23-173" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(<span class="fu">lm</span>(<span class="fu">paste0</span>(trait,<span class="st">"~P8"</span>),phen)) </span>
+<span id="cb23-174"><a href="#cb23-174" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-175"><a href="#cb23-175" aria-hidden="true" tabindex="-1"></a><span class="do">## within European ancestry individuals</span></span>
+<span id="cb23-176"><a href="#cb23-176" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(<span class="fu">lm</span>(<span class="fu">paste0</span>(trait,<span class="st">"~P8"</span>),phen[<span class="fu">which</span>(phen<span class="sc">$</span>super_pop<span class="sc">==</span><span class="st">"EUR"</span>),])) </span>
+<span id="cb23-177"><a href="#cb23-177" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-178"><a href="#cb23-178" aria-hidden="true" tabindex="-1"></a><span class="do">## within African  ancestry individuals</span></span>
+<span id="cb23-179"><a href="#cb23-179" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(<span class="fu">lm</span>(<span class="fu">paste0</span>(trait,<span class="st">"~P8"</span>),phen[<span class="fu">which</span>(phen<span class="sc">$</span>super_pop<span class="sc">==</span><span class="st">"AFR"</span>),])) </span>
+<span id="cb23-180"><a href="#cb23-180" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-181"><a href="#cb23-181" aria-hidden="true" tabindex="-1"></a><span class="do">## Select best threshold</span></span>
+<span id="cb23-182"><a href="#cb23-182" aria-hidden="true" tabindex="-1"></a><span class="do">## Across all samples</span></span>
+<span id="cb23-183"><a href="#cb23-183" aria-hidden="true" tabindex="-1"></a>RsqOverall <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="cn">NA</span>,<span class="fu">length</span>(Threshs))</span>
+<span id="cb23-184"><a href="#cb23-184" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(RsqOverall) <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">"P"</span>,Threshs)</span>
+<span id="cb23-185"><a href="#cb23-185" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(thresh <span class="cf">in</span> Threshs){</span>
+<span id="cb23-186"><a href="#cb23-186" aria-hidden="true" tabindex="-1"></a>  idThresh <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">"P"</span>,thresh)</span>
+<span id="cb23-187"><a href="#cb23-187" aria-hidden="true" tabindex="-1"></a>  RsqOverall[idThresh] <span class="ot">&lt;-</span> <span class="fu">cor</span>(phen[,trait],phen[,idThresh])<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb23-188"><a href="#cb23-188" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb23-189"><a href="#cb23-189" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-190"><a href="#cb23-190" aria-hidden="true" tabindex="-1"></a><span class="do">## Within each ancestry group</span></span>
+<span id="cb23-191"><a href="#cb23-191" aria-hidden="true" tabindex="-1"></a>ancestries <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"EUR"</span>,<span class="st">"SAS"</span>,<span class="st">"EAS"</span>,<span class="st">"AMR"</span>,<span class="st">"AFR"</span>)</span>
+<span id="cb23-192"><a href="#cb23-192" aria-hidden="true" tabindex="-1"></a>RsqPerAnc  <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="cn">NA</span>,<span class="at">nrow=</span><span class="fu">length</span>(ancestries),<span class="at">ncol=</span><span class="fu">length</span>(Threshs))</span>
+<span id="cb23-193"><a href="#cb23-193" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(RsqPerAnc) <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">"P"</span>,Threshs)</span>
+<span id="cb23-194"><a href="#cb23-194" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(RsqPerAnc) <span class="ot">&lt;-</span> ancestries</span>
+<span id="cb23-195"><a href="#cb23-195" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(thresh <span class="cf">in</span> Threshs){</span>
+<span id="cb23-196"><a href="#cb23-196" aria-hidden="true" tabindex="-1"></a>  idThresh <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">"P"</span>,thresh)</span>
+<span id="cb23-197"><a href="#cb23-197" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span>(ancestry <span class="cf">in</span> ancestries){</span>
+<span id="cb23-198"><a href="#cb23-198" aria-hidden="true" tabindex="-1"></a>    idAnc <span class="ot">&lt;-</span> <span class="fu">which</span>(phen[,<span class="st">"super_pop"</span>]<span class="sc">==</span>ancestry)</span>
+<span id="cb23-199"><a href="#cb23-199" aria-hidden="true" tabindex="-1"></a>    RsqPerAnc[ancestry,idThresh] <span class="ot">&lt;-</span> <span class="fu">cor</span>(phen[idAnc,trait],phen[idAnc,idThresh])<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb23-200"><a href="#cb23-200" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb23-201"><a href="#cb23-201" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb23-202"><a href="#cb23-202" aria-hidden="true" tabindex="-1"></a>RsqPerAnc</span>
+<span id="cb23-203"><a href="#cb23-203" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb23-204"><a href="#cb23-204" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-205"><a href="#cb23-205" aria-hidden="true" tabindex="-1"></a>**Question 2. **</span>
+<span id="cb23-206"><a href="#cb23-206" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-207"><a href="#cb23-207" aria-hidden="true" tabindex="-1"></a>**What is the best prediction accuracy in EUR individuals across all significance thresholds? Is the best accuracy reached using the same significance threshold consistently across all ancestry groups? In which ancestry group is the prediction higher? Do you see any difference between `Trait1` and `Trait2`?**</span>
+<span id="cb23-208"><a href="#cb23-208" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-209"><a href="#cb23-209" aria-hidden="true" tabindex="-1"></a>If you have time (**at the end of the Practical**) and answered the question above then you could split the EUR sample in 2 (random) subsets, select the threshold that yields the larger accuracy in subset1, then re-evaluate the prediction accuracy of the corresponding PGS in subset 2. Compare the resulting prediction accuracy with your answer to the first part of **Question 2** above. This process is called cross-validation. </span>
+<span id="cb23-210"><a href="#cb23-210" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-211"><a href="#cb23-211" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-212"><a href="#cb23-212" aria-hidden="true" tabindex="-1"></a><span class="fu">## Part 2. Prediction using SBLUP.</span></span>
+<span id="cb23-213"><a href="#cb23-213" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-214"><a href="#cb23-214" aria-hidden="true" tabindex="-1"></a>Create a folder to store all intermediate files generated for this method.</span>
+<span id="cb23-215"><a href="#cb23-215" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-216"><a href="#cb23-216" aria-hidden="true" tabindex="-1"></a>(Back to the terminal!)</span>
+<span id="cb23-217"><a href="#cb23-217" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-218"><a href="#cb23-218" aria-hidden="true" tabindex="-1"></a><span class="in">```{bash, eval=FALSE}</span></span>
+<span id="cb23-219"><a href="#cb23-219" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> SBLUP</span>
+<span id="cb23-220"><a href="#cb23-220" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb23-221"><a href="#cb23-221" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-222"><a href="#cb23-222" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-223"><a href="#cb23-223" aria-hidden="true" tabindex="-1"></a>The SNP-based heritability of <span class="in">`Trait1`</span> and <span class="in">`Trait2`</span> is $h^2_{SNP} = 0.2$. As shown above, the SBLUP uses a LD reference. Here we provide LD data calculated with PLINK in $N=348,501$ unrelated European ancestry participants from the UK Biobank using the following command.  </span>
+<span id="cb23-224"><a href="#cb23-224" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-225"><a href="#cb23-225" aria-hidden="true" tabindex="-1"></a><span class="in">```{bash, eval=FALSE}</span></span>
+<span id="cb23-226"><a href="#cb23-226" aria-hidden="true" tabindex="-1"></a><span class="co">## Calculate PGS for each predictor</span></span>
+<span id="cb23-227"><a href="#cb23-227" aria-hidden="true" tabindex="-1"></a><span class="va">${PLINK}</span> <span class="dt">\</span></span>
+<span id="cb23-228"><a href="#cb23-228" aria-hidden="true" tabindex="-1"></a>  <span class="at">--bfile</span> UKBu_chrom20 <span class="dt">\</span></span>
+<span id="cb23-229"><a href="#cb23-229" aria-hidden="true" tabindex="-1"></a>  <span class="at">--chr</span> 20 <span class="dt">\</span></span>
+<span id="cb23-230"><a href="#cb23-230" aria-hidden="true" tabindex="-1"></a>  <span class="at">--ld-window</span> 999999999 <span class="dt">\</span></span>
+<span id="cb23-231"><a href="#cb23-231" aria-hidden="true" tabindex="-1"></a>  <span class="at">--ld-window-kb</span> 1000 <span class="dt">\</span></span>
+<span id="cb23-232"><a href="#cb23-232" aria-hidden="true" tabindex="-1"></a>  <span class="at">--ld-window-r2</span> 0.00 <span class="dt">\</span></span>
+<span id="cb23-233"><a href="#cb23-233" aria-hidden="true" tabindex="-1"></a>  <span class="at">--r</span> <span class="st">'yes-really'</span> <span class="st">'gz'</span> <span class="dt">\</span></span>
+<span id="cb23-234"><a href="#cb23-234" aria-hidden="true" tabindex="-1"></a>  <span class="at">--out</span> plinkLDMat_chrom20</span>
+<span id="cb23-235"><a href="#cb23-235" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb23-236"><a href="#cb23-236" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-237"><a href="#cb23-237" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">span</span><span class="ot"> style</span><span class="op">=</span><span class="st">"color:red;"</span><span class="dt">&gt;</span>**We only show this command out of general interest. For the sake of time, we do not advise running this command during the practical but you could try it later at home. Note that the data named `UKBu_chrom20` has not been provided but you could replace it another dataset, e.g., with `1kg_hm3`.**<span class="dt">&lt;/</span><span class="kw">span</span><span class="dt">&gt;</span></span>
+<span id="cb23-238"><a href="#cb23-238" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-239"><a href="#cb23-239" aria-hidden="true" tabindex="-1"></a>You will see below an R script to run SBLUP. This code is provided in an external <span class="in">`R`</span> script named <span class="in">`sblup.R`</span>. You can run it using the following command</span>
+<span id="cb23-240"><a href="#cb23-240" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-241"><a href="#cb23-241" aria-hidden="true" tabindex="-1"></a><span class="in">```{bash, eval=FALSE}</span></span>
+<span id="cb23-242"><a href="#cb23-242" aria-hidden="true" tabindex="-1"></a><span class="co">## Calculate PGS for each predictor</span></span>
+<span id="cb23-243"><a href="#cb23-243" aria-hidden="true" tabindex="-1"></a><span class="ex">Rscript</span> /data/SISG2023M15/data/sblup.R Trait1</span>
+<span id="cb23-244"><a href="#cb23-244" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb23-245"><a href="#cb23-245" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-246"><a href="#cb23-246" aria-hidden="true" tabindex="-1"></a>The command above will generate a file named <span class="in">`SBLUP/Trait1.sblupInR.res`</span>.</span>
+<span id="cb23-247"><a href="#cb23-247" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-248"><a href="#cb23-248" aria-hidden="true" tabindex="-1"></a>**Question 3. Using the examples above,1) calculate the PGS using SNP effects from SBLUP (for `Trait1` and `Trait2`); 2) assess prediction accuracy in the test sample 3) compare your results with the prediction accuracy in EUR and non-EUR individuals obtained using the C+PT method**.</span>
+<span id="cb23-249"><a href="#cb23-249" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-250"><a href="#cb23-250" aria-hidden="true" tabindex="-1"></a>It is expected that you try to answer these questions using the R functions introduced above. The below</span>
+<span id="cb23-251"><a href="#cb23-251" aria-hidden="true" tabindex="-1"></a>code is a partial solution to the above questions and uses some key functions that you may want to use to</span>
+<span id="cb23-252"><a href="#cb23-252" aria-hidden="true" tabindex="-1"></a>answer the above questions.</span>
+<span id="cb23-253"><a href="#cb23-253" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-254"><a href="#cb23-254" aria-hidden="true" tabindex="-1"></a><span class="in">```{R, eval=FALSE}</span></span>
+<span id="cb23-255"><a href="#cb23-255" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">stringsAsFactors =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb23-256"><a href="#cb23-256" aria-hidden="true" tabindex="-1"></a>pops   <span class="ot">&lt;-</span> <span class="fu">read.table</span>(<span class="st">"1kg-sample-2504-phased.txt"</span>,<span class="at">h=</span>T)</span>
+<span id="cb23-257"><a href="#cb23-257" aria-hidden="true" tabindex="-1"></a>trait  <span class="ot">&lt;-</span> <span class="st">"Trait2"</span></span>
+<span id="cb23-258"><a href="#cb23-258" aria-hidden="true" tabindex="-1"></a>phen   <span class="ot">&lt;-</span> <span class="fu">read.table</span>(<span class="fu">paste0</span>(<span class="st">"1kg."</span>,trait,<span class="st">".phen"</span>),<span class="at">h=</span>T)[,<span class="sc">-</span><span class="dv">1</span>] <span class="do">## Read phenotype</span></span>
+<span id="cb23-259"><a href="#cb23-259" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(phen) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"IID"</span>,trait)</span>
+<span id="cb23-260"><a href="#cb23-260" aria-hidden="true" tabindex="-1"></a>sblup  <span class="ot">&lt;-</span> <span class="fu">read.table</span>(<span class="fu">paste0</span>(<span class="st">"SBLUP/"</span>,trait,<span class="st">".pred.R.profile"</span>),<span class="at">h=</span>T)[,<span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">6</span>)]</span>
+<span id="cb23-261"><a href="#cb23-261" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-262"><a href="#cb23-262" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(sblup)[<span class="dv">2</span>] <span class="ot">&lt;-</span> <span class="st">"SBLUP"</span></span>
+<span id="cb23-263"><a href="#cb23-263" aria-hidden="true" tabindex="-1"></a>phen <span class="ot">&lt;-</span> <span class="fu">merge</span>(phen,sblup,<span class="at">by=</span><span class="st">"IID"</span>)</span>
+<span id="cb23-264"><a href="#cb23-264" aria-hidden="true" tabindex="-1"></a>phen <span class="ot">&lt;-</span> <span class="fu">merge</span>(phen,pops,<span class="at">by.x=</span><span class="st">"IID"</span>,<span class="at">by.y=</span><span class="st">"sample"</span>)</span>
+<span id="cb23-265"><a href="#cb23-265" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-266"><a href="#cb23-266" aria-hidden="true" tabindex="-1"></a><span class="do">## Look at prediction accuracy</span></span>
+<span id="cb23-267"><a href="#cb23-267" aria-hidden="true" tabindex="-1"></a><span class="co"># across the entire sample</span></span>
+<span id="cb23-268"><a href="#cb23-268" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(<span class="fu">lm</span>(<span class="fu">paste0</span>(trait,<span class="st">"~SBLUP"</span>),phen)) </span>
+<span id="cb23-269"><a href="#cb23-269" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-270"><a href="#cb23-270" aria-hidden="true" tabindex="-1"></a><span class="do">## within European ancestry individuals</span></span>
+<span id="cb23-271"><a href="#cb23-271" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(<span class="fu">lm</span>(<span class="fu">paste0</span>(trait,<span class="st">"~SBLUP"</span>),phen[<span class="fu">which</span>(phen<span class="sc">$</span>super_pop<span class="sc">==</span><span class="st">"EUR"</span>),])) </span>
+<span id="cb23-272"><a href="#cb23-272" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-273"><a href="#cb23-273" aria-hidden="true" tabindex="-1"></a><span class="do">## within African  ancestry individuals</span></span>
+<span id="cb23-274"><a href="#cb23-274" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(<span class="fu">lm</span>(<span class="fu">paste0</span>(trait,<span class="st">"~SBLUP"</span>),phen[<span class="fu">which</span>(phen<span class="sc">$</span>super_pop<span class="sc">==</span><span class="st">"AFR"</span>),])) </span>
+<span id="cb23-275"><a href="#cb23-275" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-276"><a href="#cb23-276" aria-hidden="true" tabindex="-1"></a><span class="do">## Within each ancestry group</span></span>
+<span id="cb23-277"><a href="#cb23-277" aria-hidden="true" tabindex="-1"></a>ancestries <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"EUR"</span>,<span class="st">"SAS"</span>,<span class="st">"EAS"</span>,<span class="st">"AMR"</span>,<span class="st">"AFR"</span>)</span>
+<span id="cb23-278"><a href="#cb23-278" aria-hidden="true" tabindex="-1"></a>RsqPerAnc  <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="cn">NA</span>,<span class="fu">length</span>(ancestries))</span>
+<span id="cb23-279"><a href="#cb23-279" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(RsqPerAnc) <span class="ot">&lt;-</span> ancestries</span>
+<span id="cb23-280"><a href="#cb23-280" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(ancestry <span class="cf">in</span> ancestries){</span>
+<span id="cb23-281"><a href="#cb23-281" aria-hidden="true" tabindex="-1"></a>  idAnc <span class="ot">&lt;-</span> <span class="fu">which</span>(phen[,<span class="st">"super_pop"</span>]<span class="sc">==</span>ancestry)</span>
+<span id="cb23-282"><a href="#cb23-282" aria-hidden="true" tabindex="-1"></a>  RsqPerAnc[ancestry] <span class="ot">&lt;-</span> <span class="fu">cor</span>(phen[idAnc,trait],phen[idAnc,<span class="st">"SBLUP"</span>])<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb23-283"><a href="#cb23-283" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb23-284"><a href="#cb23-284" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb23-285"><a href="#cb23-285" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-286"><a href="#cb23-286" aria-hidden="true" tabindex="-1"></a>It is also possible to run SBLUP using <span class="in">`GCTA`</span>. This will require a different formatting of GWAS summary statistics, which we provide (files named <span class="in">`Trait1.ma`</span> and <span class="in">`Trait2.ma`</span>). Note that the same format can also be used with <span class="in">`GCTB`</span> to run SBayesC (see **Part 3** below). The implementation of SBLUP in <span class="in">`GCTA`</span> requires genotype data as input (and not a pre-calculated LD correlation matrix) as well as shrinkage parameter $\lambda = M_{SNPs}\left(\frac{1}{h^2_{SNP}}-1\right)$. An example command is given below</span>
+<span id="cb23-287"><a href="#cb23-287" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-288"><a href="#cb23-288" aria-hidden="true" tabindex="-1"></a><span class="in">```{bash, eval=FALSE}</span></span>
+<span id="cb23-289"><a href="#cb23-289" aria-hidden="true" tabindex="-1"></a><span class="va">GCTA</span><span class="op">=</span>/data/SISG2023M15/exe/gcta-1.94.1</span>
+<span id="cb23-290"><a href="#cb23-290" aria-hidden="true" tabindex="-1"></a><span class="va">lambda</span><span class="op">=</span>135628</span>
+<span id="cb23-291"><a href="#cb23-291" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> trait <span class="kw">in</span> Trait1 Trait2</span>
+<span id="cb23-292"><a href="#cb23-292" aria-hidden="true" tabindex="-1"></a>  <span class="cf">do</span></span>
+<span id="cb23-293"><a href="#cb23-293" aria-hidden="true" tabindex="-1"></a>  <span class="va">${GCTA}</span> <span class="dt">\</span></span>
+<span id="cb23-294"><a href="#cb23-294" aria-hidden="true" tabindex="-1"></a>  <span class="at">--bfile</span> 1kg_hm3 <span class="dt">\</span></span>
+<span id="cb23-295"><a href="#cb23-295" aria-hidden="true" tabindex="-1"></a>  <span class="at">--chr</span> 20 <span class="dt">\</span></span>
+<span id="cb23-296"><a href="#cb23-296" aria-hidden="true" tabindex="-1"></a>  <span class="at">--cojo-file</span> /data/SISG2023M15/data/<span class="va">${trait}</span>.ma <span class="dt">\</span></span>
+<span id="cb23-297"><a href="#cb23-297" aria-hidden="true" tabindex="-1"></a>  <span class="at">--cojo-sblup</span> <span class="va">${lambda}</span> <span class="dt">\</span></span>
+<span id="cb23-298"><a href="#cb23-298" aria-hidden="true" tabindex="-1"></a>  <span class="at">--cojo-wind</span> 1000 <span class="dt">\</span></span>
+<span id="cb23-299"><a href="#cb23-299" aria-hidden="true" tabindex="-1"></a>  <span class="at">--thread-num</span> 20 <span class="dt">\</span></span>
+<span id="cb23-300"><a href="#cb23-300" aria-hidden="true" tabindex="-1"></a>  <span class="at">--out</span> SBLUP/<span class="va">${trait}</span></span>
+<span id="cb23-301"><a href="#cb23-301" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span>
+<span id="cb23-302"><a href="#cb23-302" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb23-303"><a href="#cb23-303" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-304"><a href="#cb23-304" aria-hidden="true" tabindex="-1"></a>This command will take approximately 5 min to run. In the interest of time, we recommend not running it and moving to **Part 3** instead. More details can be found here: https://yanglab.westlake.edu.cn/software/gcta/#SBLUP.</span>
+<span id="cb23-305"><a href="#cb23-305" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-306"><a href="#cb23-306" aria-hidden="true" tabindex="-1"></a><span class="fu">## Part 3. Prediction using SBayes C</span></span>
+<span id="cb23-307"><a href="#cb23-307" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-308"><a href="#cb23-308" aria-hidden="true" tabindex="-1"></a>Create a folder to store all intermediate files generated for this method.</span>
+<span id="cb23-309"><a href="#cb23-309" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-310"><a href="#cb23-310" aria-hidden="true" tabindex="-1"></a><span class="in">```{bash, eval=FALSE}</span></span>
+<span id="cb23-311"><a href="#cb23-311" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> SBC</span>
+<span id="cb23-312"><a href="#cb23-312" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb23-313"><a href="#cb23-313" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-314"><a href="#cb23-314" aria-hidden="true" tabindex="-1"></a>SBayesC requires a different format for the LD matrix. We provide a LD matrix directly calculated with GCTB using a command like this</span>
+<span id="cb23-315"><a href="#cb23-315" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-316"><a href="#cb23-316" aria-hidden="true" tabindex="-1"></a><span class="in">```{bash, eval=FALSE}</span></span>
+<span id="cb23-317"><a href="#cb23-317" aria-hidden="true" tabindex="-1"></a><span class="va">${GCTB}</span> <span class="at">--bfile</span> sampleForLD <span class="at">--make-full-ldm</span> <span class="at">--snp</span> 1-5000 <span class="at">--out</span> SBC/BLOCK1618.CHROM20</span>
+<span id="cb23-318"><a href="#cb23-318" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb23-319"><a href="#cb23-319" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-320"><a href="#cb23-320" aria-hidden="true" tabindex="-1"></a><span class="in">`sampleForLD`</span> is a subset of 348,501 unrelated EUR participants of the UKB. LD correlations on chromosome 20 were calculated within 38 non-overlapping LD blocks identified in an EUR sample (see: http://bitbucket.org/nygcresearch/ldetect-data). Pre-calculated LD matrices can be downloaded from the <span class="in">`GCTB`</span> website. We provide these 38 LD submatrices in the folder named <span class="in">`ldm`</span> and paths for each file are listed in <span class="in">`mldm.txt`</span> (note the similarity with <span class="in">`GCTA`</span>: in <span class="in">`GCTB`</span> <span class="in">`--mldm`</span> indicates that multiple LD matrices will be used, while in <span class="in">`GCTA`</span> <span class="in">`--mgrm`</span> indicates that multiple GRMs will be used).</span>
+<span id="cb23-321"><a href="#cb23-321" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-322"><a href="#cb23-322" aria-hidden="true" tabindex="-1"></a>Set the path to GCTB</span>
+<span id="cb23-323"><a href="#cb23-323" aria-hidden="true" tabindex="-1"></a><span class="in">```{bash, eval=FALSE}</span></span>
+<span id="cb23-324"><a href="#cb23-324" aria-hidden="true" tabindex="-1"></a><span class="va">GCTB</span><span class="op">=</span>/data/SISG2023M15/exe/gctb</span>
+<span id="cb23-325"><a href="#cb23-325" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb23-326"><a href="#cb23-326" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-327"><a href="#cb23-327" aria-hidden="true" tabindex="-1"></a>Now, to run SBayes C, you could run the following command.</span>
+<span id="cb23-328"><a href="#cb23-328" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-329"><a href="#cb23-329" aria-hidden="true" tabindex="-1"></a><span class="in">```{bash, eval=FALSE}</span></span>
+<span id="cb23-330"><a href="#cb23-330" aria-hidden="true" tabindex="-1"></a><span class="va">mldm</span><span class="op">=</span>/data/SISG2023M15/data/mldm.txt</span>
+<span id="cb23-331"><a href="#cb23-331" aria-hidden="true" tabindex="-1"></a><span class="va">trait</span><span class="op">=</span>Trait1</span>
+<span id="cb23-332"><a href="#cb23-332" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-333"><a href="#cb23-333" aria-hidden="true" tabindex="-1"></a><span class="va">${GCTB}</span> <span class="at">--sbayes</span> C <span class="at">--mldm</span> <span class="va">${mldm}</span> <span class="dt">\</span></span>
+<span id="cb23-334"><a href="#cb23-334" aria-hidden="true" tabindex="-1"></a>--gwas-summary /data/SISG2023M15/data/<span class="va">${trait}</span>.ma <span class="dt">\</span></span>
+<span id="cb23-335"><a href="#cb23-335" aria-hidden="true" tabindex="-1"></a>--pi 0.0001 <span class="at">--hsq</span> 0.001 <span class="dt">\</span></span>
+<span id="cb23-336"><a href="#cb23-336" aria-hidden="true" tabindex="-1"></a>--chain-length 10000 <span class="dt">\</span></span>
+<span id="cb23-337"><a href="#cb23-337" aria-hidden="true" tabindex="-1"></a>--burn-in 5000 <span class="dt">\</span></span>
+<span id="cb23-338"><a href="#cb23-338" aria-hidden="true" tabindex="-1"></a>--no-mcmc-bin <span class="dt">\</span></span>
+<span id="cb23-339"><a href="#cb23-339" aria-hidden="true" tabindex="-1"></a>--robust <span class="dt">\</span></span>
+<span id="cb23-340"><a href="#cb23-340" aria-hidden="true" tabindex="-1"></a>--out-freq 100 <span class="dt">\</span></span>
+<span id="cb23-341"><a href="#cb23-341" aria-hidden="true" tabindex="-1"></a>--thin 10 <span class="dt">\</span></span>
+<span id="cb23-342"><a href="#cb23-342" aria-hidden="true" tabindex="-1"></a>--out SBC/<span class="va">${trait}</span></span>
+<span id="cb23-343"><a href="#cb23-343" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb23-344"><a href="#cb23-344" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-345"><a href="#cb23-345" aria-hidden="true" tabindex="-1"></a>This command will run 10,000 MCMC iterations (<span class="in">`--chain-length`</span>) and output results every 100 iterations (<span class="in">`--out-freq`</span>). Final statistics for parameters and prediction accuracy will be calculated using 1/10 iterations (<span class="in">`--thin`</span>) after a burn-in of 5000 iterations (<span class="in">`--burn-in`</span>). </span>
+<span id="cb23-346"><a href="#cb23-346" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-347"><a href="#cb23-347" aria-hidden="true" tabindex="-1"></a>**Question 4. What is the heritability of `Trait1`? What is the proportion/expected number of SNPs with a non-zero effect on the trait? What is the genetic and residual variances?**.</span>
+<span id="cb23-348"><a href="#cb23-348" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-349"><a href="#cb23-349" aria-hidden="true" tabindex="-1"></a>The command above will generate a file named <span class="in">`SBC/Trait1.snpRes`</span>. We can use that file to calculated a PGS using the following command</span>
+<span id="cb23-350"><a href="#cb23-350" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-351"><a href="#cb23-351" aria-hidden="true" tabindex="-1"></a><span class="in">```{bash, eval=FALSE}</span></span>
+<span id="cb23-352"><a href="#cb23-352" aria-hidden="true" tabindex="-1"></a><span class="va">trait</span><span class="op">=</span>Trait1</span>
+<span id="cb23-353"><a href="#cb23-353" aria-hidden="true" tabindex="-1"></a><span class="va">${PLINK}</span> <span class="at">--bfile</span> 1kg_hm3 <span class="dt">\</span></span>
+<span id="cb23-354"><a href="#cb23-354" aria-hidden="true" tabindex="-1"></a>--score SBC/<span class="va">${trait}</span>.snpRes 2 5 8 sum center <span class="dt">\</span></span>
+<span id="cb23-355"><a href="#cb23-355" aria-hidden="true" tabindex="-1"></a>--out SBC/<span class="va">${trait}</span>.pred</span>
+<span id="cb23-356"><a href="#cb23-356" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb23-357"><a href="#cb23-357" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-358"><a href="#cb23-358" aria-hidden="true" tabindex="-1"></a>Assess the prediction accuracy of the SBayesC PGS in <span class="in">`R`</span> as done previously</span>
+<span id="cb23-359"><a href="#cb23-359" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-360"><a href="#cb23-360" aria-hidden="true" tabindex="-1"></a><span class="in">```{bash, eval=FALSE}</span></span>
+<span id="cb23-361"><a href="#cb23-361" aria-hidden="true" tabindex="-1"></a><span class="ex">options</span><span class="er">(</span><span class="ex">stringsAsFactors</span> = FALSE<span class="kw">)</span></span>
+<span id="cb23-362"><a href="#cb23-362" aria-hidden="true" tabindex="-1"></a><span class="ex">pops</span>   <span class="op">&lt;</span>- read.table<span class="er">(</span><span class="st">"1kg-sample-2504-phased.txt"</span><span class="ex">,h=T</span><span class="kw">)</span></span>
+<span id="cb23-363"><a href="#cb23-363" aria-hidden="true" tabindex="-1"></a><span class="ex">trait</span>  <span class="op">&lt;</span>- <span class="st">"Trait1"</span></span>
+<span id="cb23-364"><a href="#cb23-364" aria-hidden="true" tabindex="-1"></a><span class="ex">phen</span>   <span class="op">&lt;</span>- read.table<span class="er">(</span><span class="ex">paste0</span><span class="er">(</span><span class="st">"1kg."</span><span class="ex">,trait,</span><span class="st">".phen"</span><span class="kw">)</span><span class="ex">,h=T</span><span class="kw">)</span><span class="ex">[,-1]</span> <span class="co">## Read phenotype</span></span>
+<span id="cb23-365"><a href="#cb23-365" aria-hidden="true" tabindex="-1"></a><span class="ex">colnames</span><span class="er">(</span><span class="ex">phen</span><span class="kw">)</span> <span class="op">&lt;</span>- <span class="ex">c</span><span class="er">(</span><span class="st">"IID"</span><span class="ex">,trait</span><span class="kw">)</span></span>
+<span id="cb23-366"><a href="#cb23-366" aria-hidden="true" tabindex="-1"></a><span class="ex">sblup</span>  <span class="op">&lt;</span>- read.table<span class="er">(</span><span class="ex">paste0</span><span class="er">(</span><span class="st">"SBC/"</span><span class="ex">,trait,</span><span class="st">".pred.profile"</span><span class="kw">)</span><span class="ex">,h=T</span><span class="kw">)</span><span class="ex">[,c</span><span class="er">(</span><span class="ex">2,6</span><span class="kw">)</span><span class="ex">]</span></span>
+<span id="cb23-367"><a href="#cb23-367" aria-hidden="true" tabindex="-1"></a><span class="ex">colnames</span><span class="er">(</span><span class="ex">sblup</span><span class="kw">)</span><span class="ex">[2]</span> <span class="op">&lt;</span>- <span class="st">"SBC"</span></span>
+<span id="cb23-368"><a href="#cb23-368" aria-hidden="true" tabindex="-1"></a><span class="ex">phen</span> <span class="op">&lt;</span>- merge<span class="er">(</span><span class="ex">phen,sblup,by=</span><span class="st">"IID"</span><span class="kw">)</span></span>
+<span id="cb23-369"><a href="#cb23-369" aria-hidden="true" tabindex="-1"></a><span class="ex">phen</span> <span class="op">&lt;</span>- merge<span class="er">(</span><span class="ex">phen,pops,by.x=</span><span class="st">"IID"</span><span class="ex">,by.y=</span><span class="st">"sample"</span><span class="kw">)</span></span>
+<span id="cb23-370"><a href="#cb23-370" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-371"><a href="#cb23-371" aria-hidden="true" tabindex="-1"></a><span class="co">## Look at prediction accuracy</span></span>
+<span id="cb23-372"><a href="#cb23-372" aria-hidden="true" tabindex="-1"></a><span class="co"># across the sample</span></span>
+<span id="cb23-373"><a href="#cb23-373" aria-hidden="true" tabindex="-1"></a><span class="ex">summary</span><span class="er">(</span><span class="ex">lm</span><span class="er">(</span><span class="ex">paste0</span><span class="er">(</span><span class="ex">trait,</span><span class="st">"~SBC"</span><span class="kw">)</span><span class="ex">,phen</span><span class="kw">))</span> </span>
+<span id="cb23-374"><a href="#cb23-374" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-375"><a href="#cb23-375" aria-hidden="true" tabindex="-1"></a><span class="co">## within European ancestry individuals</span></span>
+<span id="cb23-376"><a href="#cb23-376" aria-hidden="true" tabindex="-1"></a><span class="ex">summary</span><span class="er">(</span><span class="ex">lm</span><span class="er">(</span><span class="ex">paste0</span><span class="er">(</span><span class="ex">trait,</span><span class="st">"~SBC"</span><span class="kw">)</span><span class="ex">,phen[which</span><span class="er">(</span><span class="ex">phen</span><span class="va">$super_pop</span><span class="ex">==</span><span class="st">"EUR"</span><span class="kw">)</span><span class="ex">,]</span><span class="kw">))</span> </span>
+<span id="cb23-377"><a href="#cb23-377" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-378"><a href="#cb23-378" aria-hidden="true" tabindex="-1"></a><span class="co">## within African  ancestry individuals</span></span>
+<span id="cb23-379"><a href="#cb23-379" aria-hidden="true" tabindex="-1"></a><span class="ex">summary</span><span class="er">(</span><span class="ex">lm</span><span class="er">(</span><span class="ex">paste0</span><span class="er">(</span><span class="ex">trait,</span><span class="st">"~SBC"</span><span class="kw">)</span><span class="ex">,phen[which</span><span class="er">(</span><span class="ex">phen</span><span class="va">$super_pop</span><span class="ex">==</span><span class="st">"AFR"</span><span class="kw">)</span><span class="ex">,]</span><span class="kw">))</span> </span>
+<span id="cb23-380"><a href="#cb23-380" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-381"><a href="#cb23-381" aria-hidden="true" tabindex="-1"></a><span class="co">## Within each ancestry group</span></span>
+<span id="cb23-382"><a href="#cb23-382" aria-hidden="true" tabindex="-1"></a><span class="ex">ancestries</span> <span class="op">&lt;</span>- c<span class="er">(</span><span class="st">"EUR"</span><span class="ex">,</span><span class="st">"SAS"</span><span class="ex">,</span><span class="st">"EAS"</span><span class="ex">,</span><span class="st">"AMR"</span><span class="ex">,</span><span class="st">"AFR"</span><span class="kw">)</span></span>
+<span id="cb23-383"><a href="#cb23-383" aria-hidden="true" tabindex="-1"></a><span class="ex">RsqPerAnc</span>  <span class="op">&lt;</span>- rep<span class="er">(</span><span class="ex">NA,length</span><span class="er">(</span><span class="ex">ancestries</span><span class="kw">))</span></span>
+<span id="cb23-384"><a href="#cb23-384" aria-hidden="true" tabindex="-1"></a><span class="ex">names</span><span class="er">(</span><span class="ex">RsqPerAnc</span><span class="kw">)</span> <span class="op">&lt;</span>- <span class="ex">ancestries</span></span>
+<span id="cb23-385"><a href="#cb23-385" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span><span class="kw">(</span><span class="ex">ancestry</span> in ancestries<span class="kw">){</span></span>
+<span id="cb23-386"><a href="#cb23-386" aria-hidden="true" tabindex="-1"></a>  <span class="ex">idAnc</span> <span class="op">&lt;</span>- which<span class="er">(</span><span class="va">phen</span><span class="op">[</span>,<span class="st">"super_pop"</span><span class="op">]=</span>=ancestry<span class="kw">)</span></span>
+<span id="cb23-387"><a href="#cb23-387" aria-hidden="true" tabindex="-1"></a>  <span class="va">RsqPerAnc</span><span class="op">[</span>ancestry<span class="op">]</span> <span class="op">&lt;</span>- <span class="ex">cor</span><span class="er">(</span><span class="va">phen</span><span class="op">[</span>idAnc,trait<span class="op">]</span><span class="ex">,phen[idAnc,</span><span class="st">"SBC"</span><span class="ex">]</span><span class="kw">)</span><span class="ex">^2</span></span>
+<span id="cb23-388"><a href="#cb23-388" aria-hidden="true" tabindex="-1"></a><span class="kw">}</span></span>
+<span id="cb23-389"><a href="#cb23-389" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
+</div></div></div></div></div>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

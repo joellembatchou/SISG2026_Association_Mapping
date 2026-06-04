@@ -1,0 +1,24 @@
+PLINK v2.00a6 M1 (9 Jun 2024)
+Options in effect:
+  --bfile chr1_region_rv
+  --glm allow-no-covars
+  --out test_plink
+  --pheno /Users/joelle.mbatchou/SISG/2024/SISG2024_Association_Mapping/data//rv_pheno.txt
+  --pheno-name Pheno
+
+Hostname: R1YG04N9NV
+Working directory: /Users/joelle.mbatchou/Library/CloudStorage/OneDrive-RegeneronPharmaceuticals,Inc/Projects/SISG/2026/SISG2026_Association_Mapping/analysis
+Start time: Wed May 27 15:59:06 2026
+
+Random number seed: 1779915546
+16384 MiB RAM detected; reserving 8192 MiB for main workspace.
+Using up to 10 threads (change this with --threads).
+9953 samples (4942 females, 5011 males; 9953 founders) loaded from
+chr1_region_rv.fam.
+56 variants loaded from chr1_region_rv.bim.
+1 quantitative phenotype loaded (9949 values).
+Calculating allele frequencies... done.
+--glm linear regression on phenotype 'Pheno': done.
+Results written to test_plink.Pheno.glm.linear .
+
+End time: Wed May 27 15:59:06 2026

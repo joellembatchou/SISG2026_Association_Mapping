@@ -1,0 +1,49 @@
+name: SISG2026_Association_Mapping
+output_dir: ../docs
+exclude:
+- ../data/*
+- ../code/*
+- ../lectures/*
+navbar:
+  title: SISG 2026 QG3
+  left:
+  - text: Home
+    href: index.html
+  - text: Sessions
+    href: about.html
+    menu:
+    - text: Day 1
+    - text: Session 1
+      href: QG3_Association_Testing_practical.html
+    - text: Session 2
+      href: QG3_Plink_Population_Structure_practical.html
+    - text: Session 3
+      href: QG3_Relatedness_REGENIE_practical.html
+    - text: Session 4
+      href: QG3_RV_tests_practical.html
+    - text: '---------'
+    - text: Day 2
+    - text: Session 5
+      href: QG3_Beyond_Standard_GWAS_practical.html
+    - text: Session 6
+      href: QG3_Downstream-Analyses_practical.html
+    - text: Session 7
+      href: QG3_Polygenic_Scores_practical.html
+    - text: '---------'
+    - text: Day 3
+    - text: Session 9
+      href: QG3_Power-Design_practical.html
+    - text: Session 10
+      href: QG3_CC_Imbalance_practical.html
+  - text: License
+    href: license.html
+  right:
+  - icon: fab fa-github
+    text: Source code
+    href: https://github.com/joellembatchou/SISG2026_Association_Mapping
+output:
+  workflowr::wflow_html:
+    toc: yes
+    toc_float: yes
+    theme: readable
+    highlight: textmate
