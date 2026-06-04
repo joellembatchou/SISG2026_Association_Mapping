@@ -1,7 +1,5 @@
 ---
 title: 'Interaction testing and vQTL mapping'
-author: "Summer Institute of Statical Genetics (Module  QG3)"
-date: '2026-06-10'
 format:
   html: default
 ---
