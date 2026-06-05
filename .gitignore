@@ -31,3 +31,6 @@ tmp/
 **/*.quarto_ipynb
 QUARTO_GUIDE.md
 SETUP_NOTES.md
+build_website.sh
+WEBSITE_SETUP_COMPLETE.md
+convert_to_quarto.R
