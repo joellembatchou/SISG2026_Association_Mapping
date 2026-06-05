@@ -7,6 +7,7 @@ project:
 
 website:
   title: "SISG 2026 - Association Mapping"
+  favicon: logo.svg
   navbar:
     background: primary
     left:
@@ -28,8 +29,6 @@ website:
             href: analysis/QG3_Beyond_Standard_GWAS_practical.qmd
           - text: "Session 9: Polygenic Scores"
             href: analysis/QG3_Polygenic_Scores_practical.qmd
-          - text: "Session 10: Emerging Issues (Lecture only)"
-            href: "#"
     right:
       - icon: github
         href: https://github.com/joellembatchou/SISG2026_Association_Mapping

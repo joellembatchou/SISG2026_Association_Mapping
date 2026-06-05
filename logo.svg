@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <!-- Red globe background -->
+  <circle cx="100" cy="100" r="95" fill="#CC3333" stroke="#990000" stroke-width="2"/>
+
+  <!-- Beige text "QG3" -->
+  <text
+    x="100"
+    y="130"
+    font-size="90"
+    font-weight="bold"
+    font-family="Arial, sans-serif"
+    fill="#F5E6D3"
+    text-anchor="middle"
+    dominant-baseline="middle"
+  >
+    QG3
+  </text>
+</svg>
