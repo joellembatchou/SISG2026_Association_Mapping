@@ -8,7 +8,7 @@
 
 <meta name="author" content="">
 
-<title>Practical 3 Key - GWAS in Samples with Structure &amp; Using REGENIE</title>
+<title>Practical 3 Key - GWAS in Samples with Structure &amp; Using REGENIE – SISG 2026 - Association Mapping</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -62,17 +62,53 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </style>
 
 
-<script src="QG3_Relatedness_REGENIE_practical_Key_files/libs/clipboard/clipboard.min.js"></script>
-<script src="QG3_Relatedness_REGENIE_practical_Key_files/libs/quarto-html/quarto.js" type="module"></script>
-<script src="QG3_Relatedness_REGENIE_practical_Key_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="QG3_Relatedness_REGENIE_practical_Key_files/libs/quarto-html/popper.min.js"></script>
-<script src="QG3_Relatedness_REGENIE_practical_Key_files/libs/quarto-html/tippy.umd.min.js"></script>
-<script src="QG3_Relatedness_REGENIE_practical_Key_files/libs/quarto-html/anchor.min.js"></script>
-<link href="QG3_Relatedness_REGENIE_practical_Key_files/libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="QG3_Relatedness_REGENIE_practical_Key_files/libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="QG3_Relatedness_REGENIE_practical_Key_files/libs/bootstrap/bootstrap.min.js"></script>
-<link href="QG3_Relatedness_REGENIE_practical_Key_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="QG3_Relatedness_REGENIE_practical_Key_files/libs/bootstrap/bootstrap-8ffd5f67044e5306d9846f29df41dda5.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../logo.svg" rel="icon" type="image/svg+xml">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-8c38fd85d21bfe44b50360969156fb14.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<link href="../site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet">
+<script src="../site_libs/pagedtable-1.1/js/pagedtable.js"></script>
 
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
   <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
@@ -107,12 +143,91 @@ window.Quarto = {
 <link rel="stylesheet" href="../styles.css">
 </head>
 
-<body class="quarto-light">
+<body class="nav-fixed quarto-light">
 
-<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
-<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-  <nav id="TOC" role="doc-toc" class="toc-active">
-    <h2 id="toc-title">Table of contents</h2>
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">SISG 2026 - Association Mapping</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-practicals" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Practicals</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-practicals">    
+        <li>
+    <a class="dropdown-item" href="../analysis/QG3_Association_Testing_practical.html">
+ <span class="dropdown-text">Session 1: Association Testing</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../analysis/QG3_Plink_Population_Structure_practical.html">
+ <span class="dropdown-text">Session 2: PLINK &amp; Population Structure</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../analysis/QG3_Relatedness_REGENIE_practical.html">
+ <span class="dropdown-text">Session 3: Relatedness &amp; REGENIE</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../analysis/QG3_RV_tests_practical.html">
+ <span class="dropdown-text">Session 4: Rare Variant Tests</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://moeenriaz2.github.io/SISG26/index.html">
+ <span class="dropdown-text">Session 5: Meta-analysis</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://moeenriaz2.github.io/SISG26/index.html">
+ <span class="dropdown-text">Session 6: Meta-analysis &amp; Downstream</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://moeenriaz2.github.io/SISG26-downstream-simp/QG3_Downstream-Analyses_practical.html">
+ <span class="dropdown-text">Session 7: Downstream Analyses</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../analysis/QG3_Beyond_Standard_GWAS_practical.html">
+ <span class="dropdown-text">Session 8: Beyond Standard GWAS</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://moeenriaz2.github.io/SISG26-PRS/practical.html">
+ <span class="dropdown-text">Session 9: Polygenic Scores</span></a>
+  </li>  
+    </ul>
+  </li>
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/joellembatchou/SISG2026_Association_Mapping"> <i class="bi bi-github" role="img" aria-label="GitHub">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
    
   <ul>
   <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a>
@@ -123,12 +238,13 @@ window.Quarto = {
   <li><a href="#key-takeaways-from-this-practical" id="toc-key-takeaways-from-this-practical" class="nav-link" data-scroll-target="#key-takeaways-from-this-practical">Key Takeaways from This Practical</a></li>
   </ul>
 </nav>
-</div>
+    </div>
+<!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Practical 3 Key - GWAS in Samples with Structure &amp; Using REGENIE</h1>
+<div class="quarto-title-block"><div><h1 class="title">Practical 3 Key - GWAS in Samples with Structure &amp; Using REGENIE</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
 </div>
 
 
@@ -178,27 +294,30 @@ window.Quarto = {
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>pheno_file <span class="ot">&lt;-</span> <span class="fu">fread</span>(<span class="fu">glue</span>(<span class="st">"{files_dir}/sim_rels_pheno.txt"</span>), <span class="at">header =</span> <span class="cn">TRUE</span>) </span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(pheno_file, <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>    FID  IID        Pheno
-1: 2307 2307  0.009989201
-2:  379  379 -1.452527735
-3:  478  478  0.110971665</code></pre>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["FID"],"name":[1],"type":["int"],"align":["right"]},{"label":["IID"],"name":[2],"type":["int"],"align":["right"]},{"label":["Pheno"],"name":[3],"type":["dbl"],"align":["right"]}],"data":[{"1":"2307","2":"2307","3":"0.009989201"},{"1":"379","2":"379","3":"-1.452527735"},{"1":"478","2":"478","3":"0.110971665"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>sim_bim <span class="ot">&lt;-</span> <span class="fu">fread</span>(<span class="fu">glue</span>(<span class="st">"{files_dir}/sim_rels_geno.bim"</span>), <span class="at">header =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(sim_bim, <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>   V1             V2 V3       V4 V5 V6
-1:  1 1:12000011:A:C  0 12000011  A  C
-2:  1 1:12000012:A:C  0 12000012  A  C
-3:  1 1:12000019:T:C  0 12000019  T  C</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>sim_fam <span class="ot">&lt;-</span> <span class="fu">fread</span>(<span class="fu">glue</span>(<span class="st">"{files_dir}/sim_rels_geno.fam"</span>), <span class="at">header =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(sim_fam, <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>     V1   V2 V3 V4 V5 V6
-1: 2307 2307  0  0  1 -9
-2:  379  379  0  0  2 -9
-3:  478  478  0  0  1 -9</code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>sim_bim <span class="ot">&lt;-</span> <span class="fu">fread</span>(<span class="fu">glue</span>(<span class="st">"{files_dir}/sim_rels_geno.bim"</span>), <span class="at">header =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(sim_bim, <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["V1"],"name":[1],"type":["int"],"align":["right"]},{"label":["V2"],"name":[2],"type":["chr"],"align":["left"]},{"label":["V3"],"name":[3],"type":["int"],"align":["right"]},{"label":["V4"],"name":[4],"type":["int"],"align":["right"]},{"label":["V5"],"name":[5],"type":["chr"],"align":["left"]},{"label":["V6"],"name":[6],"type":["chr"],"align":["left"]}],"data":[{"1":"1","2":"1:12000011:A:C","3":"0","4":"12000011","5":"A","6":"C"},{"1":"1","2":"1:12000012:A:C","3":"0","4":"12000012","5":"A","6":"C"},{"1":"1","2":"1:12000019:T:C","3":"0","4":"12000019","5":"T","6":"C"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>sim_fam <span class="ot">&lt;-</span> <span class="fu">fread</span>(<span class="fu">glue</span>(<span class="st">"{files_dir}/sim_rels_geno.fam"</span>), <span class="at">header =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(sim_fam, <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["V1"],"name":[1],"type":["int"],"align":["right"]},{"label":["V2"],"name":[2],"type":["int"],"align":["right"]},{"label":["V3"],"name":[3],"type":["int"],"align":["right"]},{"label":["V4"],"name":[4],"type":["int"],"align":["right"]},{"label":["V5"],"name":[5],"type":["int"],"align":["right"]},{"label":["V6"],"name":[6],"type":["int"],"align":["right"]}],"data":[{"1":"2307","2":"2307","3":"0","4":"0","5":"1","6":"-9"},{"1":"379","2":"379","3":"0","4":"0","5":"2","6":"-9"},{"1":"478","2":"478","3":"0","4":"0","5":"1","6":"-9"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
 </div>
 </div>
 </section>
@@ -212,7 +331,7 @@ window.Quarto = {
 <li>How many samples are present? Use <code>str</code></li>
 </ul>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(sim_fam)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(sim_fam)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Classes 'data.table' and 'data.frame':  2400 obs. of  6 variables:
  $ V1: int  2307 379 478 1545 990 1907 369 1694 2137 2314 ...
@@ -228,7 +347,7 @@ window.Quarto = {
 <li>How many SNPs? In how many chromosomes? Use <code>str</code> and <code>table</code></li>
 </ul>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(sim_bim)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(sim_bim)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Classes 'data.table' and 'data.frame':  106134 obs. of  6 variables:
  $ V1: int  1 1 1 1 1 1 1 1 1 1 ...
@@ -239,7 +358,7 @@ window.Quarto = {
  $ V6: chr  "C" "C" "C" "T" ...
  - attr(*, ".internal.selfref")=&lt;externalptr&gt; </code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(sim_bim<span class="sc">$</span>V1)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(sim_bim<span class="sc">$</span>V1)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
    1    2    3    4    5    6    7    8    9   10   11   12   13   14   15   16 
@@ -255,7 +374,7 @@ window.Quarto = {
 <li>How many individuals in the study have measurements?</li>
 </ul>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(<span class="fu">is.na</span>(pheno_file<span class="sc">$</span>Pheno))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(<span class="fu">is.na</span>(pheno_file<span class="sc">$</span>Pheno))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 FALSE 
@@ -266,7 +385,7 @@ FALSE
 <li>Plot a histogram to show the distribution of the phenotype. Use the <code>hist()</code> function</li>
 </ul>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(pheno_file<span class="sc">$</span>Pheno)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(pheno_file<span class="sc">$</span>Pheno)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -284,21 +403,21 @@ FALSE
 <li>HWE p-values greater than 0.001</li>
 </ul>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># first fill in the thresholds to use for each filter</span></span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>filter_maf <span class="ot">=</span> <span class="fl">0.01</span></span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>filter_missing_rate <span class="ot">=</span> <span class="fl">0.01</span></span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>filter_hwe <span class="ot">=</span> <span class="fl">0.001</span></span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>cmd <span class="ot">&lt;-</span> <span class="fu">glue</span>(<span class="st">'{plink2_binary} --bfile "{files_dir}/sim_rels_geno" --pheno "{files_dir}/sim_rels_pheno.txt" --pheno-name Pheno --maf {filter_maf} --geno {filter_missing_rate} --hwe {filter_hwe} --glm allow-no-covars --out gwas_plink'</span>)</span>
-<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a><span class="fu">system</span>(cmd)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># first fill in the thresholds to use for each filter</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>filter_maf <span class="ot">=</span> <span class="fl">0.01</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>filter_missing_rate <span class="ot">=</span> <span class="fl">0.01</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>filter_hwe <span class="ot">=</span> <span class="fl">0.001</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>cmd <span class="ot">&lt;-</span> <span class="fu">glue</span>(<span class="st">'{plink2_binary} --bfile "{files_dir}/sim_rels_geno" --pheno "{files_dir}/sim_rels_pheno.txt" --pheno-name Pheno --maf {filter_maf} --geno {filter_missing_rate} --hwe {filter_hwe} --glm allow-no-covars --out gwas_plink'</span>)</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a><span class="fu">system</span>(cmd)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>The results of the GWAS are stored in <code>gwas_plink.Pheno.glm.linear</code>.</p>
 <ol start="4" type="1">
 <li>Make a Manhattan plot of the association results. Make sure to check what information is stored in the PLINK output file (using <code>str()</code>).</li>
 </ol>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>plink.gwas <span class="ot">&lt;-</span> <span class="fu">fread</span>(<span class="st">"gwas_plink.Pheno.glm.linear"</span>, <span class="at">header =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(plink.gwas)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>plink.gwas <span class="ot">&lt;-</span> <span class="fu">fread</span>(<span class="st">"gwas_plink.Pheno.glm.linear"</span>, <span class="at">header =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(plink.gwas)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Classes 'data.table' and 'data.frame':  105886 obs. of  16 variables:
  $ #CHROM          : int  1 1 1 1 1 1 1 1 1 1 ...
@@ -319,12 +438,12 @@ FALSE
  $ ERRCODE         : chr  "." "." "." "." ...
  - attr(*, ".internal.selfref")=&lt;externalptr&gt; </code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(</span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(plink.gwas),</span>
-<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> <span class="sc">-</span><span class="fu">log10</span>(plink.gwas<span class="sc">$</span>P),</span>
-<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">col =</span> <span class="fu">c</span>(<span class="st">"orange"</span>, <span class="st">"purple"</span>)[<span class="dv">1</span> <span class="sc">+</span> plink.gwas<span class="sc">$</span><span class="st">`</span><span class="at">#CHROM</span><span class="st">`</span> <span class="sc">%%</span> <span class="dv">2</span>],</span>
-<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">xaxt =</span> <span class="st">"n"</span>, <span class="at">xlab =</span> <span class="st">"Genomic position"</span>, <span class="at">ylab =</span> <span class="st">"Observed -log10(P)"</span></span>
-<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(plink.gwas),</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> <span class="sc">-</span><span class="fu">log10</span>(plink.gwas<span class="sc">$</span>P),</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">col =</span> <span class="fu">c</span>(<span class="st">"orange"</span>, <span class="st">"purple"</span>)[<span class="dv">1</span> <span class="sc">+</span> plink.gwas<span class="sc">$</span><span class="st">`</span><span class="at">#CHROM</span><span class="st">`</span> <span class="sc">%%</span> <span class="dv">2</span>],</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">xaxt =</span> <span class="st">"n"</span>, <span class="at">xlab =</span> <span class="st">"Genomic position"</span>, <span class="at">ylab =</span> <span class="st">"Observed -log10(P)"</span></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -337,7 +456,7 @@ FALSE
 <li>Make a Q-Q plot of the association results.</li>
 </ol>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">qq</span>(plink.gwas<span class="sc">$</span>P)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">qq</span>(plink.gwas<span class="sc">$</span>P)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -350,8 +469,8 @@ FALSE
 <li>Compute the genomic control inflation factor <span class="math inline">\(\lambda_{GC}\)</span> based on the p-values. Is there evidence of possible inflation due to confounding?</li>
 </ol>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>chisq.values <span class="ot">&lt;-</span> <span class="fu">qchisq</span>(plink.gwas<span class="sc">$</span>P, <span class="dv">1</span>, <span class="at">lower.tail =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="fu">median</span>(chisq.values)<span class="sc">/</span><span class="fl">0.456</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>chisq.values <span class="ot">&lt;-</span> <span class="fu">qchisq</span>(plink.gwas<span class="sc">$</span>P, <span class="dv">1</span>, <span class="at">lower.tail =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="fu">median</span>(chisq.values)<span class="sc">/</span><span class="fl">0.456</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 1.145772</code></pre>
 </div>
@@ -360,14 +479,14 @@ FALSE
 <li>Now we will run REGENIE to perform a GWAS of the phenotype using a whole genome regression model. We first want to extract a set of high quality variants for the Step 1 null model fitting. Using PLINK, apply QC filters to remove variants with MAF below 5%, missingness above 1%, HWE p-value below 0.001, minor allele count (MAC) below 20. We will use <code>--write-snplist</code> to store list of variants passing QC without making a new BED file.</li>
 </ol>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># first fill in the thresholds to use for each filter</span></span>
-<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>filter_maf <span class="ot">=</span> <span class="fl">0.05</span></span>
-<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>filter_missing_rate <span class="ot">=</span> <span class="fl">0.01</span></span>
-<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>filter_hwe <span class="ot">=</span> <span class="fl">0.001</span></span>
-<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>filter_mac <span class="ot">=</span> <span class="dv">20</span></span>
-<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>cmd <span class="ot">&lt;-</span> <span class="fu">glue</span>(<span class="st">'{plink2_binary} --bfile "{files_dir}/sim_rels_geno" --pheno "{files_dir}/sim_rels_pheno.txt" --pheno-name Pheno --maf {filter_maf} --geno {filter_missing_rate} --hwe {filter_hwe} --mac {filter_mac} --write-snplist --out qc_pass'</span>)</span>
-<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a><span class="fu">system</span>(cmd)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># first fill in the thresholds to use for each filter</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>filter_maf <span class="ot">=</span> <span class="fl">0.05</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>filter_missing_rate <span class="ot">=</span> <span class="fl">0.01</span></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>filter_hwe <span class="ot">=</span> <span class="fl">0.001</span></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>filter_mac <span class="ot">=</span> <span class="dv">20</span></span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>cmd <span class="ot">&lt;-</span> <span class="fu">glue</span>(<span class="st">'{plink2_binary} --bfile "{files_dir}/sim_rels_geno" --pheno "{files_dir}/sim_rels_pheno.txt" --pheno-name Pheno --maf {filter_maf} --geno {filter_missing_rate} --hwe {filter_hwe} --mac {filter_mac} --write-snplist --out qc_pass'</span>)</span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a><span class="fu">system</span>(cmd)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>This produces a file <code>qc_pass.snplist</code> containing a list of variant IDs that pass the QC filters.</p>
 <section id="if-regenie-software-is-installed-on-your-machine" class="level4">
@@ -376,16 +495,16 @@ FALSE
 <li>Run REGENIE Step 1 to fit the null model and obtain polygenic predictions using a leave-one-chromosome-out (LOCO) scheme.</li>
 </ol>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>cmd <span class="ot">&lt;-</span> <span class="fu">glue</span>(<span class="st">'{regenie_binary} --bed "{files_dir}/sim_rels_geno" --phenoFile "{files_dir}/sim_rels_pheno.txt" --phenoCol Pheno --qt --step 1 --loocv --bsize 1000 --extract qc_pass.snplist --out gwas_regenie'</span>)</span>
-<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="fu">system</span>(cmd)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>cmd <span class="ot">&lt;-</span> <span class="fu">glue</span>(<span class="st">'{regenie_binary} --bed "{files_dir}/sim_rels_geno" --phenoFile "{files_dir}/sim_rels_pheno.txt" --phenoCol Pheno --qt --step 1 --loocv --bsize 1000 --extract qc_pass.snplist --out gwas_regenie'</span>)</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="fu">system</span>(cmd)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>The LOCO polygenic predictions for the phenotype are stored in <code>gwas_regenie_1.loco</code>.</p>
 <ol start="9" type="1">
 <li>Run REGENIE Step 2 to perform association testing.</li>
 </ol>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>cmd <span class="ot">&lt;-</span> <span class="fu">glue</span>(<span class="st">'{regenie_binary} --bed "{files_dir}/sim_rels_geno" --phenoFile "{files_dir}/sim_rels_pheno.txt" --phenoCol Pheno --qt --step 2 --bsize 400 --pred gwas_regenie_pred.list --out step2_gwas_regenie'</span>)</span>
-<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="fu">system</span>(cmd)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>cmd <span class="ot">&lt;-</span> <span class="fu">glue</span>(<span class="st">'{regenie_binary} --bed "{files_dir}/sim_rels_geno" --phenoFile "{files_dir}/sim_rels_pheno.txt" --phenoCol Pheno --qt --step 2 --bsize 400 --pred gwas_regenie_pred.list --out step2_gwas_regenie'</span>)</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="fu">system</span>(cmd)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>The REGENIE summary statistics will be in <code>step2_gwas_regenie_Pheno.regenie</code>.</p>
 <ol start="10" type="1">
@@ -395,8 +514,8 @@ FALSE
 </ul></li>
 </ol>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>regenie.gwas <span class="ot">&lt;-</span> <span class="fu">fread</span>(<span class="st">"step2_gwas_regenie_Pheno.regenie"</span>, <span class="at">header =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(regenie.gwas)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>regenie.gwas <span class="ot">&lt;-</span> <span class="fu">fread</span>(<span class="st">"step2_gwas_regenie_Pheno.regenie"</span>, <span class="at">header =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(regenie.gwas)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Classes 'data.table' and 'data.frame':  106134 obs. of  13 variables:
  $ CHROM  : int  1 1 1 1 1 1 1 1 1 1 ...
@@ -414,12 +533,12 @@ FALSE
  $ EXTRA  : logi  NA NA NA NA NA NA ...
  - attr(*, ".internal.selfref")=&lt;externalptr&gt; </code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(</span>
-<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(regenie.gwas),</span>
-<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> regenie.gwas<span class="sc">$</span>LOG10P,</span>
-<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">col =</span> <span class="fu">c</span>(<span class="st">"orange"</span>, <span class="st">"purple"</span>)[<span class="dv">1</span> <span class="sc">+</span> regenie.gwas<span class="sc">$</span>CHROM <span class="sc">%%</span> <span class="dv">2</span>],</span>
-<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">xaxt =</span> <span class="st">"n"</span>, <span class="at">xlab =</span> <span class="st">"Genomic position"</span>, <span class="at">ylab =</span> <span class="st">"Observed -log10(P)"</span></span>
-<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(regenie.gwas),</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> regenie.gwas<span class="sc">$</span>LOG10P,</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">col =</span> <span class="fu">c</span>(<span class="st">"orange"</span>, <span class="st">"purple"</span>)[<span class="dv">1</span> <span class="sc">+</span> regenie.gwas<span class="sc">$</span>CHROM <span class="sc">%%</span> <span class="dv">2</span>],</span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">xaxt =</span> <span class="st">"n"</span>, <span class="at">xlab =</span> <span class="st">"Genomic position"</span>, <span class="at">ylab =</span> <span class="st">"Observed -log10(P)"</span></span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -427,7 +546,7 @@ FALSE
 </figure>
 </div>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">qq</span>(<span class="dv">10</span><span class="sc">^-</span>regenie.gwas<span class="sc">$</span>LOG10P)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">qq</span>(<span class="dv">10</span><span class="sc">^-</span>regenie.gwas<span class="sc">$</span>LOG10P)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -435,8 +554,8 @@ FALSE
 </figure>
 </div>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>chisq.values <span class="ot">&lt;-</span> <span class="fu">qchisq</span>(<span class="dv">10</span><span class="sc">^-</span>regenie.gwas<span class="sc">$</span>LOG10P, <span class="dv">1</span>, <span class="at">lower.tail =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="fu">median</span>(chisq.values)<span class="sc">/</span><span class="fl">0.456</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>chisq.values <span class="ot">&lt;-</span> <span class="fu">qchisq</span>(<span class="dv">10</span><span class="sc">^-</span>regenie.gwas<span class="sc">$</span>LOG10P, <span class="dv">1</span>, <span class="at">lower.tail =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="fu">median</span>(chisq.values)<span class="sc">/</span><span class="fl">0.456</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.9940042</code></pre>
 </div>
@@ -448,35 +567,35 @@ FALSE
 <li>We will use an implementation of REGENIE in R. Download it <a href="https://gatech.box.com/s/k7yk3tpqlekuc7zh6xquyjh9vbvumcx7">here</a> and change the path of the variable <code>regenie_script</code> to the path of the script on your machine</li>
 </ol>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>regenie_script <span class="ot">&lt;-</span> <span class="st">"data/run_regenie.r"</span></span>
-<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(regenie_script)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>regenie_script <span class="ot">&lt;-</span> <span class="st">"data/run_regenie.r"</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(regenie_script)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <ul>
 <li>We now run REGENIE Step 1 to fit the null model and obtain polygenic predictions using a leave-one-chromosome-out (LOCO) scheme.</li>
 </ul>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>loco_pred <span class="ot">&lt;-</span> <span class="fu">run_regenie_step1</span>(</span>
-<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">bedfile =</span> <span class="fu">paste0</span>(files_dir, <span class="st">"/sim_rels_geno"</span>),</span>
-<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">phenofile =</span> <span class="fu">paste0</span>(files_dir, <span class="st">"/sim_rels_pheno.txt"</span>),</span>
-<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">phenocol =</span> <span class="st">"Pheno"</span>,</span>
-<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">bsize =</span> <span class="dv">1000</span>,</span>
-<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">extract =</span> <span class="st">"qc_pass.snplist"</span></span>
-<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a>) </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>loco_pred <span class="ot">&lt;-</span> <span class="fu">run_regenie_step1</span>(</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">bedfile =</span> <span class="fu">paste0</span>(files_dir, <span class="st">"/sim_rels_geno"</span>),</span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">phenofile =</span> <span class="fu">paste0</span>(files_dir, <span class="st">"/sim_rels_pheno.txt"</span>),</span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">phenocol =</span> <span class="st">"Pheno"</span>,</span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">bsize =</span> <span class="dv">1000</span>,</span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">extract =</span> <span class="st">"qc_pass.snplist"</span></span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a>) </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Analyzing 2400 samples for phenotype Pheno 
 Using genotype file prefix: /Users/joelle.mbatchou/SISG/2026/SISG2026_Association_Mapping/data//sim_rels_geno 
 #Variants included = 97387 
 Running REGENIE level 0 into 110 blocks
    user  system elapsed 
-502.115  22.542  81.999 
+496.809  19.211  78.406 
 Running REGENIE level 1 with 550 ridge predictors
    user  system elapsed 
-  1.854   0.045   1.990 
+  1.796   0.032   1.871 
 Rsq for each ridge parameter at level 1: 0.07788307 0.08313518 0.09104799 0.09699941 0.09707784 
 MSE for each ridge parameter at level 1: 0.932345 0.9199879 0.9144755 0.9133895 0.9315208 
 Computing LOCO predictions
    user  system elapsed 
-  1.627   0.020   1.695 </code></pre>
+  1.593   0.016   1.628 </code></pre>
 </div>
 </div>
 <p>This function will return the LOCO polygenic predictions for the phenotype.</p>
@@ -484,13 +603,13 @@ Computing LOCO predictions
 <li>Run REGENIE Step 2 to perform association testing.</li>
 </ol>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>sumstats_regenie <span class="ot">&lt;-</span> <span class="fu">run_regenie_step2</span>(</span>
-<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">bedfile =</span> <span class="fu">paste0</span>(files_dir, <span class="st">"/sim_rels_geno"</span>),</span>
-<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">phenofile =</span> <span class="fu">paste0</span>(files_dir, <span class="st">"/sim_rels_pheno.txt"</span>),</span>
-<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">phenocol =</span> <span class="st">"Pheno"</span>,</span>
-<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">bsize =</span> <span class="dv">200</span>,</span>
-<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">loco.mat =</span> loco_pred</span>
-<span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a>) </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>sumstats_regenie <span class="ot">&lt;-</span> <span class="fu">run_regenie_step2</span>(</span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">bedfile =</span> <span class="fu">paste0</span>(files_dir, <span class="st">"/sim_rels_geno"</span>),</span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">phenofile =</span> <span class="fu">paste0</span>(files_dir, <span class="st">"/sim_rels_pheno.txt"</span>),</span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">phenocol =</span> <span class="st">"Pheno"</span>,</span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">bsize =</span> <span class="dv">200</span>,</span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">loco.mat =</span> loco_pred</span>
+<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a>) </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Analyzing 2400 samples for phenotype Pheno 
 Using genotype file prefix: /Users/joelle.mbatchou/SISG/2026/SISG2026_Association_Mapping/data//sim_rels_geno 
@@ -498,7 +617,7 @@ Using genotype file prefix: /Users/joelle.mbatchou/SISG/2026/SISG2026_Associatio
 Conditioning on LOCO polygenic predictions from REGENIE step 1
 Running association tests...</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(sumstats_regenie)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(sumstats_regenie)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Classes 'data.table' and 'data.frame':  106134 obs. of  12 variables:
  $ CHROM  : int  1 1 1 1 1 1 1 1 1 1 ...
@@ -524,12 +643,12 @@ Running association tests...</code></pre>
 </ul></li>
 </ol>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(</span>
-<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(sumstats_regenie),</span>
-<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> sumstats_regenie<span class="sc">$</span>LOG10P,</span>
-<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">col =</span> <span class="fu">c</span>(<span class="st">"orange"</span>, <span class="st">"purple"</span>)[<span class="dv">1</span> <span class="sc">+</span> sumstats_regenie<span class="sc">$</span>CHROM <span class="sc">%%</span> <span class="dv">2</span>],</span>
-<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">xaxt =</span> <span class="st">"n"</span>, <span class="at">xlab =</span> <span class="st">"Genomic position"</span>, <span class="at">ylab =</span> <span class="st">"Observed -log10(P)"</span></span>
-<span id="cb42-6"><a href="#cb42-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(</span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(sumstats_regenie),</span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> sumstats_regenie<span class="sc">$</span>LOG10P,</span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">col =</span> <span class="fu">c</span>(<span class="st">"orange"</span>, <span class="st">"purple"</span>)[<span class="dv">1</span> <span class="sc">+</span> sumstats_regenie<span class="sc">$</span>CHROM <span class="sc">%%</span> <span class="dv">2</span>],</span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">xaxt =</span> <span class="st">"n"</span>, <span class="at">xlab =</span> <span class="st">"Genomic position"</span>, <span class="at">ylab =</span> <span class="st">"Observed -log10(P)"</span></span>
+<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -537,7 +656,7 @@ Running association tests...</code></pre>
 </figure>
 </div>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="fu">qq</span>(<span class="dv">10</span><span class="sc">^-</span>sumstats_regenie<span class="sc">$</span>LOG10P)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">qq</span>(<span class="dv">10</span><span class="sc">^-</span>sumstats_regenie<span class="sc">$</span>LOG10P)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -545,8 +664,8 @@ Running association tests...</code></pre>
 </figure>
 </div>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>chisq.values <span class="ot">&lt;-</span> <span class="fu">qchisq</span>(<span class="dv">10</span><span class="sc">^-</span>sumstats_regenie<span class="sc">$</span>LOG10P, <span class="dv">1</span>, <span class="at">lower.tail =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a><span class="fu">median</span>(chisq.values)<span class="sc">/</span><span class="fl">0.456</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>chisq.values <span class="ot">&lt;-</span> <span class="fu">qchisq</span>(<span class="dv">10</span><span class="sc">^-</span>sumstats_regenie<span class="sc">$</span>LOG10P, <span class="dv">1</span>, <span class="at">lower.tail =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a><span class="fu">median</span>(chisq.values)<span class="sc">/</span><span class="fl">0.456</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.9940056</code></pre>
 </div>
@@ -572,10 +691,13 @@ Running association tests...</code></pre>
 <li><strong>Sample quality</strong>: Knowing your relatedness structure is essential for GWAS design</li>
 </ul>
 <p><strong>Next session:</strong> We’ll see how to test rare variants using different strategies when single-SNP tests fail.</p>
+
+
+<!-- -->
+
 </section>
 
-</main>
-<!-- /main column -->
+</main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     const icon = "";
@@ -647,9 +769,60 @@ Running association tests...</code></pre>
       });
       clipboardModal.on('success', onCopySuccess);
     }
+    const viewSource = window.document.getElementById('quarto-view-source') ||
+                       window.document.getElementById('quarto-code-tools-source');
+    if (viewSource) {
+      const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+      viewSource.addEventListener("click", function(e) {
+        if (sourceUrl) {
+          // rstudio viewer pane
+          if (/\bcapabilities=\b/.test(window.location)) {
+            window.open(sourceUrl);
+          } else {
+            window.location.href = sourceUrl;
+          }
+        } else {
+          const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+          modal.show();
+        }
+        return false;
+      });
+    }
+    function toggleCodeHandler(show) {
+      return function(e) {
+        const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+        for (let i=0; i<detailsSrc.length; i++) {
+          const details = detailsSrc[i].parentElement;
+          if (show) {
+            details.open = true;
+          } else {
+            details.removeAttribute("open");
+          }
+        }
+        const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+        const fromCls = show ? "hidden" : "unhidden";
+        const toCls = show ? "unhidden" : "hidden";
+        for (let i=0; i<cellCodeDivs.length; i++) {
+          const codeDiv = cellCodeDivs[i];
+          if (codeDiv.classList.contains(fromCls)) {
+            codeDiv.classList.remove(fromCls);
+            codeDiv.classList.add(toCls);
+          } 
+        }
+        return false;
+      }
+    }
+    const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+    if (hideAllCode) {
+      hideAllCode.addEventListener("click", toggleCodeHandler(false));
+    }
+    const showAllCode = window.document.getElementById("quarto-show-all-code");
+    if (showAllCode) {
+      showAllCode.addEventListener("click", toggleCodeHandler(true));
+    }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp('/' + window.location.host + '/');
+        var filterRegex = new RegExp("https:\/\/joellembatchou\.github\.io\/SISG2026_Association_Mapping\/");
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }
@@ -975,7 +1148,264 @@ Running association tests...</code></pre>
       }
     }
   });
-  </script>
+  </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb43" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Practical 3 Key - GWAS in Samples with Structure &amp; Using REGENIE"</span></span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a><span class="an">author:</span><span class="co"> ""</span></span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> ""</span></span>
+<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span></span>
+<span id="cb43-6"><a href="#cb43-6" aria-hidden="true" tabindex="-1"></a><span class="co">  html:</span></span>
+<span id="cb43-7"><a href="#cb43-7" aria-hidden="true" tabindex="-1"></a><span class="co">    theme: cosmo</span></span>
+<span id="cb43-8"><a href="#cb43-8" aria-hidden="true" tabindex="-1"></a><span class="co">    css: ../styles.css</span></span>
+<span id="cb43-9"><a href="#cb43-9" aria-hidden="true" tabindex="-1"></a><span class="co">    toc: true</span></span>
+<span id="cb43-10"><a href="#cb43-10" aria-hidden="true" tabindex="-1"></a><span class="co">    toc-depth: 3</span></span>
+<span id="cb43-11"><a href="#cb43-11" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb43-12"><a href="#cb43-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-13"><a href="#cb43-13" aria-hidden="true" tabindex="-1"></a>Before you begin:</span>
+<span id="cb43-14"><a href="#cb43-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-15"><a href="#cb43-15" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>Make sure that R is installed on your computer</span>
+<span id="cb43-16"><a href="#cb43-16" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>For this lab, we will use the following R libraries:</span>
+<span id="cb43-17"><a href="#cb43-17" aria-hidden="true" tabindex="-1"></a><span class="in">```{r load-libs, message=FALSE, warning=FALSE}</span></span>
+<span id="cb43-18"><a href="#cb43-18" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(data.table)</span>
+<span id="cb43-19"><a href="#cb43-19" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb43-20"><a href="#cb43-20" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(qqman)</span>
+<span id="cb43-21"><a href="#cb43-21" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb43-22"><a href="#cb43-22" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(glue)</span>
+<span id="cb43-23"><a href="#cb43-23" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb43-24"><a href="#cb43-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-25"><a href="#cb43-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-26"><a href="#cb43-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-27"><a href="#cb43-27" aria-hidden="true" tabindex="-1"></a><span class="fu">## Introduction</span></span>
+<span id="cb43-28"><a href="#cb43-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-29"><a href="#cb43-29" aria-hidden="true" tabindex="-1"></a>**What we're testing**: How do we handle population structure and relatedness in GWAS? We'll compare naive PLINK analysis with REGENIE's mixed model approach to see how structure affects results.</span>
+<span id="cb43-30"><a href="#cb43-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-31"><a href="#cb43-31" aria-hidden="true" tabindex="-1"></a>We will be analyzing a simulated data set which contains sample structure to better understand the impact it can have in GWAS analyses if not accounted for.</span>
+<span id="cb43-32"><a href="#cb43-32" aria-hidden="true" tabindex="-1"></a>We will perform GWAS on a quantitative phenotype which was simulated with high heritability and polygenic.</span>
+<span id="cb43-33"><a href="#cb43-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-34"><a href="#cb43-34" aria-hidden="true" tabindex="-1"></a>The file <span class="co">[</span><span class="ot">“sim_rels_pheno.txt”</span><span class="co">](https://github.com/joellembatchou/SISG2026_Association_Mapping/tree/master/data)</span>” contains the phenotype measurements for a set of individuals and the file "sim_rels_geno.bed" is a binary file in PLINK BED format with accompanying BIM and FAM files which contains the genotype data **at null variants** (i.e. not associated with the phenotype).  </span>
+<span id="cb43-35"><a href="#cb43-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-36"><a href="#cb43-36" aria-hidden="true" tabindex="-1"></a>*How should we expect the QQ/Manhatthan plots to look like under this scenario?*</span>
+<span id="cb43-37"><a href="#cb43-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-38"><a href="#cb43-38" aria-hidden="true" tabindex="-1"></a><span class="fu">### Data preparation</span></span>
+<span id="cb43-39"><a href="#cb43-39" aria-hidden="true" tabindex="-1"></a>Let’s first load the simulated data into the R session. We need to define the path to the directory containing the phenotype and genotype files (change the path to the files location).</span>
+<span id="cb43-40"><a href="#cb43-40" aria-hidden="true" tabindex="-1"></a><span class="in">```{r echo=FALSE}</span></span>
+<span id="cb43-41"><a href="#cb43-41" aria-hidden="true" tabindex="-1"></a>files_dir <span class="ot">&lt;-</span> <span class="st">"/Users/joelle.mbatchou/SISG/2026/SISG2026_Association_Mapping/data/"</span> </span>
+<span id="cb43-42"><a href="#cb43-42" aria-hidden="true" tabindex="-1"></a>plink2_binary <span class="ot">&lt;-</span> <span class="st">"/Users/joelle.mbatchou/software/bins/plink2"</span> </span>
+<span id="cb43-43"><a href="#cb43-43" aria-hidden="true" tabindex="-1"></a>regenie_binary <span class="ot">&lt;-</span> <span class="st">"/Users/joelle.mbatchou/software/bins/regenie"</span></span>
+<span id="cb43-44"><a href="#cb43-44" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb43-45"><a href="#cb43-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-46"><a href="#cb43-46" aria-hidden="true" tabindex="-1"></a><span class="in">```{r eval=FALSE}</span></span>
+<span id="cb43-47"><a href="#cb43-47" aria-hidden="true" tabindex="-1"></a>files_dir <span class="ot">&lt;-</span> <span class="st">"/SISGM19/data/"</span> </span>
+<span id="cb43-48"><a href="#cb43-48" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb43-49"><a href="#cb43-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-50"><a href="#cb43-50" aria-hidden="true" tabindex="-1"></a>Also specify the paths to the PLINK2 and REGENIE binaries:</span>
+<span id="cb43-51"><a href="#cb43-51" aria-hidden="true" tabindex="-1"></a><span class="in">```{r eval=FALSE}</span></span>
+<span id="cb43-52"><a href="#cb43-52" aria-hidden="true" tabindex="-1"></a>plink2_binary <span class="ot">&lt;-</span> <span class="st">"/SISGM19/bin/plink2"</span> </span>
+<span id="cb43-53"><a href="#cb43-53" aria-hidden="true" tabindex="-1"></a>regenie_binary <span class="ot">&lt;-</span> <span class="st">"/SISGM19/bin/regenie"</span> </span>
+<span id="cb43-54"><a href="#cb43-54" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb43-55"><a href="#cb43-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-56"><a href="#cb43-56" aria-hidden="true" tabindex="-1"></a>We can now read the files (recall the PLINK BED file is a binary file):</span>
+<span id="cb43-59"><a href="#cb43-59" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb43-60"><a href="#cb43-60" aria-hidden="true" tabindex="-1"></a>pheno_file <span class="ot">&lt;-</span> <span class="fu">fread</span>(<span class="fu">glue</span>(<span class="st">"{files_dir}/sim_rels_pheno.txt"</span>), <span class="at">header =</span> <span class="cn">TRUE</span>) </span>
+<span id="cb43-61"><a href="#cb43-61" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(pheno_file, <span class="dv">3</span>)</span>
+<span id="cb43-62"><a href="#cb43-62" aria-hidden="true" tabindex="-1"></a>sim_bim <span class="ot">&lt;-</span> <span class="fu">fread</span>(<span class="fu">glue</span>(<span class="st">"{files_dir}/sim_rels_geno.bim"</span>), <span class="at">header =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb43-63"><a href="#cb43-63" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(sim_bim, <span class="dv">3</span>)</span>
+<span id="cb43-64"><a href="#cb43-64" aria-hidden="true" tabindex="-1"></a>sim_fam <span class="ot">&lt;-</span> <span class="fu">fread</span>(<span class="fu">glue</span>(<span class="st">"{files_dir}/sim_rels_geno.fam"</span>), <span class="at">header =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb43-65"><a href="#cb43-65" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(sim_fam, <span class="dv">3</span>)</span>
+<span id="cb43-66"><a href="#cb43-66" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb43-67"><a href="#cb43-67" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-68"><a href="#cb43-68" aria-hidden="true" tabindex="-1"></a><span class="fu">### Exercises</span></span>
+<span id="cb43-69"><a href="#cb43-69" aria-hidden="true" tabindex="-1"></a>Here are some things to try:</span>
+<span id="cb43-70"><a href="#cb43-70" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-71"><a href="#cb43-71" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>Examine the dataset:</span>
+<span id="cb43-72"><a href="#cb43-72" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>How many samples are present? Use <span class="in">`str`</span></span>
+<span id="cb43-75"><a href="#cb43-75" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb43-76"><a href="#cb43-76" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(sim_fam)</span>
+<span id="cb43-77"><a href="#cb43-77" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb43-78"><a href="#cb43-78" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>How many SNPs? In how many chromosomes? Use <span class="in">`str`</span> and <span class="in">`table`</span></span>
+<span id="cb43-81"><a href="#cb43-81" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb43-82"><a href="#cb43-82" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(sim_bim)</span>
+<span id="cb43-83"><a href="#cb43-83" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(sim_bim<span class="sc">$</span>V1)</span>
+<span id="cb43-84"><a href="#cb43-84" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb43-85"><a href="#cb43-85" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-86"><a href="#cb43-86" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>Examine the phenotype data:</span>
+<span id="cb43-87"><a href="#cb43-87" aria-hidden="true" tabindex="-1"></a><span class="ss">  * </span>How many individuals in the study have measurements?</span>
+<span id="cb43-90"><a href="#cb43-90" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb43-91"><a href="#cb43-91" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(<span class="fu">is.na</span>(pheno_file<span class="sc">$</span>Pheno))</span>
+<span id="cb43-92"><a href="#cb43-92" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb43-93"><a href="#cb43-93" aria-hidden="true" tabindex="-1"></a><span class="ss">  * </span>Plot a histogram to show the distribution of the phenotype. Use the <span class="in">`hist()`</span> function</span>
+<span id="cb43-94"><a href="#cb43-94" aria-hidden="true" tabindex="-1"></a><span class="in">```{r pheno-hist}</span></span>
+<span id="cb43-95"><a href="#cb43-95" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(pheno_file<span class="sc">$</span>Pheno)</span>
+<span id="cb43-96"><a href="#cb43-96" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb43-97"><a href="#cb43-97" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-98"><a href="#cb43-98" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>With PLINK, perform association mapping between the phenotype and the variants in the PLINK BED genotype file. Only perform association test on SNPs that pass the following quality control threshold filters:</span>
+<span id="cb43-99"><a href="#cb43-99" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-100"><a href="#cb43-100" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>minor allele frequency (MAF) &gt; 0.01</span>
+<span id="cb43-101"><a href="#cb43-101" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>at least a 99% genotyping call rate (less than 1% missing)</span>
+<span id="cb43-102"><a href="#cb43-102" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>HWE p-values greater than 0.001</span>
+<span id="cb43-103"><a href="#cb43-103" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-106"><a href="#cb43-106" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb43-107"><a href="#cb43-107" aria-hidden="true" tabindex="-1"></a><span class="co"># first fill in the thresholds to use for each filter</span></span>
+<span id="cb43-108"><a href="#cb43-108" aria-hidden="true" tabindex="-1"></a>filter_maf <span class="ot">=</span> <span class="fl">0.01</span></span>
+<span id="cb43-109"><a href="#cb43-109" aria-hidden="true" tabindex="-1"></a>filter_missing_rate <span class="ot">=</span> <span class="fl">0.01</span></span>
+<span id="cb43-110"><a href="#cb43-110" aria-hidden="true" tabindex="-1"></a>filter_hwe <span class="ot">=</span> <span class="fl">0.001</span></span>
+<span id="cb43-111"><a href="#cb43-111" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-112"><a href="#cb43-112" aria-hidden="true" tabindex="-1"></a>cmd <span class="ot">&lt;-</span> <span class="fu">glue</span>(<span class="st">'{plink2_binary} --bfile "{files_dir}/sim_rels_geno" --pheno "{files_dir}/sim_rels_pheno.txt" --pheno-name Pheno --maf {filter_maf} --geno {filter_missing_rate} --hwe {filter_hwe} --glm allow-no-covars --out gwas_plink'</span>)</span>
+<span id="cb43-113"><a href="#cb43-113" aria-hidden="true" tabindex="-1"></a><span class="fu">system</span>(cmd)</span>
+<span id="cb43-114"><a href="#cb43-114" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb43-115"><a href="#cb43-115" aria-hidden="true" tabindex="-1"></a>The results of the GWAS are stored in <span class="in">`gwas_plink.Pheno.glm.linear`</span>.</span>
+<span id="cb43-116"><a href="#cb43-116" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-117"><a href="#cb43-117" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-118"><a href="#cb43-118" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>Make a Manhattan plot of the association results. Make sure to check what information is stored in the PLINK output file (using <span class="in">`str()`</span>).</span>
+<span id="cb43-121"><a href="#cb43-121" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb43-122"><a href="#cb43-122" aria-hidden="true" tabindex="-1"></a>plink.gwas <span class="ot">&lt;-</span> <span class="fu">fread</span>(<span class="st">"gwas_plink.Pheno.glm.linear"</span>, <span class="at">header =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb43-123"><a href="#cb43-123" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(plink.gwas)</span>
+<span id="cb43-124"><a href="#cb43-124" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(</span>
+<span id="cb43-125"><a href="#cb43-125" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(plink.gwas),</span>
+<span id="cb43-126"><a href="#cb43-126" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> <span class="sc">-</span><span class="fu">log10</span>(plink.gwas<span class="sc">$</span>P),</span>
+<span id="cb43-127"><a href="#cb43-127" aria-hidden="true" tabindex="-1"></a>  <span class="at">col =</span> <span class="fu">c</span>(<span class="st">"orange"</span>, <span class="st">"purple"</span>)[<span class="dv">1</span> <span class="sc">+</span> plink.gwas<span class="sc">$</span><span class="st">`</span><span class="at">#CHROM</span><span class="st">`</span> <span class="sc">%%</span> <span class="dv">2</span>],</span>
+<span id="cb43-128"><a href="#cb43-128" aria-hidden="true" tabindex="-1"></a>  <span class="at">xaxt =</span> <span class="st">"n"</span>, <span class="at">xlab =</span> <span class="st">"Genomic position"</span>, <span class="at">ylab =</span> <span class="st">"Observed -log10(P)"</span></span>
+<span id="cb43-129"><a href="#cb43-129" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb43-130"><a href="#cb43-130" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb43-131"><a href="#cb43-131" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-132"><a href="#cb43-132" aria-hidden="true" tabindex="-1"></a><span class="ss">5. </span>Make a Q-Q plot of the association results.</span>
+<span id="cb43-135"><a href="#cb43-135" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb43-136"><a href="#cb43-136" aria-hidden="true" tabindex="-1"></a><span class="fu">qq</span>(plink.gwas<span class="sc">$</span>P)</span>
+<span id="cb43-137"><a href="#cb43-137" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb43-138"><a href="#cb43-138" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-139"><a href="#cb43-139" aria-hidden="true" tabindex="-1"></a><span class="ss">6. </span>Compute the genomic control inflation factor $\lambda_{GC}$ based on the p-values. Is there evidence of possible inflation due to confounding?</span>
+<span id="cb43-142"><a href="#cb43-142" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb43-143"><a href="#cb43-143" aria-hidden="true" tabindex="-1"></a>chisq.values <span class="ot">&lt;-</span> <span class="fu">qchisq</span>(plink.gwas<span class="sc">$</span>P, <span class="dv">1</span>, <span class="at">lower.tail =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb43-144"><a href="#cb43-144" aria-hidden="true" tabindex="-1"></a><span class="fu">median</span>(chisq.values)<span class="sc">/</span><span class="fl">0.456</span></span>
+<span id="cb43-145"><a href="#cb43-145" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb43-146"><a href="#cb43-146" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-147"><a href="#cb43-147" aria-hidden="true" tabindex="-1"></a><span class="ss">7. </span>Now we will run REGENIE to perform a GWAS of the phenotype using a whole genome regression model. We first want to extract a set of high quality variants for the Step 1 null model fitting. Using PLINK, apply QC filters to remove variants with MAF below 5%, missingness above 1%, HWE p-value below 0.001, minor allele count (MAC) below 20. </span>
+<span id="cb43-148"><a href="#cb43-148" aria-hidden="true" tabindex="-1"></a>We will use <span class="in">`--write-snplist`</span> to store list of variants passing QC without making a new BED file.</span>
+<span id="cb43-151"><a href="#cb43-151" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb43-152"><a href="#cb43-152" aria-hidden="true" tabindex="-1"></a><span class="co"># first fill in the thresholds to use for each filter</span></span>
+<span id="cb43-153"><a href="#cb43-153" aria-hidden="true" tabindex="-1"></a>filter_maf <span class="ot">=</span> <span class="fl">0.05</span></span>
+<span id="cb43-154"><a href="#cb43-154" aria-hidden="true" tabindex="-1"></a>filter_missing_rate <span class="ot">=</span> <span class="fl">0.01</span></span>
+<span id="cb43-155"><a href="#cb43-155" aria-hidden="true" tabindex="-1"></a>filter_hwe <span class="ot">=</span> <span class="fl">0.001</span></span>
+<span id="cb43-156"><a href="#cb43-156" aria-hidden="true" tabindex="-1"></a>filter_mac <span class="ot">=</span> <span class="dv">20</span></span>
+<span id="cb43-157"><a href="#cb43-157" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-158"><a href="#cb43-158" aria-hidden="true" tabindex="-1"></a>cmd <span class="ot">&lt;-</span> <span class="fu">glue</span>(<span class="st">'{plink2_binary} --bfile "{files_dir}/sim_rels_geno" --pheno "{files_dir}/sim_rels_pheno.txt" --pheno-name Pheno --maf {filter_maf} --geno {filter_missing_rate} --hwe {filter_hwe} --mac {filter_mac} --write-snplist --out qc_pass'</span>)</span>
+<span id="cb43-159"><a href="#cb43-159" aria-hidden="true" tabindex="-1"></a><span class="fu">system</span>(cmd)</span>
+<span id="cb43-160"><a href="#cb43-160" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb43-161"><a href="#cb43-161" aria-hidden="true" tabindex="-1"></a>This produces a file <span class="in">`qc_pass.snplist`</span> containing a list of variant IDs that pass the QC filters.</span>
+<span id="cb43-162"><a href="#cb43-162" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-163"><a href="#cb43-163" aria-hidden="true" tabindex="-1"></a><span class="fu">#### If REGENIE software is installed on your machine</span></span>
+<span id="cb43-164"><a href="#cb43-164" aria-hidden="true" tabindex="-1"></a><span class="ss">8. </span>Run REGENIE Step 1 to fit the null model and obtain polygenic predictions using a leave-one-chromosome-out (LOCO) scheme. </span>
+<span id="cb43-167"><a href="#cb43-167" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb43-168"><a href="#cb43-168" aria-hidden="true" tabindex="-1"></a>cmd <span class="ot">&lt;-</span> <span class="fu">glue</span>(<span class="st">'{regenie_binary} --bed "{files_dir}/sim_rels_geno" --phenoFile "{files_dir}/sim_rels_pheno.txt" --phenoCol Pheno --qt --step 1 --loocv --bsize 1000 --extract qc_pass.snplist --out gwas_regenie'</span>)</span>
+<span id="cb43-169"><a href="#cb43-169" aria-hidden="true" tabindex="-1"></a><span class="fu">system</span>(cmd)</span>
+<span id="cb43-170"><a href="#cb43-170" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb43-171"><a href="#cb43-171" aria-hidden="true" tabindex="-1"></a>The LOCO polygenic predictions for the phenotype are stored in <span class="in">`gwas_regenie_1.loco`</span>.</span>
+<span id="cb43-172"><a href="#cb43-172" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-173"><a href="#cb43-173" aria-hidden="true" tabindex="-1"></a><span class="ss">9. </span>Run REGENIE Step 2 to perform association testing.</span>
+<span id="cb43-176"><a href="#cb43-176" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb43-177"><a href="#cb43-177" aria-hidden="true" tabindex="-1"></a>cmd <span class="ot">&lt;-</span> <span class="fu">glue</span>(<span class="st">'{regenie_binary} --bed "{files_dir}/sim_rels_geno" --phenoFile "{files_dir}/sim_rels_pheno.txt" --phenoCol Pheno --qt --step 2 --bsize 400 --pred gwas_regenie_pred.list --out step2_gwas_regenie'</span>)</span>
+<span id="cb43-178"><a href="#cb43-178" aria-hidden="true" tabindex="-1"></a><span class="fu">system</span>(cmd)</span>
+<span id="cb43-179"><a href="#cb43-179" aria-hidden="true" tabindex="-1"></a><span class="in">```</span>  </span>
+<span id="cb43-180"><a href="#cb43-180" aria-hidden="true" tabindex="-1"></a>The REGENIE summary statistics will be in <span class="in">`step2_gwas_regenie_Pheno.regenie`</span>.</span>
+<span id="cb43-181"><a href="#cb43-181" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-182"><a href="#cb43-182" aria-hidden="true" tabindex="-1"></a><span class="ss">10. </span>Generate Manhatthan and Q-Q plots based on the REGENIE association results and compute $\lambda_{GC}$. Compare with output from Questions 4-6.</span>
+<span id="cb43-183"><a href="#cb43-183" aria-hidden="true" tabindex="-1"></a><span class="ss">    * </span>**Compare**: REGENIE results should show much better calibration (QQ plot closer to diagonal, lambda closer to 1) compared to PLINK because mixed models account for relatedness.</span>
+<span id="cb43-184"><a href="#cb43-184" aria-hidden="true" tabindex="-1"></a><span class="in">```{r regenie-plots}</span></span>
+<span id="cb43-185"><a href="#cb43-185" aria-hidden="true" tabindex="-1"></a>regenie.gwas <span class="ot">&lt;-</span> <span class="fu">fread</span>(<span class="st">"step2_gwas_regenie_Pheno.regenie"</span>, <span class="at">header =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb43-186"><a href="#cb43-186" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(regenie.gwas)</span>
+<span id="cb43-187"><a href="#cb43-187" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-188"><a href="#cb43-188" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(</span>
+<span id="cb43-189"><a href="#cb43-189" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(regenie.gwas),</span>
+<span id="cb43-190"><a href="#cb43-190" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> regenie.gwas<span class="sc">$</span>LOG10P,</span>
+<span id="cb43-191"><a href="#cb43-191" aria-hidden="true" tabindex="-1"></a>  <span class="at">col =</span> <span class="fu">c</span>(<span class="st">"orange"</span>, <span class="st">"purple"</span>)[<span class="dv">1</span> <span class="sc">+</span> regenie.gwas<span class="sc">$</span>CHROM <span class="sc">%%</span> <span class="dv">2</span>],</span>
+<span id="cb43-192"><a href="#cb43-192" aria-hidden="true" tabindex="-1"></a>  <span class="at">xaxt =</span> <span class="st">"n"</span>, <span class="at">xlab =</span> <span class="st">"Genomic position"</span>, <span class="at">ylab =</span> <span class="st">"Observed -log10(P)"</span></span>
+<span id="cb43-193"><a href="#cb43-193" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb43-194"><a href="#cb43-194" aria-hidden="true" tabindex="-1"></a><span class="fu">qq</span>(<span class="dv">10</span><span class="sc">^-</span>regenie.gwas<span class="sc">$</span>LOG10P)</span>
+<span id="cb43-195"><a href="#cb43-195" aria-hidden="true" tabindex="-1"></a>chisq.values <span class="ot">&lt;-</span> <span class="fu">qchisq</span>(<span class="dv">10</span><span class="sc">^-</span>regenie.gwas<span class="sc">$</span>LOG10P, <span class="dv">1</span>, <span class="at">lower.tail =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb43-196"><a href="#cb43-196" aria-hidden="true" tabindex="-1"></a><span class="fu">median</span>(chisq.values)<span class="sc">/</span><span class="fl">0.456</span></span>
+<span id="cb43-197"><a href="#cb43-197" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb43-198"><a href="#cb43-198" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-199"><a href="#cb43-199" aria-hidden="true" tabindex="-1"></a><span class="fu">#### If REGENIE software does not run on your machine</span></span>
+<span id="cb43-200"><a href="#cb43-200" aria-hidden="true" tabindex="-1"></a><span class="ss">8. </span>We will use an implementation of REGENIE in R. Download it <span class="co">[</span><span class="ot">here</span><span class="co">](https://gatech.box.com/s/k7yk3tpqlekuc7zh6xquyjh9vbvumcx7)</span> and change the path of the variable <span class="in">`regenie_script`</span> to the path of the script on your machine</span>
+<span id="cb43-201"><a href="#cb43-201" aria-hidden="true" tabindex="-1"></a><span class="in">```{r, eval = FALSE}</span></span>
+<span id="cb43-202"><a href="#cb43-202" aria-hidden="true" tabindex="-1"></a>regenie_script <span class="ot">&lt;-</span> <span class="st">"data/run_regenie.r"</span></span>
+<span id="cb43-203"><a href="#cb43-203" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(regenie_script)</span>
+<span id="cb43-204"><a href="#cb43-204" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb43-205"><a href="#cb43-205" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-206"><a href="#cb43-206" aria-hidden="true" tabindex="-1"></a><span class="in">```{r echo=FALSE}</span></span>
+<span id="cb43-207"><a href="#cb43-207" aria-hidden="true" tabindex="-1"></a>regenie_script <span class="ot">&lt;-</span> <span class="st">"/Users/joelle.mbatchou/Library/CloudStorage/OneDrive-RegeneronPharmaceuticals,Inc/Projects/SISG/2026/SISG2026_Association_Mapping/data/run_regenie.r"</span></span>
+<span id="cb43-208"><a href="#cb43-208" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(regenie_script)</span>
+<span id="cb43-209"><a href="#cb43-209" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb43-210"><a href="#cb43-210" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-211"><a href="#cb43-211" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>We now run REGENIE Step 1 to fit the null model and obtain polygenic predictions using a leave-one-chromosome-out (LOCO) scheme.</span>
+<span id="cb43-214"><a href="#cb43-214" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb43-215"><a href="#cb43-215" aria-hidden="true" tabindex="-1"></a>loco_pred <span class="ot">&lt;-</span> <span class="fu">run_regenie_step1</span>(</span>
+<span id="cb43-216"><a href="#cb43-216" aria-hidden="true" tabindex="-1"></a>  <span class="at">bedfile =</span> <span class="fu">paste0</span>(files_dir, <span class="st">"/sim_rels_geno"</span>),</span>
+<span id="cb43-217"><a href="#cb43-217" aria-hidden="true" tabindex="-1"></a>  <span class="at">phenofile =</span> <span class="fu">paste0</span>(files_dir, <span class="st">"/sim_rels_pheno.txt"</span>),</span>
+<span id="cb43-218"><a href="#cb43-218" aria-hidden="true" tabindex="-1"></a>  <span class="at">phenocol =</span> <span class="st">"Pheno"</span>,</span>
+<span id="cb43-219"><a href="#cb43-219" aria-hidden="true" tabindex="-1"></a>  <span class="at">bsize =</span> <span class="dv">1000</span>,</span>
+<span id="cb43-220"><a href="#cb43-220" aria-hidden="true" tabindex="-1"></a>  <span class="at">extract =</span> <span class="st">"qc_pass.snplist"</span></span>
+<span id="cb43-221"><a href="#cb43-221" aria-hidden="true" tabindex="-1"></a>) </span>
+<span id="cb43-222"><a href="#cb43-222" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb43-223"><a href="#cb43-223" aria-hidden="true" tabindex="-1"></a>This function will return the LOCO polygenic predictions for the phenotype.</span>
+<span id="cb43-224"><a href="#cb43-224" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-225"><a href="#cb43-225" aria-hidden="true" tabindex="-1"></a><span class="ss">9. </span>Run REGENIE Step 2 to perform association testing.</span>
+<span id="cb43-228"><a href="#cb43-228" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb43-229"><a href="#cb43-229" aria-hidden="true" tabindex="-1"></a>sumstats_regenie <span class="ot">&lt;-</span> <span class="fu">run_regenie_step2</span>(</span>
+<span id="cb43-230"><a href="#cb43-230" aria-hidden="true" tabindex="-1"></a>  <span class="at">bedfile =</span> <span class="fu">paste0</span>(files_dir, <span class="st">"/sim_rels_geno"</span>),</span>
+<span id="cb43-231"><a href="#cb43-231" aria-hidden="true" tabindex="-1"></a>  <span class="at">phenofile =</span> <span class="fu">paste0</span>(files_dir, <span class="st">"/sim_rels_pheno.txt"</span>),</span>
+<span id="cb43-232"><a href="#cb43-232" aria-hidden="true" tabindex="-1"></a>  <span class="at">phenocol =</span> <span class="st">"Pheno"</span>,</span>
+<span id="cb43-233"><a href="#cb43-233" aria-hidden="true" tabindex="-1"></a>  <span class="at">bsize =</span> <span class="dv">200</span>,</span>
+<span id="cb43-234"><a href="#cb43-234" aria-hidden="true" tabindex="-1"></a>  <span class="at">loco.mat =</span> loco_pred</span>
+<span id="cb43-235"><a href="#cb43-235" aria-hidden="true" tabindex="-1"></a>) </span>
+<span id="cb43-236"><a href="#cb43-236" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-237"><a href="#cb43-237" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(sumstats_regenie)</span>
+<span id="cb43-238"><a href="#cb43-238" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb43-239"><a href="#cb43-239" aria-hidden="true" tabindex="-1"></a>This function returns a data frame containing the REGENIE summary statistics.</span>
+<span id="cb43-240"><a href="#cb43-240" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-241"><a href="#cb43-241" aria-hidden="true" tabindex="-1"></a><span class="ss">10. </span>Generate Manhatthan and Q-Q plots based on the REGENIE association results and compute $\lambda_{GC}$. Compare with output from Questions 4-6.</span>
+<span id="cb43-242"><a href="#cb43-242" aria-hidden="true" tabindex="-1"></a><span class="ss">    * </span>**Compare**: REGENIE results should show much better calibration (QQ plot closer to diagonal, lambda closer to 1) compared to PLINK because mixed models account for relatedness.</span>
+<span id="cb43-243"><a href="#cb43-243" aria-hidden="true" tabindex="-1"></a><span class="in">```{r regenie-r-plots}</span></span>
+<span id="cb43-244"><a href="#cb43-244" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(</span>
+<span id="cb43-245"><a href="#cb43-245" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(sumstats_regenie),</span>
+<span id="cb43-246"><a href="#cb43-246" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> sumstats_regenie<span class="sc">$</span>LOG10P,</span>
+<span id="cb43-247"><a href="#cb43-247" aria-hidden="true" tabindex="-1"></a>  <span class="at">col =</span> <span class="fu">c</span>(<span class="st">"orange"</span>, <span class="st">"purple"</span>)[<span class="dv">1</span> <span class="sc">+</span> sumstats_regenie<span class="sc">$</span>CHROM <span class="sc">%%</span> <span class="dv">2</span>],</span>
+<span id="cb43-248"><a href="#cb43-248" aria-hidden="true" tabindex="-1"></a>  <span class="at">xaxt =</span> <span class="st">"n"</span>, <span class="at">xlab =</span> <span class="st">"Genomic position"</span>, <span class="at">ylab =</span> <span class="st">"Observed -log10(P)"</span></span>
+<span id="cb43-249"><a href="#cb43-249" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb43-250"><a href="#cb43-250" aria-hidden="true" tabindex="-1"></a><span class="fu">qq</span>(<span class="dv">10</span><span class="sc">^-</span>sumstats_regenie<span class="sc">$</span>LOG10P)</span>
+<span id="cb43-251"><a href="#cb43-251" aria-hidden="true" tabindex="-1"></a>chisq.values <span class="ot">&lt;-</span> <span class="fu">qchisq</span>(<span class="dv">10</span><span class="sc">^-</span>sumstats_regenie<span class="sc">$</span>LOG10P, <span class="dv">1</span>, <span class="at">lower.tail =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb43-252"><a href="#cb43-252" aria-hidden="true" tabindex="-1"></a><span class="fu">median</span>(chisq.values)<span class="sc">/</span><span class="fl">0.456</span></span>
+<span id="cb43-253"><a href="#cb43-253" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb43-254"><a href="#cb43-254" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-255"><a href="#cb43-255" aria-hidden="true" tabindex="-1"></a>---</span>
+<span id="cb43-256"><a href="#cb43-256" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-257"><a href="#cb43-257" aria-hidden="true" tabindex="-1"></a><span class="fu">## Key Takeaways from This Practical</span></span>
+<span id="cb43-258"><a href="#cb43-258" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-259"><a href="#cb43-259" aria-hidden="true" tabindex="-1"></a>**Concepts you should understand:**</span>
+<span id="cb43-260"><a href="#cb43-260" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-261"><a href="#cb43-261" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>**Genomic control inflation**: $\lambda_{GC}$ &gt; 1.05 suggests population stratification/relatedness bias</span>
+<span id="cb43-262"><a href="#cb43-262" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>**PLINK limitations**: Standard regression assumes unrelated samples, gets inflated with structure</span>
+<span id="cb43-263"><a href="#cb43-263" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>**Mixed models**: REGENIE accounts for relatedness through random effects in Step 1</span>
+<span id="cb43-264"><a href="#cb43-264" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>**LOCO procedure**: Leave-one-chromosome-out avoids proximal contamination in polygenic predictions</span>
+<span id="cb43-265"><a href="#cb43-265" aria-hidden="true" tabindex="-1"></a><span class="ss">5. </span>**QQ plots as diagnosis**: Deviation from diagonal reveals unwanted correlations in test statistics</span>
+<span id="cb43-266"><a href="#cb43-266" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-267"><a href="#cb43-267" aria-hidden="true" tabindex="-1"></a>**Why this matters:**</span>
+<span id="cb43-268"><a href="#cb43-268" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-269"><a href="#cb43-269" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**False positives**: Inflation from structure can lead to spurious associations if not corrected</span>
+<span id="cb43-270"><a href="#cb43-270" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Different methods**: PLINK finds structure-driven signals; REGENIE accounts for it</span>
+<span id="cb43-271"><a href="#cb43-271" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Sample quality**: Knowing your relatedness structure is essential for GWAS design</span>
+<span id="cb43-272"><a href="#cb43-272" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-273"><a href="#cb43-273" aria-hidden="true" tabindex="-1"></a>**Next session:** We'll see how to test rare variants using different strategies when single-SNP tests fail.</span>
+<span id="cb43-274"><a href="#cb43-274" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-275"><a href="#cb43-275" aria-hidden="true" tabindex="-1"></a><span class="in">```{r echo=FALSE, message=FALSE, warning=FALSE, results='hide'}</span></span>
+<span id="cb43-276"><a href="#cb43-276" aria-hidden="true" tabindex="-1"></a><span class="co"># cleanup</span></span>
+<span id="cb43-277"><a href="#cb43-277" aria-hidden="true" tabindex="-1"></a><span class="fu">file.remove</span>(<span class="st">"gwas_plink.Pheno.glm.linear"</span>)</span>
+<span id="cb43-278"><a href="#cb43-278" aria-hidden="true" tabindex="-1"></a><span class="fu">file.remove</span>(<span class="fu">list.files</span>(<span class="at">pattern =</span> <span class="st">"gwas_regenie_[0-9a-z]*"</span>))</span>
+<span id="cb43-279"><a href="#cb43-279" aria-hidden="true" tabindex="-1"></a><span class="fu">file.remove</span>(<span class="fu">list.files</span>(<span class="at">pattern =</span> <span class="st">"step2_gwas_regenie_[0-9a-z]*"</span>))</span>
+<span id="cb43-280"><a href="#cb43-280" aria-hidden="true" tabindex="-1"></a><span class="fu">file.remove</span>(<span class="fu">list.files</span>(<span class="at">pattern =</span> <span class="st">"qc_pass*"</span>))</span>
+<span id="cb43-281"><a href="#cb43-281" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+</code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
+</div></div></div></div></div>
 </div> <!-- /content -->
 
 
