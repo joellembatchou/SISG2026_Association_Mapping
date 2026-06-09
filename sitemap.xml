@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://joellembatchou.github.io/SISG2026_Association_Mapping/index.html</loc>
-    <lastmod>2026-06-09T19:30:27.449Z</lastmod>
+    <lastmod>2026-06-09T20:37:40.281Z</lastmod>
   </url>
   <url>
     <loc>https://joellembatchou.github.io/SISG2026_Association_Mapping/analysis/QG3_Relatedness_REGENIE_practical.html</loc>
@@ -15,6 +15,10 @@
   <url>
     <loc>https://joellembatchou.github.io/SISG2026_Association_Mapping/analysis/QG3_Plink_Population_Structure_practical.html</loc>
     <lastmod>2026-06-04T16:24:46.103Z</lastmod>
+  </url>
+  <url>
+    <loc>https://joellembatchou.github.io/SISG2026_Association_Mapping/analysis/QG3_CC_Imbalance_practical.html</loc>
+    <lastmod>2026-06-09T20:36:20.959Z</lastmod>
   </url>
   <url>
     <loc>https://joellembatchou.github.io/SISG2026_Association_Mapping/analysis/QG3_Beyond_Standard_GWAS_practical.html</loc>
@@ -31,6 +35,10 @@
   <url>
     <loc>https://joellembatchou.github.io/SISG2026_Association_Mapping/analysis/QG3_Beyond_Standard_GWAS_practical_Key.html</loc>
     <lastmod>2026-06-08T15:31:26.157Z</lastmod>
+  </url>
+  <url>
+    <loc>https://joellembatchou.github.io/SISG2026_Association_Mapping/analysis/QG3_CC_Imbalance_practical_Key.html</loc>
+    <lastmod>2026-06-09T20:36:23.905Z</lastmod>
   </url>
   <url>
     <loc>https://joellembatchou.github.io/SISG2026_Association_Mapping/analysis/QG3_Plink_Population_Structure_practical_Key.html</loc>
