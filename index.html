@@ -357,28 +357,36 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td style="text-align: center;"></td>
 </tr>
 <tr class="even">
-<td style="text-align: left; width: 12%;">10:30am-12pm</td>
-<td style="text-align: center; width: 8%;">6</td>
-<td style="text-align: left; width: 35%;">Meta-analysis with REMETA continue &amp; Downstream analysis: Conditional analysis, fine mapping</td>
+<td style="text-align: left; width: 12%;">10:30am-11am</td>
+<td style="text-align: center; width: 8%;">5</td>
+<td style="text-align: left; width: 35%;">Meta-analysis with REMETA continue</td>
 <td style="text-align: center;"><a href="https://gatech.box.com/s/eaiwddxx1hs5dn3itz7pjjgjgjdfieg5" target="_blank">Slides</a></td>
 <td style="text-align: center;"><a href="https://moeenriaz2.github.io/SISG26/index.html" target="_blank">Practical</a></td>
 <td style="text-align: center;"></td>
 </tr>
 <tr class="odd">
-<td style="text-align: left; width: 12%;">1:30pm-3pm</td>
-<td style="text-align: center; width: 8%;">7</td>
-<td style="text-align: left; width: 35%;">Downstream analysis continues: Coloc, Gene-based &amp; Pathways Analysis</td>
+<td style="text-align: left; width: 12%;">11am-12pm</td>
+<td style="text-align: center; width: 8%;">6</td>
+<td style="text-align: left; width: 35%;">Downstream analysis: Conditional analysis, fine mapping &amp; Coloc, Gene-based &amp; Pathways Analysis</td>
 <td style="text-align: center;"><a href="https://gatech.box.com/s/nhhvvvtzu4tdyzemdc6ywk7yum56d70a" target="_blank">Slides</a></td>
 <td style="text-align: center;"><a href="https://moeenriaz2.github.io/SISG26-downstream-simp/QG3_Downstream-Analyses_practical.html" target="_blank">Practical</a></td>
 <td style="text-align: center;"></td>
 </tr>
 <tr class="even">
-<td style="text-align: left; width: 12%;">3:30pm-5pm</td>
+<td style="text-align: left; width: 12%;">1:30pm-3pm</td>
 <td style="text-align: center; width: 8%;">8</td>
 <td style="text-align: left; width: 35%;">Beyond traditional GWAS: Variance QTL, Interaction Testing, GWAX, Time-to-event, Multi-trait analysis</td>
 <td style="text-align: center;"><a href="https://gatech.box.com/s/163v98wn6wrq1yib08cee3ck1wm1quje" target="_blank">Slides</a></td>
 <td style="text-align: center;"><a href="analysis/QG3_Beyond_Standard_GWAS_practical.html">Practical</a></td>
 <td style="text-align: center;"><a href="analysis/QG3_Beyond_Standard_GWAS_practical_Key.html">Key</a></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; width: 12%;">3:30pm-5pm</td>
+<td style="text-align: center; width: 8%;">8b</td>
+<td style="text-align: left; width: 35%;">Emerging issues showcasing ongoing research</td>
+<td style="text-align: center;"><a href="https://gatech.box.com/s/evpn9z63prq8km6v9jcqunqw7rn2uzgq" target="_blank">Slides</a></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
 </tr>
 </tbody>
 </table>
@@ -1006,77 +1014,80 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-110"><a href="#cb2-110" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-111"><a href="#cb2-111" aria-hidden="true" tabindex="-1"></a><span class="in">```{r tue-sched, echo = FALSE}</span></span>
 <span id="cb2-112"><a href="#cb2-112" aria-hidden="true" tabindex="-1"></a><span class="fu">data.frame</span>(</span>
-<span id="cb2-113"><a href="#cb2-113" aria-hidden="true" tabindex="-1"></a>  <span class="at">Time =</span> <span class="fu">c</span>(<span class="st">"8:30am-10am"</span>, <span class="st">"10:30am-12pm"</span>, <span class="st">"1:30pm-3pm"</span>, <span class="st">"3:30pm-5pm"</span>),</span>
-<span id="cb2-114"><a href="#cb2-114" aria-hidden="true" tabindex="-1"></a>  <span class="at">Session =</span> <span class="dv">4</span> <span class="sc">+</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>,</span>
+<span id="cb2-113"><a href="#cb2-113" aria-hidden="true" tabindex="-1"></a>  <span class="at">Time =</span> <span class="fu">c</span>(<span class="st">"8:30am-10am"</span>, <span class="st">"10:30am-11am"</span>, <span class="st">"11am-12pm"</span>, <span class="st">"1:30pm-3pm"</span>, <span class="st">"3:30pm-5pm"</span>),</span>
+<span id="cb2-114"><a href="#cb2-114" aria-hidden="true" tabindex="-1"></a>  <span class="at">Session =</span> <span class="fu">c</span>(<span class="dv">5</span>, <span class="dv">5</span>, <span class="dv">6</span>, <span class="dv">8</span>, <span class="st">"8b"</span>),</span>
 <span id="cb2-115"><a href="#cb2-115" aria-hidden="true" tabindex="-1"></a>  <span class="at">Topic =</span> <span class="fu">c</span>(</span>
 <span id="cb2-116"><a href="#cb2-116" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Meta-analysis: GWAS meta-analysis with METAL, QC and best practices, Gene-based ExWAS with REMETA"</span>,</span>
-<span id="cb2-117"><a href="#cb2-117" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Meta-analysis with REMETA continue &amp; Downstream analysis: Conditional analysis, fine mapping"</span>,</span>
-<span id="cb2-118"><a href="#cb2-118" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Downstream analysis continues: Coloc, Gene-based &amp; Pathways Analysis"</span>,</span>
-<span id="cb2-119"><a href="#cb2-119" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Beyond traditional GWAS: Variance QTL, Interaction Testing, GWAX, Time-to-event, Multi-trait analysis"</span></span>
-<span id="cb2-120"><a href="#cb2-120" aria-hidden="true" tabindex="-1"></a>    ),</span>
-<span id="cb2-121"><a href="#cb2-121" aria-hidden="true" tabindex="-1"></a>  <span class="at">Lecture =</span> <span class="fu">c</span>(</span>
-<span id="cb2-122"><a href="#cb2-122" aria-hidden="true" tabindex="-1"></a>    <span class="st">'&lt;a href="https://gatech.box.com/s/eaiwddxx1hs5dn3itz7pjjgjgjdfieg5" target="_blank"&gt;Slides&lt;/a&gt;'</span>,</span>
+<span id="cb2-117"><a href="#cb2-117" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Meta-analysis with REMETA continue"</span>,</span>
+<span id="cb2-118"><a href="#cb2-118" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Downstream analysis: Conditional analysis, fine mapping &amp; Coloc, Gene-based &amp; Pathways Analysis"</span>,</span>
+<span id="cb2-119"><a href="#cb2-119" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Beyond traditional GWAS: Variance QTL, Interaction Testing, GWAX, Time-to-event, Multi-trait analysis"</span>,</span>
+<span id="cb2-120"><a href="#cb2-120" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Emerging issues showcasing ongoing research"</span></span>
+<span id="cb2-121"><a href="#cb2-121" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb2-122"><a href="#cb2-122" aria-hidden="true" tabindex="-1"></a>  <span class="at">Lecture =</span> <span class="fu">c</span>(</span>
 <span id="cb2-123"><a href="#cb2-123" aria-hidden="true" tabindex="-1"></a>    <span class="st">'&lt;a href="https://gatech.box.com/s/eaiwddxx1hs5dn3itz7pjjgjgjdfieg5" target="_blank"&gt;Slides&lt;/a&gt;'</span>,</span>
-<span id="cb2-124"><a href="#cb2-124" aria-hidden="true" tabindex="-1"></a>    <span class="st">'&lt;a href="https://gatech.box.com/s/nhhvvvtzu4tdyzemdc6ywk7yum56d70a" target="_blank"&gt;Slides&lt;/a&gt;'</span>,</span>
-<span id="cb2-125"><a href="#cb2-125" aria-hidden="true" tabindex="-1"></a>    <span class="st">'&lt;a href="https://gatech.box.com/s/163v98wn6wrq1yib08cee3ck1wm1quje" target="_blank"&gt;Slides&lt;/a&gt;'</span></span>
-<span id="cb2-126"><a href="#cb2-126" aria-hidden="true" tabindex="-1"></a>  ),</span>
-<span id="cb2-127"><a href="#cb2-127" aria-hidden="true" tabindex="-1"></a>  <span class="at">Exercises =</span> <span class="fu">c</span>(</span>
-<span id="cb2-128"><a href="#cb2-128" aria-hidden="true" tabindex="-1"></a>    <span class="st">'&lt;a href="https://moeenriaz2.github.io/SISG26/index.html" target="_blank"&gt;Practical&lt;/a&gt;'</span>,</span>
-<span id="cb2-129"><a href="#cb2-129" aria-hidden="true" tabindex="-1"></a>    <span class="st">'&lt;a href="https://moeenriaz2.github.io/SISG26/index.html" target="_blank"&gt;Practical&lt;/a&gt;'</span>,</span>
-<span id="cb2-130"><a href="#cb2-130" aria-hidden="true" tabindex="-1"></a>    <span class="st">'&lt;a href="https://moeenriaz2.github.io/SISG26-downstream-simp/QG3_Downstream-Analyses_practical.html" target="_blank"&gt;Practical&lt;/a&gt;'</span>,</span>
-<span id="cb2-131"><a href="#cb2-131" aria-hidden="true" tabindex="-1"></a>    <span class="st">'&lt;a href="analysis/QG3_Beyond_Standard_GWAS_practical.html"&gt;Practical&lt;/a&gt;'</span></span>
-<span id="cb2-132"><a href="#cb2-132" aria-hidden="true" tabindex="-1"></a>  ),</span>
-<span id="cb2-133"><a href="#cb2-133" aria-hidden="true" tabindex="-1"></a>  <span class="at">Key =</span> <span class="fu">c</span>(<span class="st">""</span>, <span class="st">""</span>, <span class="st">""</span>, <span class="st">'&lt;a href="analysis/QG3_Beyond_Standard_GWAS_practical_Key.html"&gt;Key&lt;/a&gt;'</span>)</span>
-<span id="cb2-134"><a href="#cb2-134" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
-<span id="cb2-135"><a href="#cb2-135" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="at">escape =</span> <span class="cn">FALSE</span>, <span class="at">caption =</span> <span class="st">"**Tuesday, June 9th**"</span>, <span class="at">align =</span> <span class="fu">c</span>(<span class="st">'l'</span>, <span class="st">'c'</span>, <span class="st">'l'</span>, <span class="st">'c'</span>, <span class="st">'c'</span>, <span class="st">'c'</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb2-136"><a href="#cb2-136" aria-hidden="true" tabindex="-1"></a><span class="fu">kable_styling</span>(<span class="at">bootstrap_options =</span> <span class="fu">c</span>(<span class="st">"hover"</span>, <span class="st">"condensed"</span>, <span class="st">"striped"</span>),</span>
-<span id="cb2-137"><a href="#cb2-137" aria-hidden="true" tabindex="-1"></a>              <span class="at">full_width =</span> <span class="cn">FALSE</span>,</span>
-<span id="cb2-138"><a href="#cb2-138" aria-hidden="true" tabindex="-1"></a>              <span class="at">font_size =</span> <span class="dv">14</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb2-139"><a href="#cb2-139" aria-hidden="true" tabindex="-1"></a><span class="fu">column_spec</span>(<span class="dv">1</span>, <span class="at">width =</span> <span class="st">"12%"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb2-140"><a href="#cb2-140" aria-hidden="true" tabindex="-1"></a><span class="fu">column_spec</span>(<span class="dv">2</span>, <span class="at">width =</span> <span class="st">"8%"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb2-141"><a href="#cb2-141" aria-hidden="true" tabindex="-1"></a><span class="fu">column_spec</span>(<span class="dv">3</span>, <span class="at">width =</span> <span class="st">"35%"</span>)</span>
-<span id="cb2-142"><a href="#cb2-142" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb2-143"><a href="#cb2-143" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-144"><a href="#cb2-144" aria-hidden="true" tabindex="-1"></a><span class="in">```{r wed-sched, echo = FALSE}</span></span>
-<span id="cb2-145"><a href="#cb2-145" aria-hidden="true" tabindex="-1"></a><span class="fu">data.frame</span>(</span>
-<span id="cb2-146"><a href="#cb2-146" aria-hidden="true" tabindex="-1"></a>  <span class="at">Time =</span> <span class="fu">c</span>(<span class="st">"8:30am-10am"</span>, <span class="st">"10:30am-12pm"</span>),</span>
-<span id="cb2-147"><a href="#cb2-147" aria-hidden="true" tabindex="-1"></a>  <span class="at">Session =</span> <span class="dv">8</span> <span class="sc">+</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>,</span>
-<span id="cb2-148"><a href="#cb2-148" aria-hidden="true" tabindex="-1"></a>  <span class="at">Topic =</span> <span class="fu">c</span>(</span>
-<span id="cb2-149"><a href="#cb2-149" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Polygenic Risk Scores"</span>,</span>
-<span id="cb2-150"><a href="#cb2-150" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Emerging issues showcasing ongoing research"</span></span>
-<span id="cb2-151"><a href="#cb2-151" aria-hidden="true" tabindex="-1"></a>    ),</span>
-<span id="cb2-152"><a href="#cb2-152" aria-hidden="true" tabindex="-1"></a>  <span class="at">Lecture =</span> <span class="fu">c</span>(</span>
-<span id="cb2-153"><a href="#cb2-153" aria-hidden="true" tabindex="-1"></a>    <span class="st">'&lt;a href="https://gatech.box.com/s/anr9i4ptdim2962eojpo01jnw9t1k86v" target="_blank"&gt;Slides&lt;/a&gt;'</span>,</span>
-<span id="cb2-154"><a href="#cb2-154" aria-hidden="true" tabindex="-1"></a>    <span class="st">""</span></span>
-<span id="cb2-155"><a href="#cb2-155" aria-hidden="true" tabindex="-1"></a>  ),</span>
-<span id="cb2-156"><a href="#cb2-156" aria-hidden="true" tabindex="-1"></a>  <span class="at">Exercises =</span> <span class="fu">c</span>(</span>
-<span id="cb2-157"><a href="#cb2-157" aria-hidden="true" tabindex="-1"></a>    <span class="st">'&lt;a href="https://moeenriaz2.github.io/SISG26-PRS/practical.html" target="_blank"&gt;Practical&lt;/a&gt;'</span>,</span>
-<span id="cb2-158"><a href="#cb2-158" aria-hidden="true" tabindex="-1"></a>    <span class="st">""</span></span>
-<span id="cb2-159"><a href="#cb2-159" aria-hidden="true" tabindex="-1"></a>  ),</span>
-<span id="cb2-160"><a href="#cb2-160" aria-hidden="true" tabindex="-1"></a>  <span class="at">Key =</span> <span class="fu">c</span>(<span class="st">""</span>, <span class="st">""</span>)</span>
-<span id="cb2-161"><a href="#cb2-161" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
-<span id="cb2-162"><a href="#cb2-162" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="at">escape =</span> <span class="cn">FALSE</span>, <span class="at">caption =</span> <span class="st">"**Wednesday, June 10th**"</span>, <span class="at">align =</span> <span class="fu">c</span>(<span class="st">'l'</span>, <span class="st">'c'</span>, <span class="st">'l'</span>, <span class="st">'c'</span>, <span class="st">'c'</span>, <span class="st">'c'</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb2-163"><a href="#cb2-163" aria-hidden="true" tabindex="-1"></a><span class="fu">kable_styling</span>(<span class="at">bootstrap_options =</span> <span class="fu">c</span>(<span class="st">"hover"</span>, <span class="st">"condensed"</span>, <span class="st">"striped"</span>),</span>
-<span id="cb2-164"><a href="#cb2-164" aria-hidden="true" tabindex="-1"></a>              <span class="at">full_width =</span> <span class="cn">FALSE</span>,</span>
-<span id="cb2-165"><a href="#cb2-165" aria-hidden="true" tabindex="-1"></a>              <span class="at">font_size =</span> <span class="dv">14</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb2-166"><a href="#cb2-166" aria-hidden="true" tabindex="-1"></a><span class="fu">column_spec</span>(<span class="dv">1</span>, <span class="at">width =</span> <span class="st">"12%"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb2-167"><a href="#cb2-167" aria-hidden="true" tabindex="-1"></a><span class="fu">column_spec</span>(<span class="dv">2</span>, <span class="at">width =</span> <span class="st">"8%"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb2-168"><a href="#cb2-168" aria-hidden="true" tabindex="-1"></a><span class="fu">column_spec</span>(<span class="dv">3</span>, <span class="at">width =</span> <span class="st">"35%"</span>)</span>
-<span id="cb2-169"><a href="#cb2-169" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb2-170"><a href="#cb2-170" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-171"><a href="#cb2-171" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-172"><a href="#cb2-172" aria-hidden="true" tabindex="-1"></a><span class="fu">## Datasets</span></span>
+<span id="cb2-124"><a href="#cb2-124" aria-hidden="true" tabindex="-1"></a>    <span class="st">'&lt;a href="https://gatech.box.com/s/eaiwddxx1hs5dn3itz7pjjgjgjdfieg5" target="_blank"&gt;Slides&lt;/a&gt;'</span>,</span>
+<span id="cb2-125"><a href="#cb2-125" aria-hidden="true" tabindex="-1"></a>    <span class="st">'&lt;a href="https://gatech.box.com/s/nhhvvvtzu4tdyzemdc6ywk7yum56d70a" target="_blank"&gt;Slides&lt;/a&gt;'</span>,</span>
+<span id="cb2-126"><a href="#cb2-126" aria-hidden="true" tabindex="-1"></a>    <span class="st">'&lt;a href="https://gatech.box.com/s/163v98wn6wrq1yib08cee3ck1wm1quje" target="_blank"&gt;Slides&lt;/a&gt;'</span>,</span>
+<span id="cb2-127"><a href="#cb2-127" aria-hidden="true" tabindex="-1"></a>    <span class="st">'&lt;a href="https://gatech.box.com/s/evpn9z63prq8km6v9jcqunqw7rn2uzgq" target="_blank"&gt;Slides&lt;/a&gt;'</span></span>
+<span id="cb2-128"><a href="#cb2-128" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb2-129"><a href="#cb2-129" aria-hidden="true" tabindex="-1"></a>  <span class="at">Exercises =</span> <span class="fu">c</span>(</span>
+<span id="cb2-130"><a href="#cb2-130" aria-hidden="true" tabindex="-1"></a>    <span class="st">'&lt;a href="https://moeenriaz2.github.io/SISG26/index.html" target="_blank"&gt;Practical&lt;/a&gt;'</span>,</span>
+<span id="cb2-131"><a href="#cb2-131" aria-hidden="true" tabindex="-1"></a>    <span class="st">'&lt;a href="https://moeenriaz2.github.io/SISG26/index.html" target="_blank"&gt;Practical&lt;/a&gt;'</span>,</span>
+<span id="cb2-132"><a href="#cb2-132" aria-hidden="true" tabindex="-1"></a>    <span class="st">'&lt;a href="https://moeenriaz2.github.io/SISG26-downstream-simp/QG3_Downstream-Analyses_practical.html" target="_blank"&gt;Practical&lt;/a&gt;'</span>,</span>
+<span id="cb2-133"><a href="#cb2-133" aria-hidden="true" tabindex="-1"></a>    <span class="st">'&lt;a href="analysis/QG3_Beyond_Standard_GWAS_practical.html"&gt;Practical&lt;/a&gt;'</span>,</span>
+<span id="cb2-134"><a href="#cb2-134" aria-hidden="true" tabindex="-1"></a>    <span class="st">""</span></span>
+<span id="cb2-135"><a href="#cb2-135" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb2-136"><a href="#cb2-136" aria-hidden="true" tabindex="-1"></a>  <span class="at">Key =</span> <span class="fu">c</span>(<span class="st">""</span>, <span class="st">""</span>, <span class="st">""</span>, <span class="st">'&lt;a href="analysis/QG3_Beyond_Standard_GWAS_practical_Key.html"&gt;Key&lt;/a&gt;'</span>, <span class="st">""</span>)</span>
+<span id="cb2-137"><a href="#cb2-137" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
+<span id="cb2-138"><a href="#cb2-138" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="at">escape =</span> <span class="cn">FALSE</span>, <span class="at">caption =</span> <span class="st">"**Tuesday, June 9th**"</span>, <span class="at">align =</span> <span class="fu">c</span>(<span class="st">'l'</span>, <span class="st">'c'</span>, <span class="st">'l'</span>, <span class="st">'c'</span>, <span class="st">'c'</span>, <span class="st">'c'</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb2-139"><a href="#cb2-139" aria-hidden="true" tabindex="-1"></a><span class="fu">kable_styling</span>(<span class="at">bootstrap_options =</span> <span class="fu">c</span>(<span class="st">"hover"</span>, <span class="st">"condensed"</span>, <span class="st">"striped"</span>),</span>
+<span id="cb2-140"><a href="#cb2-140" aria-hidden="true" tabindex="-1"></a>              <span class="at">full_width =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb2-141"><a href="#cb2-141" aria-hidden="true" tabindex="-1"></a>              <span class="at">font_size =</span> <span class="dv">14</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb2-142"><a href="#cb2-142" aria-hidden="true" tabindex="-1"></a><span class="fu">column_spec</span>(<span class="dv">1</span>, <span class="at">width =</span> <span class="st">"12%"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb2-143"><a href="#cb2-143" aria-hidden="true" tabindex="-1"></a><span class="fu">column_spec</span>(<span class="dv">2</span>, <span class="at">width =</span> <span class="st">"8%"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb2-144"><a href="#cb2-144" aria-hidden="true" tabindex="-1"></a><span class="fu">column_spec</span>(<span class="dv">3</span>, <span class="at">width =</span> <span class="st">"35%"</span>)</span>
+<span id="cb2-145"><a href="#cb2-145" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb2-146"><a href="#cb2-146" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-147"><a href="#cb2-147" aria-hidden="true" tabindex="-1"></a><span class="in">```{r wed-sched, echo = FALSE}</span></span>
+<span id="cb2-148"><a href="#cb2-148" aria-hidden="true" tabindex="-1"></a><span class="fu">data.frame</span>(</span>
+<span id="cb2-149"><a href="#cb2-149" aria-hidden="true" tabindex="-1"></a>  <span class="at">Time =</span> <span class="fu">c</span>(<span class="st">"8:30am-10am"</span>, <span class="st">"10:30am-12pm"</span>),</span>
+<span id="cb2-150"><a href="#cb2-150" aria-hidden="true" tabindex="-1"></a>  <span class="at">Session =</span> <span class="dv">9</span><span class="sc">:</span><span class="dv">10</span>,</span>
+<span id="cb2-151"><a href="#cb2-151" aria-hidden="true" tabindex="-1"></a>  <span class="at">Topic =</span> <span class="fu">c</span>(</span>
+<span id="cb2-152"><a href="#cb2-152" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Polygenic Risk Scores"</span>,</span>
+<span id="cb2-153"><a href="#cb2-153" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Emerging issues showcasing ongoing research"</span></span>
+<span id="cb2-154"><a href="#cb2-154" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb2-155"><a href="#cb2-155" aria-hidden="true" tabindex="-1"></a>  <span class="at">Lecture =</span> <span class="fu">c</span>(</span>
+<span id="cb2-156"><a href="#cb2-156" aria-hidden="true" tabindex="-1"></a>    <span class="st">'&lt;a href="https://gatech.box.com/s/anr9i4ptdim2962eojpo01jnw9t1k86v" target="_blank"&gt;Slides&lt;/a&gt;'</span>,</span>
+<span id="cb2-157"><a href="#cb2-157" aria-hidden="true" tabindex="-1"></a>    <span class="st">""</span></span>
+<span id="cb2-158"><a href="#cb2-158" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb2-159"><a href="#cb2-159" aria-hidden="true" tabindex="-1"></a>  <span class="at">Exercises =</span> <span class="fu">c</span>(</span>
+<span id="cb2-160"><a href="#cb2-160" aria-hidden="true" tabindex="-1"></a>    <span class="st">'&lt;a href="https://moeenriaz2.github.io/SISG26-PRS/practical.html" target="_blank"&gt;Practical&lt;/a&gt;'</span>,</span>
+<span id="cb2-161"><a href="#cb2-161" aria-hidden="true" tabindex="-1"></a>    <span class="st">""</span></span>
+<span id="cb2-162"><a href="#cb2-162" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb2-163"><a href="#cb2-163" aria-hidden="true" tabindex="-1"></a>  <span class="at">Key =</span> <span class="fu">c</span>(<span class="st">""</span>, <span class="st">""</span>)</span>
+<span id="cb2-164"><a href="#cb2-164" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
+<span id="cb2-165"><a href="#cb2-165" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="at">escape =</span> <span class="cn">FALSE</span>, <span class="at">caption =</span> <span class="st">"**Wednesday, June 10th**"</span>, <span class="at">align =</span> <span class="fu">c</span>(<span class="st">'l'</span>, <span class="st">'c'</span>, <span class="st">'l'</span>, <span class="st">'c'</span>, <span class="st">'c'</span>, <span class="st">'c'</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb2-166"><a href="#cb2-166" aria-hidden="true" tabindex="-1"></a><span class="fu">kable_styling</span>(<span class="at">bootstrap_options =</span> <span class="fu">c</span>(<span class="st">"hover"</span>, <span class="st">"condensed"</span>, <span class="st">"striped"</span>),</span>
+<span id="cb2-167"><a href="#cb2-167" aria-hidden="true" tabindex="-1"></a>              <span class="at">full_width =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb2-168"><a href="#cb2-168" aria-hidden="true" tabindex="-1"></a>              <span class="at">font_size =</span> <span class="dv">14</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb2-169"><a href="#cb2-169" aria-hidden="true" tabindex="-1"></a><span class="fu">column_spec</span>(<span class="dv">1</span>, <span class="at">width =</span> <span class="st">"12%"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb2-170"><a href="#cb2-170" aria-hidden="true" tabindex="-1"></a><span class="fu">column_spec</span>(<span class="dv">2</span>, <span class="at">width =</span> <span class="st">"8%"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb2-171"><a href="#cb2-171" aria-hidden="true" tabindex="-1"></a><span class="fu">column_spec</span>(<span class="dv">3</span>, <span class="at">width =</span> <span class="st">"35%"</span>)</span>
+<span id="cb2-172"><a href="#cb2-172" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb2-173"><a href="#cb2-173" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-174"><a href="#cb2-174" aria-hidden="true" tabindex="-1"></a>All the data sets used can be downloaded from the <span class="co">[</span><span class="ot">Box folder</span><span class="co">](https://gatech.box.com/s/9x413qjl5cprqmkvh9xt1f105tysxtcw)</span> for the class.</span>
-<span id="cb2-175"><a href="#cb2-175" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-176"><a href="#cb2-176" aria-hidden="true" tabindex="-1"></a><span class="fu">## Additional resources</span></span>
-<span id="cb2-177"><a href="#cb2-177" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-178"><a href="#cb2-178" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="co">[</span><span class="ot">2016 TPB Paper</span><span class="co">](https://faculty.washington.edu/tathornt/sisg/Zheng_Weir_Eigenanalysis_TPB_2016.pdf)</span> on PCA for Population Structure Inference and Admixture Estimation</span>
-<span id="cb2-179"><a href="#cb2-179" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="co">[</span><span class="ot">HapMap MXL Individual Ancestry Figure</span><span class="co">](https://faculty.washington.edu/tathornt/sisg/HapMapMXL_Ancestry_Supervised.pdf)</span> (Supervised Learning)</span>
-<span id="cb2-180"><a href="#cb2-180" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>If you are new to R, you may find the following material helpful:</span>
-<span id="cb2-181"><a href="#cb2-181" aria-hidden="true" tabindex="-1"></a><span class="ss">  * </span><span class="co">[</span><span class="ot">Introduction to R materials</span><span class="co">](https://faculty.washington.edu/kenrice/rintro/)</span> from a past SISG Module</span>
-<span id="cb2-182"><a href="#cb2-182" aria-hidden="true" tabindex="-1"></a><span class="ss">  * </span><span class="co">[</span><span class="ot">Graphics with ggplot2</span><span class="co">](https://ggplot2.tidyverse.org/)</span></span>
-<span id="cb2-183"><a href="#cb2-183" aria-hidden="true" tabindex="-1"></a><span class="ss">  * </span><span class="co">[</span><span class="ot">Data manipulation with dplyr</span><span class="co">](http://dplyr.tidyverse.org/)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
+<span id="cb2-174"><a href="#cb2-174" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-175"><a href="#cb2-175" aria-hidden="true" tabindex="-1"></a><span class="fu">## Datasets</span></span>
+<span id="cb2-176"><a href="#cb2-176" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-177"><a href="#cb2-177" aria-hidden="true" tabindex="-1"></a>All the data sets used can be downloaded from the <span class="co">[</span><span class="ot">Box folder</span><span class="co">](https://gatech.box.com/s/9x413qjl5cprqmkvh9xt1f105tysxtcw)</span> for the class.</span>
+<span id="cb2-178"><a href="#cb2-178" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-179"><a href="#cb2-179" aria-hidden="true" tabindex="-1"></a><span class="fu">## Additional resources</span></span>
+<span id="cb2-180"><a href="#cb2-180" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-181"><a href="#cb2-181" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="co">[</span><span class="ot">2016 TPB Paper</span><span class="co">](https://faculty.washington.edu/tathornt/sisg/Zheng_Weir_Eigenanalysis_TPB_2016.pdf)</span> on PCA for Population Structure Inference and Admixture Estimation</span>
+<span id="cb2-182"><a href="#cb2-182" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="co">[</span><span class="ot">HapMap MXL Individual Ancestry Figure</span><span class="co">](https://faculty.washington.edu/tathornt/sisg/HapMapMXL_Ancestry_Supervised.pdf)</span> (Supervised Learning)</span>
+<span id="cb2-183"><a href="#cb2-183" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>If you are new to R, you may find the following material helpful:</span>
+<span id="cb2-184"><a href="#cb2-184" aria-hidden="true" tabindex="-1"></a><span class="ss">  * </span><span class="co">[</span><span class="ot">Introduction to R materials</span><span class="co">](https://faculty.washington.edu/kenrice/rintro/)</span> from a past SISG Module</span>
+<span id="cb2-185"><a href="#cb2-185" aria-hidden="true" tabindex="-1"></a><span class="ss">  * </span><span class="co">[</span><span class="ot">Graphics with ggplot2</span><span class="co">](https://ggplot2.tidyverse.org/)</span></span>
+<span id="cb2-186"><a href="#cb2-186" aria-hidden="true" tabindex="-1"></a><span class="ss">  * </span><span class="co">[</span><span class="ot">Data manipulation with dplyr</span><span class="co">](http://dplyr.tidyverse.org/)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
 
